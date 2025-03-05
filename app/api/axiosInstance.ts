@@ -53,7 +53,7 @@ axiosInstance.interceptors.response.use(
 
         if (typeof window !== "undefined") {
           sessionStorage.removeItem("accessToken");
-          window.location.href = "/";
+          window.location.href = "/home";
         }
       }
     }
