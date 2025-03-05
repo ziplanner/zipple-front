@@ -10,17 +10,19 @@ import PrimaryBtn from "../button/primaryBtn";
 import { motion } from "framer-motion";
 import LoginModal from "../modal/loginModal";
 import MobileLoginModal from "../modal/mobileLoginModal";
-interface HeaderProps {
-  isLoggedIn: boolean;
-}
+import { useUserStore } from "@/app/providers/user-store-provider";
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn }) => {
+const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { accessToken, signOut } = useUserStore((state) => state);
+
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isMobileLoginModalOpen, setIsMobileLoginModalOpen] =
     useState<boolean>(false);
+
+  const isLoggedIn = !!accessToken;
 
   const handleNavigate = (path: string) => {
     router.push(path);
@@ -136,7 +138,9 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn }) => {
                 로그인
               </button>
             )}
-            <button className="text-primary text-body3_r">회원가입</button>
+            {!isLoggedIn && (
+              <button className="text-primary text-body3_r">회원가입</button>
+            )}
           </div>
         </motion.div>
 
@@ -158,7 +162,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn }) => {
                 로그인
               </button>
             )}
-            <PrimaryBtn text={"회원가입"} onClick={() => {}} />
+            {!isLoggedIn && <PrimaryBtn text={"회원가입"} onClick={() => {}} />}
           </div>
         </div>
       </header>
