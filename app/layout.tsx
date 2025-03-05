@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Layout from "./components/layout/layout";
 import Script from "next/script";
+import { UserStoreProvider } from "./providers/user-store-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,9 @@ export default function RootLayout({
           strategy="beforeInteractive"
           src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
         />
-        <Layout>{children}</Layout>
+        <UserStoreProvider>
+          <Layout>{children}</Layout>
+        </UserStoreProvider>
       </body>
     </html>
   );
