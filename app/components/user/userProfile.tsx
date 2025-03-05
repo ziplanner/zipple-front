@@ -14,18 +14,13 @@ import { useRouter } from "next/navigation";
 
 interface UserProfileProps {
   name: string;
-  location: string;
   imageUrl: string | StaticImageData;
-  primaryWork: string;
-  secondaryWork: string;
+  work: string;
   phoneNumber: string;
   address: string;
   email: string;
   website: string;
-  birthday: string;
-  gender: string;
   rating: number;
-  role: string;
   field: string;
   description: string;
   contactUrl: string;
@@ -34,19 +29,13 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({
   name,
-  location,
   imageUrl,
-  primaryWork,
-  secondaryWork,
+  work,
   phoneNumber,
   address,
   email,
   website,
-  birthday,
-  gender,
   rating,
-  role,
-  field,
   description,
   contactUrl,
   registrationInfo,
@@ -69,11 +58,14 @@ const UserProfile: React.FC<UserProfileProps> = ({
       <div className="w-full flex flex-col justify-between h-full">
         {/* Profile Header */}
         <div className="flex md:flex-row flex-col md:items-center md:mb-8">
-          <div className="lg:w-80 lg:h-80 md:w-64 md:h-64 md:max-h-80 md:max-w-80 max-h-56 max-w-56 rounded-lg overflow-hidden mr-6">
+          <div
+            className="lg:w-64 lg:h-64 md:w-64 md:h-64 md:max-h-64 md:max-w-64
+          max-h-56 max-w-56 rounded-lg overflow-hidden mr-10"
+          >
             <Image
               src={imageUrl}
               alt="Profile"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-full"
             />
           </div>
           <div className="flex flex-col lg:h-80 md:h-64 py-1 justify-between">
@@ -138,7 +130,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
         </div>
         {/* User Info */}
         <div className="flex flex-col md:flex-row gap-8 md:mt-5 mt-6">
-          <div className="flex flex-col md:w-[256px] lg:w-[320px]">
+          <div className="flex flex-col md:w-[256px] lg:w-[256px]">
             {/* Contact Section */}
             <div className="mb-6">
               <h3 className="text-text_sub2 text-mobile_h4_sb md:text-h3 lg:text-h2 mb-1">
@@ -171,15 +163,15 @@ const UserProfile: React.FC<UserProfileProps> = ({
               </div>
             </div>
             {/* Work Section */}
-            <div className="border-t border-gray-200 pt-6 mb-6 md:w-[256px] lg:w-[320px]">
+            <div className="border-t border-gray-200 pt-6 mb-6 md:w-[256px] lg:w-[256px]">
               <h3 className="text-text_sub2 text-mobile_h4_sb md:text-h3 lg:text-h2 mb-1">
                 Work
               </h3>
               <p className="text-mobile_body3_r md:text-body2_m text-gray-700">
-                <strong>{primaryWork}</strong>
+                <strong>{work}</strong>
               </p>
               <p className="text-mobile_body3_r md:text-body2_m text-gray-600">
-                {secondaryWork}
+                {work}
               </p>
             </div>
           </div>
@@ -238,3 +230,6 @@ const UserProfile: React.FC<UserProfileProps> = ({
 };
 
 export default UserProfile;
+
+
+
