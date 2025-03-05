@@ -8,13 +8,16 @@ export const refreshAccessToken = async () => {
 };
 
 export const getTokenWithCode = async (code: string) => {
-  const url = `${KAKAO_LOGIN}?code=${code}`;
+  const url = KAKAO_LOGIN;
+
+  // console.log("🔍 Sending request to:", url);
+  // console.log("📌 Request body:", { authorizationCode: code });
 
   try {
-    const { data } = await axiosInstance.get(url);
+    const { data } = await axiosInstance.post(url, { authorizationCode: code });
+
     return data;
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     return { accessToken: "", isFirstLogin: false };
   }
 };
@@ -30,7 +33,7 @@ export const logout = async (accessToken: string, refreshToken: string) => {
     sessionStorage.removeItem("accessToken");
 
     // 로그인 페이지로 리디렉트
-    window.location.href = "/";
+    window.location.href = "/home";
   } catch (err) {
     console.error("로그아웃 실패:", err);
   }
