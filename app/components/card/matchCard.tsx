@@ -33,7 +33,7 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
   const [likeCount, setLikeCount] = useState<number>(0);
 
   const handleGoToProfile = () => {
-    router.push("/user");
+    router.push(`/match/profile?id=${professional.userId}`);
   };
 
   const stars = Array(5)
@@ -56,7 +56,10 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
     >
       <div className="flex flex-row md:gap-5 gap-3 flex-nowrap">
         <div className="lg:w-36 lg:h-36 md:h-32 md:w-32 w-24 h-24 flex-shrink-0">
-          <div className="relative lg:w-36 lg:h-36 md:h-32 md:w-32 w-24 h-24 overflow-hidden flex items-center justify-center bg-gray-200 rounded-xl">
+          <div
+            className="relative lg:w-36 lg:h-36 md:h-32 md:w-32 w-24 h-24 overflow-hidden
+          flex items-center justify-center bg-gray-200 rounded-xl"
+          >
             {professional.profileUrl ? (
               <Image
                 src={professional.profileUrl}
