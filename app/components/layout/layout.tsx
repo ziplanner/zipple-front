@@ -11,9 +11,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const specialPaths = ["/home", "/terms"];
   const backgroundPaths = ["/mypage"];
 
-  const isSpecialComponent = specialPaths.some((path) =>
-    pathname.includes(path)
-  );
+  const isSpecialComponent =
+    pathname === "/" || specialPaths.some((path) => pathname.includes(path));
+
   const isBackgroundComponent = backgroundPaths.some((path) =>
     pathname.includes(path)
   );
