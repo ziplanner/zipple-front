@@ -12,6 +12,7 @@ import LoginModal from "../modal/loginModal";
 import MobileLoginModal from "../modal/mobileLoginModal";
 import { useUserStore } from "@/app/providers/user-store-provider";
 import { patchLogout } from "@/app/api/login/api";
+import AlertWithBtn from "../alert/alertWithBtn";
 
 const Header = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const Header = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isMobileLoginModalOpen, setIsMobileLoginModalOpen] =
     useState<boolean>(false);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
   const isLoggedIn = !!accessToken;
 
@@ -31,9 +33,13 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
-    // await patchLogout();
+    setIsAlertOpen(true);
+  };
+
+  const confirmLogout = async () => {
     sessionStorage.removeItem("accessToken");
     signOut();
+    setIsAlertOpen(false);
   };
 
   const handleMypageClick = () => {
@@ -215,6 +221,16 @@ const Header = () => {
       )}
       {isMobileLoginModalOpen && (
         <MobileLoginModal onClose={() => setIsMobileLoginModalOpen(false)} />
+      )}
+      {isAlertOpen && (
+        <AlertWithBtn
+          title="로그아웃"
+          message="정말 로그아웃 하시겠습니까?"
+          onConfirm={confirmLogout}
+          onCancel={() => setIsAlertOpen(false)}
+          confirmText="로그아웃"
+          cancelText="취소"
+        />
       )}
     </div>
   );
