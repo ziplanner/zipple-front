@@ -21,15 +21,17 @@ const CustomInput = ({
 }: CustomInputProps) => {
   return (
     <div className={`flex flex-col ${className}`}>
-      <label className="text-body2_r text-text_sub4 mb-2">{label}</label>
+      <label className="text-mobile_body2_r md:text-body2_r text-text_sub4 mb-2">
+        {label}
+      </label>
       <input
         type={type}
         name={name}
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        className="border border-searchbarborder p-2 rounded-lg focus:outline-none focus:ring-1
-        focus:ring-selectedoption_pressed transition-all"
+        className="border border-searchbarborder p-1.5 md:p-2 rounded-lg focus:outline-none focus:ring-1
+        focus:ring-selectedoption_pressed transition-all text-mobile_body3_r md:text-body2_r"
       />
     </div>
   );
