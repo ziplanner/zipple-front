@@ -76,8 +76,8 @@ const GeneralUser = () => {
         {/* Left Content */}
         <div className="flex flex-col items-center mt-8">
           <div
-            className="lg:w-72 lg:h-72 md:w-64 md:h-64 md:max-h-72 md:max-w-72
-        max-h-56 max-w-56 rounded-lg overflow-hidden"
+            className="lg:w-64 lg:h-64 md:w-52 md:h-52 md:max-h-72 md:max-w-72
+        max-h-44 max-w-44 rounded-lg overflow-hidden"
           >
             <Image
               src={test10}
@@ -85,7 +85,7 @@ const GeneralUser = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <h2 className="mt-4 text-lg font-semibold">{userInfo.name}</h2>
+          <h2 className="mt-4 text-h4_sb md:text-h3">{userInfo.name}</h2>
           {/* 회원 유형 + 인증 배지 */}
           <div className="flex items-center gap-2">
             <p className="text-gray-600">{userInfo.type}</p>
@@ -117,7 +117,7 @@ const GeneralUser = () => {
             <div className="flex pb-2 pl-3">
               <div className="flex gap-3 items-center">
                 <FaUser />
-                <h3 className="text-h2 text-text rounded-t-lg inline-block">
+                <h3 className="text-h4_sb md:text-h2 text-text rounded-t-lg inline-block">
                   나의 정보
                 </h3>
               </div>
@@ -184,48 +184,58 @@ const GeneralUser = () => {
                 <p className="text-gray-600 text-body1_sb">
                   <MdPerson />
                 </p>
-                <p className="text-body1_r pl-5">{userInfo.name}</p>
+                <p className="text-mobile_body2_r md:text-body1_r pl-5">
+                  {userInfo.name}
+                </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
                 <p className="text-gray-600 text-body1_sb">
                   {/* 📞 전화번호 */}
                   <FaPhone />
                 </p>
-                <p className="text-body1_r pl-5">{userInfo.phone}</p>
+                <p className="text-mobile_body2_r md:text-body1_r pl-5">
+                  {userInfo.phone}
+                </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
                 <p className="text-gray-600 text-body1_sb">
                   <FaEnvelope />
                   {/* 📧 이메일 */}
                 </p>
-                <p className="text-body1_r pl-5">{userInfo.email}</p>
+                <p className="text-mobile_body2_r md:text-body1_r pl-5">
+                  {userInfo.email}
+                </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
                 <p className="text-gray-600 text-body1_sb">
                   {/* 📍 주소 */}
                   <FaMapMarkerAlt />
                 </p>
-                <p className="text-body1_r pl-5">{userInfo.address}</p>
+                <p className="text-mobile_body2_r md:text-body1_r pl-5">
+                  {userInfo.address}
+                </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
                 <p className="text-gray-600 text-body1_sb">
                   {/* 🏠 거주 형태 */}
                   <FaHome />
                 </p>
-                <p className="text-body1_r pl-5">{userInfo.residence}</p>
+                <p className="text-mobile_body2_r md:text-body1_r pl-5">
+                  {userInfo.residence}
+                </p>
               </div>
             </>
           )}
         </div>
 
-        <h3 className="mt-16 text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
+        <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
           활동 정보
         </h3>
         <ul className="border-t pt-3 ml-3">
           {userInfo.activities.map((activity, index) => (
             <li
               key={index}
-              className="py-2 cursor-pointer text-body1_m text-text_sub4 hover:underline"
+              className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
               onClick={() => router.push(activity.url)}
             >
               {activity.name}
@@ -244,14 +254,14 @@ const GeneralUser = () => {
         >
           커뮤니티
         </h3> */}
-        <h3 className="mt-16 text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
+        <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
           커뮤니티
         </h3>
         <ul className="border-t pt-3 ml-3">
           {userInfo.community.map((item, index) => (
             <li
               key={index}
-              className="py-2 cursor-pointer text-body1_m text-text_sub4 hover:underline"
+              className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
               onClick={() => router.push(item.url)}
             >
               {item.name}
