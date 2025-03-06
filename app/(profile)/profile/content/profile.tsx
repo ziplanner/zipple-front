@@ -21,7 +21,7 @@ const Profile = () => {
   return (
     <div className="flex items-start justify-center min-h-screen">
       <ProfileCard
-        profileImage={professional.profileImage}
+        profileImage={professional.profileUrl}
         name={professional.name}
         jobTitle={professional.title}
         badges={[
