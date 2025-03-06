@@ -30,7 +30,7 @@ const CustomTextarea = ({
         placeholder={placeholder}
         onChange={onChange}
         maxLength={maxLength}
-        className="w-full p-2 border border-searchbarborder rounded-lg resize-none text-body1_r text-subtext1 
+        className="w-full p-2 border border-searchbarborder rounded-lg resize-none text-subtext1 
                   focus:outline-none focus:ring-1 focus:ring-selectedoption_pressed transition-all 
                   min-h-[20vh] max-h-[40vh] text-mobile_body3_r md:text-body2_r"
       />
