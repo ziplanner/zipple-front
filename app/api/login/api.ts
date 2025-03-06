@@ -22,19 +22,24 @@ export const getTokenWithCode = async (code: string) => {
   }
 };
 
-export const logout = async (accessToken: string, refreshToken: string) => {
+export const patchLogout = async () => {
   try {
-    await axiosInstance.post(
-      LOGOUT,
-      { accessToken, refreshToken },
-      { withCredentials: true }
-    );
+    console.log("🚀 로그아웃 요청 시작");
 
-    sessionStorage.removeItem("accessToken");
+    const response = await axiosInstance.patch(LOGOUT);
+    console.log("✅ 로그아웃 응답:", response);
 
-    // 로그인 페이지로 리디렉트
-    window.location.href = "/home";
+    if (response.status === 200) {
+      console.log("✅ 로그아웃 성공, 토큰 삭제");
+      sessionStorage.removeItem("accessToken");
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
+    } else {
+      throw new Error("Unexpected response status: " + response.status);
+    }
   } catch (err) {
-    console.error("로그아웃 실패:", err);
+    console.error("🚨 로그아웃 실패:", err);
   }
 };
