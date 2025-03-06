@@ -11,8 +11,7 @@ import { motion } from "framer-motion";
 import LoginModal from "../modal/loginModal";
 import MobileLoginModal from "../modal/mobileLoginModal";
 import { useUserStore } from "@/app/providers/user-store-provider";
-import { patchLogout } from "@/app/api/login/api";
-import AlertWithBtn from "../alert/alertWithBtn";
+import AlertWithBtn from "../alert/alertwithBtn";
 
 const Header = () => {
   const router = useRouter();
