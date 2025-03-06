@@ -9,8 +9,8 @@ interface ButtonProps {
 const PrimaryBtn = ({ text, onClick, className }: ButtonProps) => {
   return (
     <button
-      className={`px-4 py-2 text-white bg-primary rounded-md text-h4_r
-      hover:bg-primary_hover active:bg-primary_pressed  ${className}`}
+      className={`px-3 py-1.5 md:px-4 md:py-2 text-white bg-primary rounded-md text-mobile_body2_r
+        md:text-h4_r hover:bg-primary_hover active:bg-primary_pressed  ${className}`}
       onClick={onClick}
     >
       {text}
