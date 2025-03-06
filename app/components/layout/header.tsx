@@ -51,10 +51,7 @@ const Header = () => {
       <header className="w-full max-w-[1440px] flex justify-between items-center py-3 md:py-4">
         {/* 로고 및 네비게이션 */}
         <div className="flex items-center gap-8 md:gap-12 w-2/3">
-          <div
-            onClick={() => handleNavigate("/home")}
-            className="cursor-pointer"
-          >
+          <div onClick={() => handleNavigate("/")} className="cursor-pointer">
             <Image
               src={logo}
               alt="logo"
