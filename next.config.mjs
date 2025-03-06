@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ""; // undefined 방지
 
 const nextConfig = {
   reactStrictMode: false,
@@ -18,10 +18,6 @@ const nextConfig = {
         source: "/api/v1/:path*",
         destination: `${API_URL}/api/v1/:path*`,
       },
-    ];
-  },
-  async rewrites() {
-    return [
       {
         source: "/api/auth/:path*",
         destination: `${API_URL}/api/auth/:path*`,
