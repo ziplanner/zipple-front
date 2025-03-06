@@ -8,6 +8,7 @@ import { SERVICE_CATEGORY } from "@/app/data/service";
 import ServiceLeftMenu from "@/app/components/menu/serviceLeftMenu";
 import MobileServiceTopMenu from "@/app/components/menu/mobileServiceTopMenu";
 import { getMainMatching } from "@/app/api/main/api";
+import { PROFESSIONALS } from "@/app/data/match";
 
 const ServicePage = () => {
   const isMdUp = useResponsive("md");
@@ -65,7 +66,12 @@ const ServicePage = () => {
         </div>
 
         <div className="w-full md:ml-0 lg:ml-6 md:mt-5">
-          <MatchList data={matchListData} />
+          {/* <MatchList data={matchListData} /> */}
+          <div className="space-y-6">
+            {PROFESSIONALS.map((professional, index) => (
+              <MatchList key={professional.id} data={[professional]} />
+            ))}
+          </div>
 
           {/* Pagination */}
           <Pagination
