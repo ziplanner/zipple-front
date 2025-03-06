@@ -8,15 +8,7 @@ import Info from "./content/info";
 import MainSection from "./content/mainSection";
 
 const HomePage = () => {
-  return (
-    <>
-      <MainCarousel />
-      <MainSection />
-      <CategoryList />
-      <PopularService />
-      <Info />
-    </>
-  );
+  return <></>;
 };
 
 export default HomePage;
