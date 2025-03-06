@@ -18,7 +18,8 @@ const LoginModal = ({ onClose }: LoginDialogProps) => {
   const handleLoginClick = () => {
     const location = process.env.NEXT_PUBLIC_KAKAO_AUTH_URL;
     const clientId = process.env.NEXT_PUBLIC_KAKAO_AUTH_API_KEY;
-    const redirectUri = process.env.NEXT_PUBLIC_CLIENT_BASE_URL;
+    const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URL;
+    // const redirectUri = process.env.NEXT_PUBLIC_CLIENT_BASE_URL;
     const respoinseType = "code";
 
     const requestUrl =
@@ -28,7 +29,6 @@ const LoginModal = ({ onClose }: LoginDialogProps) => {
       clientId +
       "&redirect_uri=" +
       redirectUri +
-      "/" +
       "&response_type=" +
       respoinseType;
     window.location.href = requestUrl;
