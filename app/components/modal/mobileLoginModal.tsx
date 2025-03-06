@@ -36,7 +36,7 @@ const MobileLoginModal = ({ onClose }: LoginDialogProps) => {
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-background z-50 flex flex-col 
-      items-center pt-[46px] pb-10 px-4 md:hidden"
+      items-center pt-[46px] pb-10 px-4 md:hidden bg-white"
     >
       <div className="flex flex-col flex-grow items-center w-full">
         <Image
