@@ -28,7 +28,7 @@ export default function SignInPageContent() {
         HeaderToken.set(res.accessToken);
         axiosInstance.defaults.headers.common[
           "Authorization"
-        ] = `Bearer ${res.accessToken}`;
+        ] = `${res.accessToken}`;
 
         router.replace(res.isRegistered ? "/home" : "/home");
       })
