@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { MdBookmark } from "react-icons/md";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface MainRecruitmentCardProps {
   title: string;
@@ -20,6 +20,8 @@ interface CardProps {
 
 const PortfolioCard = ({ data }: CardProps) => {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [cardData, setCardData] = useState<MainRecruitmentCardProps[]>(data);
 
   //   const toggleScrap = (
@@ -39,7 +41,13 @@ const PortfolioCard = ({ data }: CardProps) => {
   }
 
   const handleRouter = (id: number) => {
-    router.push(`/portfolio/detail?id=${id}`);
+    // router.push(`/portfolio/detail?id=${id}`);
+
+    if (pathname.includes("/user")) {
+      router.push(`/portfolio/detail`);
+    } else {
+      router.push(`/portfolio/detail?id=${id}`);
+    }
   };
 
   return (
