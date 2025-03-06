@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ColorBadge from "../badge/colorBadge";
 import { MdFavorite } from "react-icons/md";
 import Image, { StaticImageData } from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FaRegStar, FaStar, FaUserCircle } from "react-icons/fa";
 
 interface ProfileCardProps {
@@ -29,11 +29,16 @@ interface ProfileCardProps {
 
 const MatchCard = ({ professional }: ProfileCardProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const [liked, setLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(0);
 
   const handleGoToProfile = () => {
-    router.push(`/match/profile?id=${professional.userId}`);
+    if (pathname.includes("/service")) {
+      router.push(`/user`);
+    } else {
+      router.push(`/match/profile?id=${professional.userId}`);
+    }
   };
 
   const stars = Array(5)
