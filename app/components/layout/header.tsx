@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import LoginModal from "../modal/loginModal";
 import MobileLoginModal from "../modal/mobileLoginModal";
 import { useUserStore } from "@/app/providers/user-store-provider";
+import { patchLogout } from "@/app/api/login/api";
 
 const Header = () => {
   const router = useRouter();
@@ -26,6 +27,17 @@ const Header = () => {
 
   const handleNavigate = (path: string) => {
     router.push(path);
+    setIsMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    // await patchLogout();
+    sessionStorage.removeItem("accessToken");
+    signOut();
+  };
+
+  const handleMypageClick = () => {
+    router.push("/mypage");
     setIsMenuOpen(false);
   };
 
@@ -129,7 +141,20 @@ const Header = () => {
           {/* 로그인/회원가입 버튼 */}
           <div className="w-full border-t border-gray-200 mt-2 pt-4 flex flex-col items-center gap-4">
             {isLoggedIn ? (
-              <button className="text-text text-body3_r">로그아웃</button>
+              <>
+                <button
+                  className="text-text text-body3_r"
+                  onClick={handleMypageClick}
+                >
+                  마이페이지
+                </button>
+                <button
+                  className="text-text text-body3_r"
+                  onClick={handleLogout}
+                >
+                  로그아웃
+                </button>
+              </>
             ) : (
               <button
                 className="text-text text-body3_r"
@@ -146,13 +171,32 @@ const Header = () => {
 
         {/* 알림 */}
         <div className="hidden md:flex items-center gap-3 md:gap-5">
-          <Bell className="w-5 h-5 md:w-6 md:h-6 text-text cursor-pointer" />
           <div className="flex gap-5 ml-2">
             {/* 로그인 */}
             {isLoggedIn ? (
-              <div className="flex items-center space-x-3">
-                <button className="text-text">로그아웃</button>
-                <User className="w-8 h-8 text-text cursor-pointer" />
+              <div className="flex items-center space-x-5">
+                {/* 알림 아이콘 */}
+                <div className="relative">
+                  <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
+                  {/* 알림 개수 배지 (옵션) */}
+                  <span className="absolute top-[-3px] right-[-5px] w-4 h-4 bg-red-500 text-white text-xs flex items-center justify-center rounded-full">
+                    3
+                  </span>
+                </div>
+                {/* 프로필 + 닉네임 + 로그아웃 */}
+                <div className="flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-full">
+                  <User
+                    className="w-6 h-6 text-gray-600 cursor-pointer"
+                    onClick={handleMypageClick}
+                  />
+                  <p className="text-gray-800 font-medium">백설공주 님</p>
+                </div>
+                <button
+                  className="text-sm text-gray-600 hover:text-red-500 transition-colors"
+                  onClick={handleLogout}
+                >
+                  로그아웃
+                </button>
               </div>
             ) : (
               <button
