@@ -8,8 +8,8 @@ const MatchList = ({ data }: MatchListProps) => {
   return (
     <>
       <div className="md:space-y-2">
-        {data.map((professional) => (
-          <MatchCard key={professional.userId} professional={professional} />
+        {data.map((professional, index) => (
+          <MatchCard key={index} professional={professional} />
         ))}
       </div>
     </>
