@@ -30,10 +30,10 @@ export default function SignInPageContent() {
           "Authorization"
         ] = `${res.accessToken}`;
 
-        router.replace(res.isRegistered ? "/home" : "/home");
+        router.replace(res.isRegistered ? "/" : "/");
       })
       .catch(() => {
-        router.replace("/home");
+        router.replace("/");
       });
   }, [searchParams, router, signIn]);
 
