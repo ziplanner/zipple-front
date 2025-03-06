@@ -4,12 +4,13 @@ import { useState } from "react";
 import Portfolio from "@/app/(profile)/profile/content/portfolio";
 import Pagination from "@/app/components/pagination/pagination";
 import { useRouter } from "next/navigation";
-import PortfolioModal, {
-  PortfolioModalProps,
-} from "@/app/components/modal/portfolioModal";
+import PortfolioModal from "@/app/components/modal/portfolioModal";
+import PortfolioBottomSheet from "@/app/components/bottomSheet/portfolioBottomSheet"; // 바텀시트 추가
+import useResponsive from "@/app/hook/useResponsive";
 
 const PortfolioPage = () => {
   const router = useRouter();
+  const isMd = useResponsive("md");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const totalPages = 3;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -30,14 +31,20 @@ const PortfolioPage = () => {
     setIsModalOpen(false);
   };
 
-  const handleSubmitPortfolio: PortfolioModalProps["onSubmit"] = (data) => {
+  const handleSubmitPortfolio = (data: {
+    title: string;
+    details: string;
+    images: string[];
+    file?: File | null;
+    url?: string;
+  }) => {
     console.log("포트폴리오 데이터 제출:", data);
-    setIsModalOpen(false); // 모달 닫기
+    setIsModalOpen(false);
   };
 
   return (
     <div className="flex flex-col gap-4 mt-8 mb-12 md:gap-8 md:mt-12 md:mb-20">
-      {/* Breadcrumb (경로 뎁스 표시) */}
+      {/* Breadcrumb */}
       <div className="flex flex-row items-center text-text_sub2">
         <p
           className="text-mobile_body4_r md:text-body3_m cursor-pointer"
@@ -72,13 +79,19 @@ const PortfolioPage = () => {
         onPageChange={handlePageChange}
       />
 
-      {/* 포트폴리오 모달 */}
-      {isModalOpen && (
-        <PortfolioModal
-          onClose={handleCloseModal}
-          onSubmit={handleSubmitPortfolio}
-        />
-      )}
+      {/* 모달/바텀시트 */}
+      {isModalOpen &&
+        (isMd ? (
+          <PortfolioModal
+            onClose={handleCloseModal}
+            onSubmit={handleSubmitPortfolio}
+          />
+        ) : (
+          <PortfolioBottomSheet
+            onClose={handleCloseModal}
+            onSubmit={handleSubmitPortfolio}
+          />
+        ))}
     </div>
   );
 };
