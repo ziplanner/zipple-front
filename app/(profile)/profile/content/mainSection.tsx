@@ -1,66 +1,94 @@
-"use client";
+import UserProfile from "@/app/components/user/userProfile";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import defaultProfileImage from "@/app/image/test/test_image.jpg";
+import { getAgentProfileDetail } from "@/app/api/main/api";
+import { StaticImageData } from "next/image";
+import ReviewModal from "@/app/components/modal/reviewModal";
+import FloatingWriteButton from "@/app/components/button/floating/writeBtn";
+import useResponsive from "@/app/hook/useResponsive";
+import ReviewBottomSheet from "@/app/components/bottomSheet/reviewBottomSheet";
 
-import { useState } from "react";
-import ToggleButton from "@/app/components/button/toggleBtn";
-import ProfileInfo from "./profileInfo";
-import Portfolio from "./portfolio";
-import PortfolioSection from "./portfolioSection";
-import Review from "./review";
-import ReviewSection from "./reviewSection";
+// 백엔드 수정되면, 변경할 것.
+interface UserProfileData {
+  name: string;
+  imageUrl: string | StaticImageData;
+  work: string;
+  phoneNumber: string;
+  address: string;
+  email: string;
+  website: string;
+  rating: number;
+  field: string;
+  description: string;
+  contactUrl: string;
+  registrationInfo: string;
+}
 
 const MainSection = () => {
-  const [activeTab, setActiveTab] = useState("프로필");
+  const isMd = useResponsive("md");
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
+  const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
 
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
+  const handleWriteClick = () => {
+    setIsReviewOpen(true);
   };
 
+  const handleClose = () => {
+    setIsReviewOpen(false);
+  };
+
+  const handleReviewSubmit = (reviewData: {
+    title: string;
+    details: string;
+    rating: number;
+  }) => {
+    console.log("리뷰 데이터 제출:", reviewData);
+    setIsReviewOpen(false);
+  };
+
+  useEffect(() => {
+    if (id) {
+      getAgentProfileDetail(Number(id))
+        .then((data) => setUserProfile(data))
+        .catch((error) =>
+          console.error("Error fetching agent profile:", error)
+        );
+    }
+  }, [id]);
+
   return (
-    <>
-      <ToggleButton
-        buttons={[
-          { text: "프로필", path: "프로필" },
-          { text: "포토폴리오", path: "포토폴리오" },
-          { text: "고객후기", path: "고객후기" },
-        ]}
-        onTabChange={handleTabChange}
-        classname="mb-10"
+    <div className="flex w-full pt-10">
+      <UserProfile
+        name={userProfile?.name || ""}
+        imageUrl={userProfile?.imageUrl || defaultProfileImage}
+        work={userProfile?.work || ""}
+        phoneNumber={userProfile?.phoneNumber || ""}
+        address={userProfile?.address || ""}
+        email={userProfile?.email || ""}
+        website={userProfile?.website || ""}
+        rating={userProfile?.rating || 0}
+        field={userProfile?.field || ""}
+        description={userProfile?.description || ""}
+        contactUrl={userProfile?.contactUrl || ""}
+        registrationInfo={userProfile?.registrationInfo || ""}
       />
-      {activeTab === "프로필" && (
-        <>
-          <ProfileInfo
-            name="아파트 매매 전문가 한줄소개"
-            role="전문가"
-            field="아파트"
-            description="00시 00구에서 6년간 일해왔으며 고객님들의 니즈에 맞는 상담을 제공합니다."
-            contactUrl="https://blog.naver.com/junghoon7771/2230401001351"
-            registrationInfo="0000"
-            phoneNumber="00-0000-0000"
-            address="서울특별시 서초구 서초대로 00길 00, 0000호"
+      {/* 글쓰기 버튼 */}
+      <FloatingWriteButton onClick={handleWriteClick} />
+
+      {/* 리뷰 모달 */}
+      {isReviewOpen &&
+        (isMd ? (
+          <ReviewModal onClose={handleClose} onSubmit={handleReviewSubmit} />
+        ) : (
+          <ReviewBottomSheet
+            onClose={handleClose}
+            onSubmit={handleReviewSubmit}
           />
-          <div className="flex justify-between items-center px-1 mb-3">
-            <h2 className="text-h2 font-semibold mb-2 text-text_sub2">
-              포토폴리오
-            </h2>
-            <p className="text-body3_m text-text_sub cursor-pointer">
-              전체보기
-            </p>
-          </div>
-          <PortfolioSection />
-          <div className="flex justify-between items-center px-1 mb-3 mt-10">
-            <h2 className="text-h2 font-semibold mb-2 text-text_sub2">
-              고객 리뷰
-            </h2>
-            <p className="text-body3_m text-text_sub cursor-pointer">
-              전체보기
-            </p>
-          </div>
-          <ReviewSection />
-        </>
-      )}
-      {activeTab === "포토폴리오" && <Portfolio />}
-      {activeTab === "고객후기" && <Review />}
-    </>
+        ))}
+    </div>
   );
 };
 
