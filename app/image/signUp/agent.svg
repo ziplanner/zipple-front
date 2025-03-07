@@ -1,0 +1,29 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3906_53970)">
+<rect width="100" height="100" fill="white"/>
+<mask id="path-1-inside-1_3906_53970" fill="white">
+<rect x="5" y="42" width="33" height="33" rx="1"/>
+</mask>
+<rect x="5" y="42" width="33" height="33" rx="1" stroke="black" stroke-width="6" mask="url(#path-1-inside-1_3906_53970)"/>
+<path d="M2.86285 39.5L27.7859 3.5H61.1371L36.2141 39.5H2.86285ZM2.31966 40.2846L2.32049 40.2834L2.31966 40.2846ZM27.9351 3.2846C27.9349 3.28482 27.9348 3.28503 27.9346 3.28525L27.935 3.2846L27.524 3L27.9351 3.2846Z" fill="#6CB357" stroke="black" stroke-width="3" stroke-linejoin="round"/>
+<rect x="14" y="51" width="15" height="15" rx="1" fill="#6CB357" stroke="black" stroke-width="3"/>
+<path d="M36 44.5V71.5C36 72.6046 36.8954 73.5 38 73.5H79C80.1046 73.5 81 72.6046 81 71.5V44.5" stroke="black" stroke-width="3" stroke-linecap="round"/>
+<mask id="path-5-inside-2_3906_53970" fill="white">
+<rect x="75" y="82.6875" width="10.8662" height="24.5525" rx="2" transform="rotate(-45 75 82.6875)"/>
+</mask>
+<rect x="75" y="82.6875" width="10.8662" height="24.5525" rx="2" transform="rotate(-45 75 82.6875)" stroke="black" stroke-width="6" mask="url(#path-5-inside-2_3906_53970)"/>
+<path d="M61.0894 3.71925C61.2883 3.43303 61.7117 3.43303 61.9106 3.71925L86.2309 38.7147C86.4614 39.0462 86.2241 39.5 85.8204 39.5H37.1796C36.7759 39.5 36.5386 39.0462 36.769 38.7147L61.0894 3.71925Z" stroke="black" stroke-width="3"/>
+<path d="M61.1819 17.664C61.5801 17.0974 62.4199 17.0974 62.8181 17.664L73.0173 32.175C73.483 32.8376 73.0091 33.75 72.1992 33.75H51.8008C50.9909 33.75 50.517 32.8376 50.9827 32.175L61.1819 17.664Z" fill="#6CB357" stroke="black" stroke-width="3"/>
+<mask id="path-8-inside-3_3906_53970" fill="white">
+<rect x="49" y="44" width="25" height="16" rx="1"/>
+</mask>
+<rect x="49" y="44" width="25" height="16" rx="1" stroke="black" stroke-width="6" mask="url(#path-8-inside-3_3906_53970)"/>
+<circle cx="71" cy="70" r="15.5" fill="white" stroke="black" stroke-width="3"/>
+<circle cx="71" cy="70" r="10" fill="#6CB357" stroke="black" stroke-width="3"/>
+</g>
+<defs>
+<clipPath id="clip0_3906_53970">
+<rect width="100" height="100" fill="white"/>
+</clipPath>
+</defs>
+</svg>
