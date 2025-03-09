@@ -2,17 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import MatchLeftMenu from "@/app/components/menu/matchLeftMenu";
-import banner from "@/app/image/match/banner.svg";
-import Image from "next/image";
-import { PROFESSIONALS } from "@/app/data/match";
 import Pagination from "@/app/components/pagination/pagination";
-import MatchProfileCard from "@/app/components/card/matchProfileCard";
 import MatchList from "@/app/components/list/mtachList";
 import useResponsive from "@/app/hook/useResponsive";
 import MobileMatchTopMenu from "@/app/components/menu/mobileMatchTopMenu";
-import { getMainMatching } from "@/app/api/main/api";
+import { getCategoryMatching, getMainMatching } from "@/app/api/main/api";
 
 const categories = [
+  "전체",
   "아파트",
   "주택/다가구",
   "빌라/다세대",
@@ -47,24 +44,26 @@ const MatchPage = () => {
   };
 
   useEffect(() => {
-    const fetchMain = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getMainMatching();
-        console.log(data);
+        let data;
+        if (activeCategory === "전체") {
+          data = await getMainMatching();
+        } else {
+          data = await getCategoryMatching(activeCategory);
+        }
+        console.log("🚀 조회된 데이터:", data);
         setMatchListData(data.matching);
-        console.log(matchListData);
       } catch (err) {
-        console.log;
-      } finally {
+        console.error("❌ 데이터 조회 실패:", err);
       }
     };
 
-    fetchMain();
-  }, []);
+    fetchData();
+  }, [activeCategory]);
 
   return (
     <div className="md:py-12 py-6">
-      {/* <Image src={banner} alt="banner" height={100} className="w-full" /> */}
       <div className={`flex ${isMdUp ? "flex-row" : "flex-col"}`}>
         {/* Left Side Menu */}
         <div className="flex flex-col">
@@ -86,15 +85,6 @@ const MatchPage = () => {
         {/* Main Content */}
         <div className="w-full md:ml-0 lg:ml-6 md:mt-5">
           <MatchList data={matchListData} />
-
-          {/* <div className="space-y-6">
-            {PROFESSIONALS.map((professional) => (
-              <MatchProfileCard
-                key={professional.id}
-                professional={professional}
-              />
-            ))}
-          </div> */}
 
           {/* Pagination or Navigation */}
           <Pagination

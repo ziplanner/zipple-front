@@ -31,7 +31,9 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const [liked, setLiked] = useState<boolean>(false);
-  const [likeCount, setLikeCount] = useState<number>(0);
+  const [likeCountValue, setLikeCountValue] = useState<number>(
+    professional.likeCount
+  );
 
   const handleGoToProfile = () => {
     if (pathname.includes("/service")) {
@@ -47,9 +49,9 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
 
   const handleLike = () => {
     if (liked) {
-      setLikeCount(likeCount - 1);
+      setLikeCountValue(likeCountValue - 1);
     } else {
-      setLikeCount(likeCount + 1);
+      setLikeCountValue(likeCountValue + 1);
     }
     setLiked(!liked);
   };
@@ -114,7 +116,9 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
                       handleLike();
                     }}
                   />
-                  <p className="text-body4_r text-text_sub4">{likeCount}</p>
+                  <p className="text-body4_r text-text_sub4">
+                    {likeCountValue}
+                  </p>
                 </div>
               </div>
             </div>
