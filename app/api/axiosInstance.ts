@@ -21,7 +21,7 @@ axiosInstance.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
     const token = sessionStorage.getItem("accessToken");
     if (token) {
-      config.headers["Authorization"] = token;
+      config.headers.set("Authorization", `Bearer ${token}`);
     }
   }
   return config;
@@ -37,24 +37,31 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // refreshToken을 사용하여 accessToken 재발급 요청
         const newAccessToken = await refreshAccessToken();
 
-        // 브라우저 환경에서만 sessionStorage 사용
+        if (!newAccessToken) {
+          throw new Error("토큰 재발급 실패");
+        }
+
+        // ✅ 새 토큰을 저장하고 axiosInstance의 기본 헤더도 업데이트
         if (typeof window !== "undefined") {
           sessionStorage.setItem("accessToken", newAccessToken);
         }
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
 
-        // 기존 요청에 새 accessToken 적용 후 재시도
-        originalRequest.headers["Authorization"] = newAccessToken;
+        // ✅ 기존 요청을 새로운 토큰으로 다시 보냄
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        console.error("RefreshToken 만료됨. 로그인 페이지로 이동.");
+        console.error("🚨 RefreshToken 만료됨. 로그인 페이지로 이동.");
 
         if (typeof window !== "undefined") {
           sessionStorage.removeItem("accessToken");
           window.location.href = "/";
         }
+        return Promise.reject(refreshError);
       }
     }
 

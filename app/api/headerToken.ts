@@ -3,7 +3,7 @@ import axiosInstance from "./axiosInstance";
 export default class HeaderToken {
   public static set = (token: string | null): void => {
     if (token) {
-      axiosInstance.defaults.headers.common.Authorization = `${token}`;
+      axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
     } else {
       delete axiosInstance.defaults.headers.common.Authorization;
     }
