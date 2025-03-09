@@ -29,9 +29,9 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
   }
 
   const {
-    title,
     externalLink,
     agentName,
+    email,
     businessName,
     agentSpecialty,
     agentRegistrationNumber,
@@ -61,9 +61,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
           max-h-56 max-w-56 rounded-lg overflow-hidden mr-10"
           >
             <Image
-              src={portfolios[0]?.profileImage || defaultProfileImage}
+              src={portfolios[0]?.portfolioImage || defaultProfileImage}
               alt="Profile"
-              className="w-full h-full object-cover rounded-full"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-auto h-auto object-cover rounded-full"
             />
           </div>
           <div className="flex flex-col lg:h-80 md:h-64 py-1 justify-between">
@@ -142,8 +145,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
               <div className="flex items-center space-x-4 mt-2">
                 <FaEnvelope className="text-primary" />
                 <p className="text-mobile_body3_r md:text-body2_m text-gray-700">
-                  {/* {email || ""} */}
-                  email
+                  {email || ""}
                 </p>
               </div>
               <div className="flex items-center space-x-4 mt-2">
@@ -210,7 +212,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
             <div className="gap-6">
               {activeTab === "portfolio" && (
                 <div className="pt-4">
-                  <PortfolioSection />
+                  <PortfolioSection data={portfolios.slice(0, 6)} />
                 </div>
               )}
 

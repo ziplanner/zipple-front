@@ -10,7 +10,7 @@ const Portfolio = () => {
         className="flex w-full flex-col gap-3 md:gap-4 md:flex-row md:flex-wrap
           md:grid md:grid-cols-2 lg:grid-cols-4"
       >
-        <PortfolioCard data={PORTFOLIO_DATA} />
+        <PortfolioCard data={[]} />
       </div>
     </>
   );

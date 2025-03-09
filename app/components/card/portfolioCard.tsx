@@ -2,43 +2,17 @@
 
 import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
-import { MdBookmark } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
+import { PortfolioItem } from "@/app/types/user";
+import defaultImage from "@/app/image/test/test_image.jpg";
 
-interface MainRecruitmentCardProps {
-  title: string;
-  date: string;
-  description: string;
-  imageUrl: string | StaticImageData;
-  //   isScrap: boolean;
-  id: number;
+interface portfolioData {
+  data: PortfolioItem[];
 }
 
-interface CardProps {
-  data: MainRecruitmentCardProps[];
-}
-
-const PortfolioCard = ({ data }: CardProps) => {
+const PortfolioCard = ({ data }: portfolioData) => {
   const router = useRouter();
   const pathname = usePathname();
-
-  const [cardData, setCardData] = useState<MainRecruitmentCardProps[]>(data);
-
-  //   const toggleScrap = (
-  //     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  //     index: number
-  //   ) => {
-  //     e.stopPropagation();
-  //     setCardData((prevData) =>
-  //       prevData.map((item, idx) =>
-  //         idx === index ? { ...item, isScrap: !item.isScrap } : item
-  //       )
-  //     );
-  //   };
-
-  if (cardData.length === 0) {
-    return null;
-  }
 
   const handleRouter = (id: number) => {
     // router.push(`/portfolio/detail?id=${id}`);
@@ -52,19 +26,20 @@ const PortfolioCard = ({ data }: CardProps) => {
 
   return (
     <>
-      {cardData.map((item, index) => (
+      {data.map((item, index) => (
         <div
           key={index}
           className="flex gap-1.5 md:flex-col cursor-pointer pb-3"
-          onClick={() => handleRouter(item.id)}
+          onClick={() => handleRouter(item.portfolioId)}
         >
           <div className="relative lg:min-w-[200px] w-full aspect-square">
             <Image
-              src={item.imageUrl}
+              src={item.portfolioImage || defaultImage}
               alt={item.title}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-xl shadow-default"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-auto h-auto rounded-xl"
             />
           </div>
           <div className="flex flex-col w-full">
@@ -74,11 +49,11 @@ const PortfolioCard = ({ data }: CardProps) => {
             >
               {item.title}
             </h3>
-            <p className="text-subtext2 text-mobile_body3_m md:text-body2_m">
+            {/* <p className="text-subtext2 text-mobile_body3_m md:text-body2_m">
               {item.description}
-            </p>
+            </p> */}
             <p className="text-text_sub mt-2.5 text-mobile_body3_m md:body3_m">
-              {item.date}
+              {item.createdAt}
             </p>
           </div>
           {/* <button

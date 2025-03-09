@@ -1,5 +1,8 @@
+import { StaticImageData } from "next/image";
+
 export interface UserProfileData {
   title: string; // 포트폴리오 제목
+  email: string; // 이메일
   externalLink: string; // 외부 링크 (예: GitHub, 개인 웹사이트)
   agentName: string; // 중개사 이름
   businessName: string; // 부동산 상호명
@@ -16,7 +19,7 @@ export interface UserProfileData {
 // 포트폴리오 아이템 타입 정의
 export interface PortfolioItem {
   portfolioId: number; // 포토폴리오 ID
-  profileImage: string; // 포트폴리오 이미지 URL
+  portfolioImage: string | StaticImageData; // 포트폴리오 이미지 URL
   title: string; // 포트폴리오 제목
   createdAt: string; // 생성 날짜
 }

@@ -9,19 +9,14 @@ interface ProfileCardProps {
   professional: {
     agentId: string;
     profileUrl: string | StaticImageData;
-    // name: string;
     company: string;
-    // title: string;
     reviewCount: number;
     likeCount: number;
-    // area: string;
     starRating: number;
     description: string;
-    // === api response ===
     agentName: string;
     agentSpecialty: string;
     portfolioCount: number;
-    // profileUrl: string;
     title: string;
     singleHouseholdExpert: boolean;
   };

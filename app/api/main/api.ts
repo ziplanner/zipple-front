@@ -1,4 +1,5 @@
-import { MAIN_MATCHING, MAIN_PROFILE_DETAIL } from "../apiUrl";
+import Portfolio from "@/app/(profile)/profile/content/portfolio";
+import { MAIN_MATCHING, MAIN_PORTFOLIO, MAIN_PROFILE_DETAIL } from "../apiUrl";
 import axiosInstance from "../axiosInstance";
 
 // 매칭 전체 조회
@@ -47,10 +48,11 @@ export const getAgentProfileDetail = async (agentId: string) => {
   }
 };
 
-export const getAgentPortfolioDetail = async (agentId: string) => {
+// 공인중개사 포토폴리오 상세
+export const getAgentPortfolioDetail = async (portfolioId: number) => {
   try {
     const response = await axiosInstance.get(
-      `${MAIN_PROFILE_DETAIL}/${agentId}`
+      `${MAIN_PORTFOLIO}/${portfolioId}/detail`
     );
     return response.data;
   } catch (error) {
@@ -58,4 +60,3 @@ export const getAgentPortfolioDetail = async (agentId: string) => {
     throw error;
   }
 };
-

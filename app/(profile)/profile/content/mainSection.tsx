@@ -46,7 +46,7 @@ const MainSection = () => {
               전체보기
             </p>
           </div>
-          <PortfolioSection />
+          <PortfolioSection data={[]} />
           <div className="flex justify-between items-center px-1 mb-3 mt-10">
             <h2 className="text-h2 font-semibold mb-2 text-text_sub2">
               고객 리뷰
