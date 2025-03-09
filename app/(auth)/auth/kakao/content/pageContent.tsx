@@ -6,12 +6,12 @@ import LoginLoading from "./loginLoading";
 import { getTokenWithCode } from "@/app/api/login/api";
 import axiosInstance from "@/app/api/axiosInstance";
 import HeaderToken from "@/app/api/headerToken";
-import { useUserStore } from "@/app/providers/user-store-provider";
+import { useAuthStore } from "@/app/providers/userStoreProvider";
 
 export default function SignInPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn } = useUserStore((state) => state);
+  const { signIn } = useAuthStore((state) => state);
 
   useEffect(() => {
     const kakaoCode = searchParams.get("code");
