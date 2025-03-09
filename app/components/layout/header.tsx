@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { Bell, User, Menu } from "lucide-react";
@@ -10,13 +10,21 @@ import PrimaryBtn from "../button/primaryBtn";
 import { motion } from "framer-motion";
 import LoginModal from "../modal/loginModal";
 import MobileLoginModal from "../modal/mobileLoginModal";
-import { useUserStore } from "@/app/providers/user-store-provider";
 import AlertWithBtn from "../alert/alertwithBtn";
+import { getUserInfo } from "@/app/api/user/api";
+import {
+  useAuthStore,
+  useUserInfoStore,
+} from "@/app/providers/userStoreProvider";
 
 const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { accessToken, signOut } = useUserStore((state) => state);
+
+  const { accessToken, signOut } = useAuthStore((state) => state);
+  const { userInfo, setUserInfo, clearUserInfo } = useUserInfoStore(
+    (state) => state
+  );
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
@@ -38,13 +46,31 @@ const Header = () => {
   const confirmLogout = async () => {
     sessionStorage.removeItem("accessToken");
     signOut();
+    clearUserInfo(); // ✅ 로그아웃 시 userInfo도 초기화
     setIsAlertOpen(false);
+    router.push("/");
   };
 
   const handleMypageClick = () => {
     router.push("/mypage");
     setIsMenuOpen(false);
   };
+
+  const fetchUserInfo = async () => {
+    try {
+      const data = await getUserInfo();
+      console.log("🚀 유저 정보 가져오기:", data);
+      setUserInfo(data);
+    } catch (err) {
+      console.error("❌ 유저 정보 가져오기 실패:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      fetchUserInfo();
+    }
+  }, [accessToken]);
 
   return (
     <div className="w-full bg-white md:h-16 shadow-md flex justify-center px-4 md:px-6 lg:px-8">
@@ -191,7 +217,9 @@ const Header = () => {
                     className="w-6 h-6 text-gray-600 cursor-pointer"
                     onClick={handleMypageClick}
                   />
-                  <p className="text-gray-800 font-medium">백설공주 님</p>
+                  <p className="text-gray-800 font-medium">
+                    {userInfo?.nickname}님
+                  </p>
                 </div>
                 <button
                   className="text-sm text-gray-600 hover:text-red-500 transition-colors"
