@@ -11,6 +11,9 @@ export const LOGIN = "api/v1/email/login";
 export const SING_UP_AGENT = "/api/v1/email/agent";
 export const SING_UP_GENERAL = "/api/v1/email/general";
 
+// 유저 정보
+export const USER = "/api/auth/role";
+
 // 메인 페이지
 export const MAIN = "/api/v1/main";
 export const MAIN_MATCHING = "/api/v1/main/matching";
