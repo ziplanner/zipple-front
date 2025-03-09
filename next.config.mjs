@@ -9,7 +9,7 @@ const nextConfig = {
   },
   output: "standalone",
   images: {
-    domains: ["44.203.190.167"], // ✅ 허용할 이미지 도메인 (추후 삭제 필요)
+    domains: ["44.203.190.167", "zipple.co.kr"], // 허용할 이미지 도메인 (추후 삭제 필요)
     remotePatterns: [
       {
         protocol: "http",
