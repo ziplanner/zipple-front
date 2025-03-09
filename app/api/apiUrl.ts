@@ -22,5 +22,12 @@ export const MYPAGE_GENERAL = "/api/v1/mypage/general";
 
 // 공인중개사 마이페이지
 export const MYPAGE_AGENT = "/api/v1/mypage/agent";
-export const MYPAGE_DETAIL_AGENT = "/api/v1/mypage/agent/detail";
-export const MYPAGE_PORTFOLIO_AGENT = "/api/v1/mypage/agent/portfolio";
+export const MYPAGE_AGENT_ALL = "/api/v1/mypage/agent/all";
+export const MYPAGE_AGENT_DETAIL = "/api/v1/mypage/agent/detail";
+export const MYPAGE_AGENT_PORTFOLIO = "/api/v1/mypage/agent/portfolio";
+
+// 리뷰
+export const REVIEWS = "/api/v1/reviews";
+
+// 좋아요
+export const LIKES = "/api/v1/likes";

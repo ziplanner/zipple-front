@@ -15,7 +15,6 @@ import defaultImage3 from "@/app/image/test/baby.png";
 import defaultImage4 from "@/app/image/test/apt10.png";
 import defaultImage5 from "@/app/image/test/test12.png";
 import { MdLink } from "react-icons/md";
-import { profile } from "console";
 
 interface PortfolioDetailProps {
   title: string;
