@@ -33,7 +33,8 @@ const MatchPage = () => {
   const [matchListData, setMatchListData] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const totalPages = 3;
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const pageSize = 10;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -41,6 +42,7 @@ const MatchPage = () => {
 
   const handleCategoryClick = (category: string) => {
     setActiveCategory(category);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -48,19 +50,24 @@ const MatchPage = () => {
       try {
         let data;
         if (activeCategory === "전체") {
-          data = await getMainMatching();
+          data = await getMainMatching(currentPage, pageSize);
         } else {
-          data = await getCategoryMatching(activeCategory);
+          data = await getCategoryMatching(
+            activeCategory,
+            currentPage,
+            pageSize
+          );
         }
         console.log("🚀 조회된 데이터:", data);
         setMatchListData(data.matching);
+        setTotalPages(data.totalPages || 1);
       } catch (err) {
         console.error("❌ 데이터 조회 실패:", err);
       }
     };
 
     fetchData();
-  }, [activeCategory]);
+  }, [activeCategory, currentPage]);
 
   return (
     <div className="md:py-12 py-6">
@@ -86,7 +93,7 @@ const MatchPage = () => {
         <div className="w-full md:ml-0 lg:ml-6 md:mt-5">
           <MatchList data={matchListData} />
 
-          {/* Pagination or Navigation */}
+          {/* Pagination */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
