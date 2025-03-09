@@ -13,20 +13,25 @@ import {
 } from "react-icons/fa";
 import { Home, Mail, MapPin, Phone, User } from "lucide-react";
 import { MdPerson } from "react-icons/md";
+import { getGeneralUserInfo } from "@/app/api/user/api";
+import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 
 const GeneralUser = () => {
   const router = useRouter();
+  const { userInfo } = useUserInfoStore((state) => state);
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDaumLoaded, setIsDaumLoaded] = useState<boolean>(false);
 
-  const [userInfo, setUserInfo] = useState({
-    name: "김이름",
-    type: "일반", // 회원 유형 ("일반" | "개업(대표)" | "공인중개사")
+  const [data, setData] = useState<any>({});
+  const [userInfoData, setUserInfoData] = useState({
+    name: "",
+    type: userInfo?.roleName === "GENERAL" ? "일반" : "공인중개사",
     phone: "010-1234-5678",
-    email: "abc@gmail.com",
-    address: "서울 동대문구 천호대로 405",
+    email: "",
+    address: "",
     portfolio: "",
-    residence: "아파트",
+    residence: "",
     activities: [
       { name: "찜 목록 관리", url: "/wishlist" },
       { name: "집플래너", url: "/house-planner" },
@@ -38,8 +43,28 @@ const GeneralUser = () => {
     ],
   });
 
+  const fetchGeneralUserInfo = async () => {
+    try {
+      const data = await getGeneralUserInfo();
+
+      setUserInfoData((prev) => ({
+        ...prev,
+        name: data.generalName,
+        email: data.email,
+        address: data.generalAddress,
+        residence: data.housingType,
+      }));
+    } catch (err) {
+      console.error("❌ 유저 정보 가져오기 실패:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchGeneralUserInfo();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+    setUserInfoData({ ...userInfoData, [e.target.name]: e.target.value });
   };
 
   // ✅ 카카오 API 로드 감지
@@ -65,7 +90,7 @@ const GeneralUser = () => {
 
     new window.daum.Postcode({
       oncomplete: (data: any) => {
-        setUserInfo((prev) => ({ ...prev, address: data.address }));
+        setUserInfoData((prev) => ({ ...prev, address: data.address }));
       },
     }).open();
   };
@@ -85,13 +110,13 @@ const GeneralUser = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <h2 className="mt-4 text-h4_sb md:text-h3">{userInfo.name}</h2>
+          <h2 className="mt-4 text-h4_sb md:text-h3">{userInfoData.name}</h2>
           {/* 회원 유형 + 인증 배지 */}
           <div className="flex items-center gap-2">
-            <p className="text-gray-600">{userInfo.type}</p>
+            <p className="text-gray-600">{userInfoData.type}</p>
 
             {/* 개업(대표)회원 및 공인중개사 회원에게만 체크 배지 표시 */}
-            {userInfo.type !== "일반회원" && (
+            {userInfoData.type !== "일반회원" && (
               <span className="bg-primary text-white text-10 px-0.5 py-0.5 rounded-full flex items-center gap-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -136,25 +161,25 @@ const GeneralUser = () => {
               <CustomInput
                 label="이름"
                 name="name"
-                value={userInfo.name}
+                value={userInfo?.nickname || "이름 없음"}
                 onChange={handleChange}
               />
               <CustomInput
                 label="전화번호"
                 name="phone"
-                value={userInfo.phone}
+                value={userInfoData.phone}
                 onChange={handleChange}
               />
               <CustomInput
                 label="이메일"
                 name="email"
-                value={userInfo.email}
+                value={userInfoData.email}
                 onChange={handleChange}
               />
               <InputWithButton
                 label="주소"
                 name="address"
-                value={userInfo.address}
+                value={userInfoData.address}
                 onChange={handleChange}
                 buttonText={"검색"}
                 onButtonClick={handleAddressSearch}
@@ -163,13 +188,13 @@ const GeneralUser = () => {
                 label="포트폴리오"
                 name="portfolio"
                 placeholder="포트폴리오 링크 입력"
-                value={userInfo.portfolio}
+                value={userInfoData.portfolio}
                 onChange={handleChange}
               />
               <CustomInput
                 label="거주 형태"
                 name="residence"
-                value={userInfo.residence}
+                value={userInfoData.residence}
                 onChange={handleChange}
               />
             </>
@@ -185,7 +210,7 @@ const GeneralUser = () => {
                   <MdPerson />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.name}
+                  {userInfoData.name}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -194,7 +219,7 @@ const GeneralUser = () => {
                   <FaPhone />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.phone}
+                  {userInfoData.phone}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -203,7 +228,7 @@ const GeneralUser = () => {
                   {/* 📧 이메일 */}
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.email}
+                  {userInfoData.email}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -212,7 +237,7 @@ const GeneralUser = () => {
                   <FaMapMarkerAlt />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.address}
+                  {userInfoData.address}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -221,7 +246,7 @@ const GeneralUser = () => {
                   <FaHome />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.residence}
+                  {userInfoData.residence}
                 </p>
               </div>
             </>
@@ -232,7 +257,7 @@ const GeneralUser = () => {
           활동 정보
         </h3>
         <ul className="border-t pt-3 ml-3">
-          {userInfo.activities.map((activity, index) => (
+          {userInfoData.activities.map((activity, index) => (
             <li
               key={index}
               className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
@@ -258,7 +283,7 @@ const GeneralUser = () => {
           커뮤니티
         </h3>
         <ul className="border-t pt-3 ml-3">
-          {userInfo.community.map((item, index) => (
+          {userInfoData.community.map((item, index) => (
             <li
               key={index}
               className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
