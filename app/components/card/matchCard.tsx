@@ -7,23 +7,23 @@ import { FaRegStar, FaStar, FaUserCircle } from "react-icons/fa";
 
 interface ProfileCardProps {
   professional: {
-    // id: string;
-    // profileImage: string | StaticImageData;
+    agentId: string;
+    profileUrl: string | StaticImageData;
     // name: string;
     company: string;
     // title: string;
-    // portfolioCount: number;
     reviewCount: number;
+    likeCount: number;
     // area: string;
-    rating: number;
+    starRating: number;
     description: string;
     // === api response ===
     agentName: string;
     agentSpecialty: string;
     portfolioCount: number;
-    profileUrl: string;
+    // profileUrl: string;
     title: string;
-    userId: number;
+    singleHouseholdExpert: boolean;
   };
 }
 
@@ -37,13 +37,13 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
     if (pathname.includes("/service")) {
       router.push(`/user`);
     } else {
-      router.push(`/match/profile?id=${professional.userId}`);
+      router.push(`/match/profile?id=${professional.agentId}`);
     }
   };
 
   const stars = Array(5)
     .fill(false)
-    .map((_, index) => index < professional.rating);
+    .map((_, index) => index < professional.starRating);
 
   const handleLike = () => {
     if (liked) {

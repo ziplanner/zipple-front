@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import {
   FaStar,
   FaRegStar,
@@ -11,43 +11,41 @@ import ReviewSection from "@/app/(profile)/profile/content/reviewSection";
 import PortfolioSection from "@/app/(profile)/profile/content/portfolioSection";
 import { MdLink, MdLocationOn } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { UserProfileData } from "@/app/types/user";
+import defaultProfileImage from "@/app/image/test/test_image.jpg";
 
 interface UserProfileProps {
-  name: string;
-  imageUrl: string | StaticImageData;
-  work: string;
-  phoneNumber: string;
-  address: string;
-  email: string;
-  website: string;
-  rating: number;
-  field: string;
-  description: string;
-  contactUrl: string;
-  registrationInfo: string;
+  userProfile: UserProfileData | null;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({
-  name,
-  imageUrl,
-  work,
-  phoneNumber,
-  address,
-  email,
-  website,
-  rating,
-  description,
-  contactUrl,
-  registrationInfo,
-}) => {
+const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"reviews" | "portfolio">(
     "portfolio"
   );
 
+  if (!userProfile) {
+    return <p className="text-center w-full">프로필 정보를 불러오는 중...</p>;
+  }
+
+  const {
+    title,
+    externalLink,
+    agentName,
+    businessName,
+    agentSpecialty,
+    agentRegistrationNumber,
+    ownerName,
+    starRating,
+    ownerContactNumber,
+    officeAddress,
+    portfolios,
+    reviews,
+  } = userProfile;
+
   const stars = Array(5)
     .fill(false)
-    .map((_, index) => index < rating);
+    .map((_, index) => index < starRating);
 
   const handleAllClick = () => {
     router.push(`/${activeTab}`);
@@ -63,7 +61,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
           max-h-56 max-w-56 rounded-lg overflow-hidden mr-10"
           >
             <Image
-              src={imageUrl}
+              src={portfolios[0]?.profileImage || defaultProfileImage}
               alt="Profile"
               className="w-full h-full object-cover rounded-full"
             />
@@ -71,10 +69,10 @@ const UserProfile: React.FC<UserProfileProps> = ({
           <div className="flex flex-col lg:h-80 md:h-64 py-1 justify-between">
             <div>
               <h1 className="mt-3 md:mt-0 md:text-h1_contents_title lg:text-h1_m text-mobile_h2_large text-text">
-                {name}
+                {agentName}
               </h1>
               <p className="text-mobile_body3_r md:text-body3_r lg:text-body2_r text-gray-500">
-                {description}
+                {businessName} [{agentSpecialty}]
               </p>
             </div>
             <div
@@ -85,7 +83,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
               <MdLink className="md:w-5 md:h-5 w-4 h-4 text-token_4 flex-shrink-0" />
               &nbsp;&nbsp;&nbsp;
               <span className="truncate md:whitespace-nowrap">
-                {contactUrl}
+                {externalLink}
               </span>
             </div>
 
@@ -114,16 +112,15 @@ const UserProfile: React.FC<UserProfileProps> = ({
             >
               <div className="flex items-center">
                 <p className="w-20">등록번호:</p>
-                <p>{registrationInfo}</p>
+                <p>{agentRegistrationNumber}</p>
               </div>
               <div className="flex items-center">
                 <p className="w-20">전화번호:</p>
-                <p>{phoneNumber}</p>
+                <p>{ownerContactNumber}</p>
               </div>
               <div className="flex items-center gap-3">
-                {/* <p className="w-20">주소:</p> */}
                 <MdLocationOn className="text-gray-400" />
-                <p>{address}</p>
+                <p>{officeAddress}</p>
               </div>
             </div>
           </div>
@@ -139,25 +136,26 @@ const UserProfile: React.FC<UserProfileProps> = ({
               <div className="flex items-center space-x-4 mt-2">
                 <FaPhoneAlt className="text-primary" />
                 <p className="text-mobile_body3_r md:text-body2_m text-gray-700">
-                  {phoneNumber}
+                  {ownerContactNumber}
                 </p>
               </div>
               <div className="flex items-center space-x-4 mt-2">
                 <FaEnvelope className="text-primary" />
                 <p className="text-mobile_body3_r md:text-body2_m text-gray-700">
-                  {email}
+                  {/* {email || ""} */}
+                  email
                 </p>
               </div>
               <div className="flex items-center space-x-4 mt-2">
                 <FaLink className="text-primary" />
                 <p className="text-mobile_body3_r md:text-body2_m text-gray-700">
                   <a
-                    href={website}
+                    href={externalLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary hover:underline"
                   >
-                    {website}
+                    {externalLink}
                   </a>
                 </p>
               </div>
@@ -167,11 +165,11 @@ const UserProfile: React.FC<UserProfileProps> = ({
               <h3 className="text-text_sub2 text-mobile_h4_sb md:text-h3 lg:text-h2 mb-1">
                 Work
               </h3>
-              <p className="text-mobile_body3_r md:text-body2_m text-gray-700">
-                <strong>{work}</strong>
-              </p>
+              {/* <p className="text-mobile_body3_r md:text-body2_m text-gray-700">
+                <strong>{businessName}</strong>
+              </p> */}
               <p className="text-mobile_body3_r md:text-body2_m text-gray-600">
-                {work}
+                {businessName}
               </p>
             </div>
           </div>
