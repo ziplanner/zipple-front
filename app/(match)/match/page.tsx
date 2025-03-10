@@ -8,31 +8,15 @@ import useResponsive from "@/app/hook/useResponsive";
 import MobileMatchTopMenu from "@/app/components/menu/mobileMatchTopMenu";
 import { getCategoryMatching, getMainMatching } from "@/app/api/main/api";
 import Skeleton from "@/app/components/loading/skeleton";
-
-const categories = [
-  "전체",
-  "아파트",
-  "주택/다가구",
-  "빌라/다세대",
-  "원룸/투룸",
-  "상가 점포",
-  "빌딩/상업시설",
-  "사무실",
-  "공장/창고/지식산업센터",
-  "병원/요양원",
-  "기타(경매/분양 등)",
-  "호텔/모텔/펜션",
-  "오피스텔",
-  "재건축/재개발",
-  "토지",
-  "종교시설",
-];
+import { CATEGORY_LIST } from "@/app/types/category";
 
 const MatchPage = () => {
   const isMdUp = useResponsive("md");
 
   const [matchListData, setMatchListData] = useState<any[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
+  const [activeCategory, setActiveCategory] = useState<string>(
+    CATEGORY_LIST[0]
+  );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
