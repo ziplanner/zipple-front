@@ -1,17 +1,30 @@
 "use client";
 
-import { PORTFOLIO_DATA } from "@/app/data/portfolio";
 import PortfolioCard from "@/app/components/card/portfolioCard";
+import { PortfolioItem } from "@/app/types/user";
+import { useState } from "react";
 
-const Portfolio = () => {
+interface PortfolioProps {
+  portfolios: PortfolioItem[];
+}
+
+const Portfolio = ({ portfolios }: PortfolioProps) => {
   return (
     <>
-      <div
-        className="flex w-full flex-col gap-3 md:gap-4 md:flex-row md:flex-wrap
+      {portfolios.length > 0 ? (
+        <div
+          className="flex w-full flex-col gap-3 md:gap-4 md:flex-row md:flex-wrap
           md:grid md:grid-cols-2 lg:grid-cols-4"
-      >
-        <PortfolioCard data={[]} />
-      </div>
+        >
+          <PortfolioCard data={portfolios} />
+        </div>
+      ) : (
+        <div className="min-h-screen">
+          <p className="text-center text-gray-500 mt-10 text-mobile_body2_m md:text-body1_m">
+            포토폴리오가 없습니다.
+          </p>
+        </div>
+      )}
     </>
   );
 };

@@ -17,7 +17,7 @@ const ReviewSection = ({ data }: ReviewDataProps) => {
 
   return (
     <div className="flex w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 lg:gap-3">
+      <div className="grid w-full grid-cols-1 lg:grid-cols-2 gap-1 lg:gap-3">
         {data.map((review, index) => (
           <CustomerReview
             key={review.reviewId}

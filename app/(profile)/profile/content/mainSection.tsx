@@ -55,7 +55,7 @@ const MainSection = () => {
               전체보기
             </p>
           </div>
-          <ReviewSection />
+          <ReviewSection data={[]} />
         </>
       )}
       {activeTab === "포토폴리오" && <Portfolio />}
