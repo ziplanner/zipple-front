@@ -219,13 +219,13 @@ md:overflow-visible text-ellipsis text-mobile_body4_r py-1 px-2 md:px-3 max-w-fi
             <div className="gap-6">
               {activeTab === "portfolio" && (
                 <div className="pt-4">
-                  <PortfolioSection />
+                  <PortfolioSection data={[]} />
                 </div>
               )}
 
               {activeTab === "reviews" && (
                 <div className="pt-4">
-                  <ReviewSection />
+                  <ReviewSection data={[]} />
                 </div>
               )}
             </div>
