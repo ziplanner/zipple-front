@@ -1,4 +1,9 @@
-import { MAIN_MATCHING, MAIN_PORTFOLIO, MAIN_PROFILE_DETAIL } from "../apiUrl";
+import {
+  MAIN_MATCHING,
+  MAIN_MATCHING_CATEGORY,
+  MAIN_PORTFOLIO,
+  MAIN_PROFILE_DETAIL,
+} from "../apiUrl";
 import axiosInstance from "../axiosInstance";
 
 // 매칭 전체 조회
@@ -21,8 +26,8 @@ export const getCategoryMatching = async (
   size: number = 10
 ) => {
   try {
-    const response = await axiosInstance.get(`${MAIN_MATCHING}/${category}`, {
-      params: { page: page - 1, size },
+    const response = await axiosInstance.get(`${MAIN_MATCHING_CATEGORY}`, {
+      params: { category, page: page - 1, size },
     });
     return response.data;
   } catch (error) {

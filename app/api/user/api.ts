@@ -22,3 +22,21 @@ export const getGeneralUserInfo = async () => {
     throw error;
   }
 };
+
+// 일반 유저 정보 수정
+export const updateGeneralUserInfo = async (userData: {
+  generalName: string;
+  email: string;
+  phoneNumber: string;
+  generalAddress: string;
+  housingType: string;
+}) => {
+  try {
+    const response = await axiosInstance.put(MYPAGE_GENERAL, userData);
+
+    return response.data;
+  } catch (error: any) {
+    console.error(error.response?.data || error.message);
+    throw error;
+  }
+};

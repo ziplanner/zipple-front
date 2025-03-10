@@ -17,6 +17,7 @@ export const USER = "/api/auth/role";
 // 메인 페이지
 export const MAIN = "/api/v1/main";
 export const MAIN_MATCHING = "/api/v1/main/matching";
+export const MAIN_MATCHING_CATEGORY = "/api/v1/main/matching/category";
 export const MAIN_PORTFOLIO = "/api/v1/main/portfolio";
 export const MAIN_PROFILE_DETAIL = "/api/v1/main/profile/detail";
 
