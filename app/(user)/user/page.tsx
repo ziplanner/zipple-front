@@ -31,26 +31,13 @@ const User = () => {
 
   return (
     <div className="flex w-full pt-10">
-      <UserProfile
-        name="Jeremy Rose"
-        imageUrl={test10}
-        phoneNumber="+1 123 456 7890"
-        address="525 E 68th Street, New York, NY 10651-78"
-        email="hello@jeremymrose.com"
-        website="www.jeremymrose.com"
-        rating={4}
-        field={""}
-        description={"안녕하세요 저는 공인중개사입니다."}
-        contactUrl="https://blog.naver.com/junghoon7771/2230401001351"
-        registrationInfo={"33557419011"}
-        work={""}
-      />
+      <UserProfile userProfile={null} />
 
       {/* 글쓰기 버튼 */}
       <FloatingWriteButton onClick={handleWriteClick} />
 
       {/* 모달/바텀시트 */}
-      {isReviewOpen &&
+      {/* {isReviewOpen &&
         (isMd ? (
           <ReviewModal onClose={handleClose} onSubmit={handleReviewSubmit} />
         ) : (
@@ -58,7 +45,7 @@ const User = () => {
             onClose={handleClose}
             onSubmit={handleReviewSubmit}
           />
-        ))}
+        ))} */}
     </div>
   );
 };
