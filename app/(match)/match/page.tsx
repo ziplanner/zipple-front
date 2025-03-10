@@ -7,6 +7,7 @@ import MatchList from "@/app/components/list/mtachList";
 import useResponsive from "@/app/hook/useResponsive";
 import MobileMatchTopMenu from "@/app/components/menu/mobileMatchTopMenu";
 import { getCategoryMatching, getMainMatching } from "@/app/api/main/api";
+import Skeleton from "@/app/components/loading/skeleton";
 
 const categories = [
   "전체",
@@ -34,6 +35,7 @@ const MatchPage = () => {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const pageSize = 10;
 
   const handlePageChange = (page: number) => {
@@ -47,6 +49,7 @@ const MatchPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         let data;
         if (activeCategory === "전체") {
@@ -58,11 +61,13 @@ const MatchPage = () => {
             pageSize
           );
         }
-        console.log("🚀 조회된 데이터:", data);
+        console.log("조회된 데이터:", data);
         setMatchListData(data.matching);
         setTotalPages(data.totalPages || 1);
       } catch (err) {
-        console.error("❌ 데이터 조회 실패:", err);
+        console.error("데이터 조회 실패:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -91,7 +96,7 @@ const MatchPage = () => {
 
         {/* Main Content */}
         <div className="w-full md:ml-0 lg:ml-6 md:mt-5">
-          <MatchList data={matchListData} />
+          {isLoading ? <Skeleton /> : <MatchList data={matchListData} />}
 
           {/* Pagination */}
           <Pagination
