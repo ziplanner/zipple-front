@@ -3,11 +3,16 @@ import { createStore } from "zustand/vanilla";
 
 export type AuthState = {
   accessToken: string;
+  refreshToken: string;
   isRegistered: boolean;
 };
 
 export type AuthActions = {
-  signIn: (accessToken: string, isRegistered: boolean) => void;
+  signIn: (
+    accessToken: string,
+    refreshToken: string,
+    isRegistered: boolean
+  ) => void;
   signOut: () => void;
 };
 
@@ -31,6 +36,7 @@ export type UserInfoStore = UserInfoState & UserInfoActions;
 
 export const defaultAuthState: AuthState = {
   accessToken: "",
+  refreshToken: "",
   isRegistered: false,
 };
 
@@ -38,26 +44,32 @@ export const defaultUserInfoState: UserInfoState = {
   userInfo: null,
 };
 
-export const createAuthStore = (initState: AuthState = defaultAuthState) => {
-  return createStore<AuthStore>()(
-    devtools(
-      persist(
-        (set) => ({
-          ...initState,
-          signIn: (accessToken, isRegistered) =>
-            set(() => ({
-              accessToken,
-              isRegistered,
-            })),
-          signOut: () => set(() => defaultAuthState),
-        }),
-        {
-          name: "authStorage",
-        }
-      )
+export const authStore = createStore<AuthStore>()(
+  devtools(
+    persist(
+      (set) => ({
+        accessToken: "",
+        refreshToken: "",
+        isRegistered: false,
+        signIn: (accessToken, refreshToken, isRegistered) =>
+          set(() => ({
+            accessToken,
+            refreshToken,
+            isRegistered,
+          })),
+        signOut: () =>
+          set(() => ({
+            accessToken: "",
+            refreshToken: "",
+            isRegistered: false,
+          })),
+      }),
+      {
+        name: "authStorage",
+      }
     )
-  );
-};
+  )
+);
 
 export const createUserInfoStore = (
   initState: UserInfoState = defaultUserInfoState
