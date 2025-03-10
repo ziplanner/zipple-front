@@ -37,5 +37,9 @@ export default function SignInPageContent() {
       });
   }, [searchParams, router, signIn]);
 
-  return <LoginLoading />;
+  return (
+    <div className="min-h-screen">
+      <LoginLoading />
+    </div>
+  );
 }
