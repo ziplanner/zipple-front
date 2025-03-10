@@ -1,4 +1,3 @@
-import Portfolio from "@/app/(profile)/profile/content/portfolio";
 import { MAIN_MATCHING, MAIN_PORTFOLIO, MAIN_PROFILE_DETAIL } from "../apiUrl";
 import axiosInstance from "../axiosInstance";
 
@@ -57,6 +56,23 @@ export const getAgentPortfolioDetail = async (portfolioId: number) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching agent profile detail:", error);
+    throw error;
+  }
+};
+
+// 공인중개사 포트폴리오 리스트 조회
+export const getAgentPortfolioList = async (
+  agentId: string,
+  page: number = 1,
+  size: number = 10
+) => {
+  try {
+    const response = await axiosInstance.get(`${MAIN_PORTFOLIO}/${agentId}`, {
+      params: { page: page - 1, size },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("🚨 Error fetching agent portfolio list:", error);
     throw error;
   }
 };
