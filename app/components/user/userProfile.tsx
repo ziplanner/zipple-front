@@ -100,13 +100,20 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile, agentId }) => {
               >
                 Ratings
               </h3>
-              <div className="flex space-x-1 md:text-body3_m lg:text-body1_m text-mobile_body4_r">
-                {stars.map((isFilled, index) =>
-                  isFilled ? (
-                    <FaStar key={index} className="text-star" />
-                  ) : (
-                    <FaRegStar key={index} className="text-star" />
-                  )
+              <div className="flex gap-2 items-center">
+                <div className="flex space-x-1 md:text-body3_m lg:text-body1_m text-mobile_body4_r">
+                  {stars.map((isFilled, index) =>
+                    isFilled ? (
+                      <FaStar key={index} className="text-star" />
+                    ) : (
+                      <FaRegStar key={index} className="text-star" />
+                    )
+                  )}
+                </div>
+                {reviews.length > 0 && (
+                  <p className="md:text-body4_r text-[10px] text-sub3">
+                    + {reviews.length}
+                  </p>
                 )}
               </div>
             </div>
