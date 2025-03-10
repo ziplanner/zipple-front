@@ -6,7 +6,6 @@ import AgentUser from "@/app/components/user/agentUser";
 import Alert from "@/app/components/alert/alert";
 import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 import LoadingSpinner from "@/app/components/loading/loadingSpinner";
-import { getGeneralUserInfo } from "@/app/api/user/api";
 
 const MyPage = () => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
