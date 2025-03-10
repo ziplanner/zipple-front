@@ -156,6 +156,7 @@ const ReviewBottomSheet = ({
               onChange={(newRating: any) => setStarCount(newRating)}
               size={30}
               color2="#FDB528"
+              color1={"#e5e7eb"}
             />
             <span className="text-text1 text-mobile_body2_m">
               {starCount}점
