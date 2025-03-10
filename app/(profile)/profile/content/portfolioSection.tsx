@@ -9,7 +9,9 @@ const PortfolioSection = ({ data }: PortfolioDataProps) => {
   // 데이터가 없을 경우 렌더링하지 않음
   if (!data || data.length === 0) {
     return (
-      <p className="text-center text-gray-500 mt-4">포트폴리오가 없습니다.</p>
+      <p className="text-center text-gray-500 mt-10 text-mobile_body2_m md:text-body1_m">
+        포트폴리오가 없습니다.
+      </p>
     );
   }
 
