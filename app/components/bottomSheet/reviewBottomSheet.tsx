@@ -8,42 +8,65 @@ import CustomInput from "@/app/components/input/customInput";
 import CustomTextarea from "@/app/components/textarea/customTextarea";
 import PrimaryBtn from "@/app/components/button/primaryBtn";
 import ReactStars from "react-stars";
+import { postReview } from "@/app/api/review/api";
 
 interface ReviewBottomSheetProps {
+  agentId: string;
   onClose: () => void;
-  onSubmit: (data: { title: string; details: string; rating: number }) => void;
+  onSubmit: (data: { content: string; starCount: number }) => void;
 }
 
-const ReviewBottomSheet = ({ onClose, onSubmit }: ReviewBottomSheetProps) => {
-  const [title, setTitle] = useState<string>("");
-  const [details, setDetails] = useState<string>("");
-  const [rating, setRating] = useState<number>(0);
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const [isClosing, setIsClosing] = useState<boolean>(false);
+const ReviewBottomSheet = ({
+  agentId,
+  onClose,
+  onSubmit,
+}: ReviewBottomSheetProps) => {
   const startY = useRef(0);
   const currentY = useRef(0);
   const sheetRef = useRef<HTMLDivElement>(null);
 
+  // const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [starCount, setStarCount] = useState<number>(0);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [isClosing, setIsClosing] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const validateForm = () => {
-    if (!title.trim()) {
-      setAlertMessage("리뷰 제목을 입력해주세요.");
-      return false;
-    }
-    if (!details.trim()) {
+    // if (!title.trim()) {
+    //   setAlertMessage("리뷰 제목을 입력해주세요.");
+    //   return false;
+    // }
+    if (!content.trim()) {
       setAlertMessage("리뷰 내용을 입력해주세요.");
       return false;
     }
-    if (rating === 0) {
+    if (starCount === 0) {
       setAlertMessage("별점을 선택해주세요.");
       return false;
     }
     return true;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onSubmit({ title, details, rating });
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const reviewData = { content, starCount };
+
+      // ✅ postReview API 호출
+      await postReview(agentId, reviewData);
+
+      onSubmit(reviewData);
       onClose();
+    } catch (error) {
+      console.error("리뷰 작성 실패:", error);
+      setAlertMessage("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -89,9 +112,9 @@ const ReviewBottomSheet = ({ onClose, onSubmit }: ReviewBottomSheetProps) => {
     <div
       id="background"
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-end duration-300"
-      onClick={(e) =>
-        (e.target as HTMLDivElement).id === "background" && onClose()
-      }
+      // onClick={(e) =>
+      //   (e.target as HTMLDivElement).id === "background" && onClose()
+      // }
     >
       <div
         ref={sheetRef}
@@ -114,7 +137,7 @@ const ReviewBottomSheet = ({ onClose, onSubmit }: ReviewBottomSheetProps) => {
 
         <div className="flex-1 overflow-y-auto custom-scrollbar mt-4">
           {/* 제목 입력 */}
-          <h3 className="text-text1 text-mobile_body1_sb">제목 *</h3>
+          {/* <h3 className="text-text1 text-mobile_body1_sb">제목 *</h3>
           <CustomInput
             value={title}
             placeholder={"리뷰 제목을 입력해주세요"}
@@ -122,27 +145,29 @@ const ReviewBottomSheet = ({ onClose, onSubmit }: ReviewBottomSheetProps) => {
             className="mb-4"
             label={""}
             name={""}
-          />
+          /> */}
 
           {/* 별점 입력 */}
           <h3 className="text-text1 text-mobile_body1_sb">별점 *</h3>
           <div className="flex items-center gap-3 mb-4">
             <ReactStars
               count={5}
-              value={rating}
-              onChange={(newRating: any) => setRating(newRating)}
+              value={starCount}
+              onChange={(newRating: any) => setStarCount(newRating)}
               size={30}
-              color2="#ffd700"
+              color2="#FDB528"
             />
-            <span className="text-text1 text-mobile_body2_m">{rating}점</span>
+            <span className="text-text1 text-mobile_body2_m">
+              {starCount}점
+            </span>
           </div>
 
           {/* 내용 입력 */}
           <h3 className="text-text1 text-mobile_body1_sb">내용 *</h3>
           <CustomTextarea
             placeholder="리뷰 내용을 입력해주세요."
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
             maxLength={3000}
             label={""}
             name={""}
@@ -152,7 +177,11 @@ const ReviewBottomSheet = ({ onClose, onSubmit }: ReviewBottomSheetProps) => {
 
         {/* 등록 버튼 */}
         <div className="flex items-center justify-end mt-6 pb-1">
-          <PrimaryBtn text="등록하기" onClick={handleSubmit} />
+          <PrimaryBtn
+            text="등록하기"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          />
         </div>
 
         {alertMessage && <Alert message={alertMessage} />}
