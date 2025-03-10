@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
-import { formatToKoreanDate } from "@/app/utils/formatToDate";
+import ReactStars from "react-stars";
 
 interface ReviewProps {
   name: string;
@@ -20,12 +19,6 @@ const ReviewCard = ({
   rating,
   date,
 }: ReviewProps) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
-  const formatted = formatToKoreanDate(date);
-
   return (
     <div
       className="flex flex-row w-full gap-1.5 md:gap-2.5 bg-white border rounded-lg p-3 md:p-6 mx-auto
@@ -44,6 +37,7 @@ const ReviewCard = ({
             />
           </div>
           <div className="flex flex-row w-full justify-between">
+            {/* 텍스트 및 별 */}
             <div className="flex flex-col gap-1">
               <div className="flex flex-row items-center gap-1.5">
                 <p className="text-body1_m font-semibold text-text">{name}</p>
@@ -51,19 +45,18 @@ const ReviewCard = ({
                   고객님의 리뷰
                 </p>
               </div>
-              <div className="flex gap-1 md:text-body3_r text-mobile_body4_r">
-                {[...Array(fullStars)].map((_, index) => (
-                  <FaStar key={`full-${index}`} className="text-star" />
-                ))}
-                {hasHalfStar && (
-                  <FaStarHalfAlt key="half-star" className="text-star" />
-                )}
-                {[...Array(emptyStars)].map((_, index) => (
-                  <FaRegStar key={`empty-${index}`} className="text-star" />
-                ))}
-              </div>
+              {/* ✅ react-stars 적용 */}
+              <ReactStars
+                count={5} // 최대 별 개수
+                value={rating} // 별점 값 (소수점 포함 가능)
+                size={20} // 별 크기 조정
+                color2={"#facc15"} // ⭐ 활성화된 별 색상 (Tailwind yellow-400)
+                color1={"#e5e7eb"} // ⬜ 비활성화된 별 색상 (Tailwind gray-300)
+                edit={false} // 별점을 수정할 수 없도록 설정 (읽기 전용)
+                half={true} // ✅ 반 개 별(0.5 단위) 지원
+              />
             </div>
-            <p className="text-body4_r text-sub3">{formatted.yyyyDotMmDotDd}</p>
+            <p className="text-body4_r text-sub3">{date}</p>
           </div>
         </div>
 
