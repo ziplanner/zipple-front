@@ -37,6 +37,7 @@ const ReviewMainSection = () => {
     getReviews(agentId)
       .then((data) => {
         setReviews(data);
+        console.log(data);
       })
       .catch((err) => {
         console.error("🚨 Error fetching reviews:", err);

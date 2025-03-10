@@ -69,9 +69,9 @@ const ReviewCard = ({
 
         {/* Title and Description */}
         <div className="flex flex-col mt-6">
-          <h3 className="text-mobile_h3 md:text-h3 text-text line-clamp-2">
+          {/* <h3 className="text-mobile_h3 md:text-h3 text-text line-clamp-2">
             {title}
-          </h3>
+          </h3> */}
           <p className="text-mobile_body3_r md:text-body2_r text-text_sub4 mt-1 line-clamp-2">
             {description}
           </p>
