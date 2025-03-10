@@ -2,42 +2,58 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import close from "@/app/image/icon/close.svg";
 import Alert from "../alert/alert";
-import CustomInput from "../input/customInput";
 import CustomTextarea from "../textarea/customTextarea";
 import PrimaryBtn from "../button/primaryBtn";
 import ReactStars from "react-stars";
+import { postReview } from "@/app/api/review/api";
 
 export interface ReviewModalProps {
+  agentId: string;
   onClose: () => void;
-  onSubmit: (data: { title: string; details: string; rating: number }) => void;
+  onSubmit: (data: { content: string; starCount: number }) => void;
 }
 
-const ReviewModal = ({ onClose, onSubmit }: ReviewModalProps) => {
+const ReviewModal = ({ onClose, onSubmit, agentId }: ReviewModalProps) => {
   const [title, setTitle] = useState<string>("");
-  const [details, setDetails] = useState<string>("");
-  const [rating, setRating] = useState<number>(0);
+  const [content, setContent] = useState<string>("");
+  const [starCount, setStarCount] = useState<number>(0);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const validateForm = () => {
-    if (!title.trim()) {
-      setAlertMessage("리뷰 제목을 입력해주세요.");
-      return false;
-    }
-    if (!details.trim()) {
+    // if (!title.trim()) {
+    //   setAlertMessage("리뷰 제목을 입력해주세요.");
+    //   return false;
+    // }
+    if (!content.trim()) {
       setAlertMessage("리뷰 내용을 입력해주세요.");
       return false;
     }
-    if (rating === 0) {
+    if (starCount === 0) {
       setAlertMessage("별점을 선택해주세요.");
       return false;
     }
     return true;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onSubmit({ title, details, rating });
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const reviewData = { content, starCount };
+
+      await postReview(agentId, reviewData);
+
+      onSubmit(reviewData);
       onClose();
+    } catch (error) {
+      console.error("리뷰 작성 실패:", error);
+      setAlertMessage("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -52,9 +68,9 @@ const ReviewModal = ({ onClose, onSubmit }: ReviewModalProps) => {
     <div
       id="background"
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50"
-      onClick={(e) =>
-        (e.target as HTMLDivElement).id === "background" && onClose()
-      }
+      // onClick={(e) =>
+      //   (e.target as HTMLDivElement).id === "background" && onClose()
+      // }
     >
       <div className="bg-white p-5 shadow-modal rounded-2xl w-[826px] max-h-[90vh] flex flex-col">
         <div className="flex justify-between mb-5">
@@ -72,7 +88,7 @@ const ReviewModal = ({ onClose, onSubmit }: ReviewModalProps) => {
 
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           {/* 제목 입력 */}
-          <h3 className="flex text-text1 text-h3 mt-[22px]">
+          {/* <h3 className="flex text-text1 text-h3 mt-[22px]">
             제목 <span className="text-point text-body1_m pl-1">*</span>
           </h3>
           <CustomInput
@@ -82,7 +98,7 @@ const ReviewModal = ({ onClose, onSubmit }: ReviewModalProps) => {
             className="mb-4"
             label={""}
             name={""}
-          />
+          /> */}
 
           {/* 별점 입력 */}
           <h3 className="flex text-text1 text-h3 mt-[22px]">
@@ -91,12 +107,12 @@ const ReviewModal = ({ onClose, onSubmit }: ReviewModalProps) => {
           <div className="flex items-center gap-3 mb-4">
             <ReactStars
               count={5}
-              value={rating}
-              onChange={(newRating: any) => setRating(newRating)}
+              value={starCount}
+              onChange={(newRating: any) => setStarCount(newRating)}
               size={30}
-              color2="#ffd700"
+              color2="#FDB528"
             />
-            <span className="text-text1 text-body1_m">{rating}점</span>
+            <span className="text-text1 text-body1_m">{starCount}점</span>
           </div>
 
           {/* 내용 입력 */}
@@ -105,8 +121,8 @@ const ReviewModal = ({ onClose, onSubmit }: ReviewModalProps) => {
           </h3>
           <CustomTextarea
             placeholder="리뷰 내용을 입력해주세요."
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
             maxLength={3000}
             label={""}
             name={""}
@@ -116,7 +132,11 @@ const ReviewModal = ({ onClose, onSubmit }: ReviewModalProps) => {
 
         {/* 등록 버튼 */}
         <div className="flex items-center justify-end mt-6 pb-1">
-          <PrimaryBtn text="등록하기" onClick={handleSubmit} />
+          <PrimaryBtn
+            text="등록하기"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          />
         </div>
       </div>
 
