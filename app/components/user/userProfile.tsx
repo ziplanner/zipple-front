@@ -13,6 +13,7 @@ import { MdLink, MdLocationOn } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { UserProfileData } from "@/app/types/user";
 import defaultProfileImage from "@/app/image/test/test_image.jpg";
+import LoadingSpinner from "../loading/loadingSpinner";
 
 interface UserProfileProps {
   userProfile: UserProfileData | null;
@@ -25,7 +26,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
   );
 
   if (!userProfile) {
-    return <p className="text-center w-full">프로필 정보를 불러오는 중...</p>;
+    return <LoadingSpinner />;
   }
 
   const {
@@ -39,8 +40,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
     starRating,
     ownerContactNumber,
     officeAddress,
-    portfolios,
-    reviews,
+    portfolios = [],
+    reviews = [],
   } = userProfile;
 
   const stars = Array(5)
@@ -212,13 +213,19 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
             <div className="gap-6">
               {activeTab === "portfolio" && (
                 <div className="pt-4">
-                  <PortfolioSection data={portfolios.slice(0, 6)} />
+                  <PortfolioSection
+                    data={
+                      Array.isArray(portfolios) ? portfolios.slice(0, 6) : []
+                    }
+                  />
                 </div>
               )}
 
               {activeTab === "reviews" && (
                 <div className="pt-4">
-                  <ReviewSection />
+                  <ReviewSection
+                    data={Array.isArray(reviews) ? reviews.slice(0, 4) : []}
+                  />
                 </div>
               )}
             </div>
