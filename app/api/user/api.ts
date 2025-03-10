@@ -1,53 +1,24 @@
-"use client";
+import { MYPAGE_GENERAL, USER } from "../apiUrl";
+import axiosInstance from "../axiosInstance";
 
-import { useState } from "react";
-import FloatingWriteButton from "@/app/components/button/floating/writeBtn";
-import UserProfile from "@/app/components/user/userProfile";
-import ReviewModal from "@/app/components/modal/reviewModal";
-import ReviewBottomSheet from "@/app/components/bottomSheet/reviewBottomSheet";
-import test10 from "@/app/image/test/test10.png";
-import useResponsive from "@/app/hook/useResponsive";
-
-const User = () => {
-  const isMd = useResponsive("md");
-  const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
-
-  const handleWriteClick = () => {
-    setIsReviewOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsReviewOpen(false);
-  };
-
-  const handleReviewSubmit = (reviewData: {
-    title: string;
-    details: string;
-    rating: number;
-  }) => {
-    console.log("리뷰 데이터 제출:", reviewData);
-    setIsReviewOpen(false);
-  };
-
-  return (
-    <div className="flex w-full pt-10">
-      <UserProfile userProfile={null} />
-
-      {/* 글쓰기 버튼 */}
-      <FloatingWriteButton onClick={handleWriteClick} />
-
-      {/* 모달/바텀시트 */}
-      {/* {isReviewOpen &&
-        (isMd ? (
-          <ReviewModal onClose={handleClose} onSubmit={handleReviewSubmit} />
-        ) : (
-          <ReviewBottomSheet
-            onClose={handleClose}
-            onSubmit={handleReviewSubmit}
-          />
-        ))} */}
-    </div>
-  );
+// 유저 정보 조회
+export const getUserInfo = async () => {
+  try {
+    const response = await axiosInstance.get(USER);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching main matching info:", error);
+    throw error;
+  }
 };
 
-export default User;
+// 일반 유저 정보 조회
+export const getGeneralUserInfo = async () => {
+  try {
+    const response = await axiosInstance.get(MYPAGE_GENERAL);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching main matching info:", error);
+    throw error;
+  }
+};
