@@ -1,25 +1,20 @@
+import { ReviewItem } from "@/app/types/user";
 import Image, { StaticImageData } from "next/image";
 import React from "react";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
-interface ReviewProps {
-  name: string;
-  imageUrl: string | StaticImageData;
-  title: string;
-  description: string;
-  rating: number;
-}
-
 const CustomerReview = ({
-  name,
-  imageUrl,
-  title,
-  description,
-  rating,
-}: ReviewProps) => {
+  nickname,
+  profileUrl,
+  content,
+  starRating,
+  createdAt,
+  updatedAt,
+  reviewId,
+}: ReviewItem) => {
   const stars = Array(5)
     .fill(false)
-    .map((_, index) => index < rating);
+    .map((_, index) => index < starRating);
 
   return (
     <div
@@ -31,8 +26,8 @@ const CustomerReview = ({
           {/* 프로필 이미지 */}
           <div className="mb-0 md:min-w-[48px] md:min-h-[48px] min-w-[36px] min-h-[36px]">
             <Image
-              src={imageUrl}
-              alt={name}
+              src={profileUrl}
+              alt={"profile"}
               width={36}
               height={36}
               className="md:w-12 md:h-12 h-[36px] w-[36px] rounded-full object-cover"
@@ -43,7 +38,7 @@ const CustomerReview = ({
           <div className="flex flex-col">
             <div className="flex flex-row items-center gap-1.5">
               <p className="text-mobile_body2_m md:text-body1_m font-semibold text-text">
-                {name}
+                {nickname}
               </p>
               <p className="text-[10px] md:text-body4_r text-text_sub3">
                 고객님의 리뷰
@@ -65,7 +60,7 @@ const CustomerReview = ({
         {/* <div className=""> */}
         {/* <h3 className="text-h3 text-text line-clamp-2">{title}</h3> */}
         <p className="text-mobile_body3_r md:text-body2_r text-text_sub4 mt-1 line-clamp-2">
-          {description}
+          {content}
         </p>
         {/* </div> */}
       </div>
