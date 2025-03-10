@@ -47,7 +47,7 @@ const MainSection = () => {
 
   return (
     <div className="flex w-full pt-10">
-      <UserProfile userProfile={userProfile} />
+      <UserProfile userProfile={userProfile} agentId={id} />
       {/* 글쓰기 버튼 */}
       <FloatingWriteButton onClick={handleWriteClick} />
 
