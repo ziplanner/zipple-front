@@ -6,6 +6,11 @@ import Pagination from "@/app/components/pagination/pagination";
 import ReviewCard from "@/app/components/review/reviewCard";
 import { getReviews } from "@/app/api/review/api";
 import Skeleton from "@/app/components/loading/skeleton";
+import Alert from "@/app/components/alert/alert";
+import ReviewBottomSheet from "@/app/components/bottomSheet/reviewBottomSheet";
+import FloatingWriteButton from "@/app/components/button/floating/writeBtn";
+import ReviewModal from "@/app/components/modal/reviewModal";
+import useResponsive from "@/app/hook/useResponsive";
 
 interface ReviewDetail {
   reviewId: number;
@@ -19,6 +24,7 @@ interface ReviewDetail {
 
 const ReviewMainSection = () => {
   const router = useRouter();
+  const isMd = useResponsive("md");
   const searchParams = useSearchParams();
   const agentId = searchParams.get("id");
 
@@ -27,6 +33,30 @@ const ReviewMainSection = () => {
   //   const totalPages = 3;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+
+  const handleWriteClick = () => {
+    setIsReviewOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsReviewOpen(false);
+  };
+
+  const handleReviewSubmit = (reviewData: {
+    content: string;
+    starCount: number;
+  }) => {
+    console.log("리뷰 데이터 제출:", reviewData);
+    setIsReviewOpen(false);
+
+    setAlertMessage("리뷰가 성공적으로 등록되었습니다!");
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  };
 
   useEffect(() => {
     if (!agentId) return;
@@ -95,7 +125,25 @@ const ReviewMainSection = () => {
               )}
         </div>
       </div>
+      {/* 글쓰기 버튼 */}
+      <FloatingWriteButton onClick={handleWriteClick} />
 
+      {/* 리뷰 모달 */}
+      {isReviewOpen &&
+        (isMd ? (
+          <ReviewModal
+            onClose={handleClose}
+            onSubmit={handleReviewSubmit}
+            agentId={agentId || ""}
+          />
+        ) : (
+          <ReviewBottomSheet
+            onClose={handleClose}
+            onSubmit={handleReviewSubmit}
+            agentId={agentId || ""}
+          />
+        ))}
+      {alertMessage && <Alert message={alertMessage} duration={1500} />}
       {/* <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

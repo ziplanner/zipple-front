@@ -7,6 +7,7 @@ import FloatingWriteButton from "@/app/components/button/floating/writeBtn";
 import useResponsive from "@/app/hook/useResponsive";
 import ReviewBottomSheet from "@/app/components/bottomSheet/reviewBottomSheet";
 import { UserProfileData } from "@/app/types/user";
+import Alert from "@/app/components/alert/alert";
 
 const MainSection = () => {
   const isMd = useResponsive("md");
@@ -14,6 +15,7 @@ const MainSection = () => {
   const id = searchParams.get("id");
   const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const handleWriteClick = () => {
     setIsReviewOpen(true);
@@ -24,12 +26,17 @@ const MainSection = () => {
   };
 
   const handleReviewSubmit = (reviewData: {
-    // title: string;
     content: string;
     starCount: number;
   }) => {
     console.log("리뷰 데이터 제출:", reviewData);
     setIsReviewOpen(false);
+
+    setAlertMessage("리뷰가 성공적으로 등록되었습니다!");
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   };
 
   useEffect(() => {
@@ -48,6 +55,7 @@ const MainSection = () => {
   return (
     <div className="flex w-full pt-10">
       <UserProfile userProfile={userProfile} agentId={id} />
+
       {/* 글쓰기 버튼 */}
       <FloatingWriteButton onClick={handleWriteClick} />
 
@@ -66,6 +74,7 @@ const MainSection = () => {
             agentId={id || ""}
           />
         ))}
+      {alertMessage && <Alert message={alertMessage} duration={1500} />}
     </div>
   );
 };

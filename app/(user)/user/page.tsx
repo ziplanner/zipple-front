@@ -31,7 +31,7 @@ const User = () => {
 
   return (
     <div className="flex w-full pt-10">
-      <UserProfile userProfile={null} />
+      <UserProfile userProfile={null} agentId={null} />
 
       {/* 글쓰기 버튼 */}
       <FloatingWriteButton onClick={handleWriteClick} />

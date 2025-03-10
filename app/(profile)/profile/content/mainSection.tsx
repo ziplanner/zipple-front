@@ -58,7 +58,7 @@ const MainSection = () => {
           <ReviewSection data={[]} />
         </>
       )}
-      {activeTab === "포토폴리오" && <Portfolio />}
+      {activeTab === "포토폴리오" && <Portfolio portfolios={[]} />}
       {activeTab === "고객후기" && <Review />}
     </>
   );
