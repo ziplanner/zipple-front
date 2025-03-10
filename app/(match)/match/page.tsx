@@ -65,13 +65,13 @@ const MatchPage = () => {
         <div className="flex flex-col">
           {isMdUp ? (
             <MatchLeftMenu
-              categories={categories}
+              categories={CATEGORY_LIST}
               activeCategory={activeCategory}
               onCategoryClick={handleCategoryClick}
             />
           ) : (
             <MobileMatchTopMenu
-              categories={categories}
+              categories={CATEGORY_LIST}
               activeCategory={activeCategory}
               onCategoryClick={handleCategoryClick}
             />
