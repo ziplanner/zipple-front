@@ -1,7 +1,6 @@
 import UserProfile from "@/app/components/user/userProfile";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import defaultProfileImage from "@/app/image/test/test_image.jpg";
 import { getAgentProfileDetail } from "@/app/api/main/api";
 import ReviewModal from "@/app/components/modal/reviewModal";
 import FloatingWriteButton from "@/app/components/button/floating/writeBtn";
@@ -25,9 +24,9 @@ const MainSection = () => {
   };
 
   const handleReviewSubmit = (reviewData: {
-    title: string;
-    details: string;
-    rating: number;
+    // title: string;
+    content: string;
+    starCount: number;
   }) => {
     console.log("리뷰 데이터 제출:", reviewData);
     setIsReviewOpen(false);
@@ -55,11 +54,16 @@ const MainSection = () => {
       {/* 리뷰 모달 */}
       {isReviewOpen &&
         (isMd ? (
-          <ReviewModal onClose={handleClose} onSubmit={handleReviewSubmit} />
+          <ReviewModal
+            onClose={handleClose}
+            onSubmit={handleReviewSubmit}
+            agentId={id || ""}
+          />
         ) : (
           <ReviewBottomSheet
             onClose={handleClose}
             onSubmit={handleReviewSubmit}
+            agentId={id || ""}
           />
         ))}
     </div>
