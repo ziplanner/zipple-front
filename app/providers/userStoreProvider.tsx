@@ -3,13 +3,13 @@
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { useStore } from "zustand";
 import {
-  createAuthStore,
   createUserInfoStore,
   AuthStore,
   UserInfoStore,
+  authStore,
 } from "../stores/userStore";
 
-export type AuthStoreApi = ReturnType<typeof createAuthStore>;
+export type AuthStoreApi = typeof authStore;
 export type UserInfoStoreApi = ReturnType<typeof createUserInfoStore>;
 
 export const AuthStoreContext = createContext<AuthStoreApi | undefined>(
@@ -24,19 +24,14 @@ export interface UserStoreProviderProps {
 }
 
 export const UserStoreProvider = ({ children }: UserStoreProviderProps) => {
-  const authStoreRef = useRef<AuthStoreApi | null>(null);
   const userInfoStoreRef = useRef<UserInfoStoreApi | null>(null);
-
-  if (!authStoreRef.current) {
-    authStoreRef.current = createAuthStore();
-  }
 
   if (!userInfoStoreRef.current) {
     userInfoStoreRef.current = createUserInfoStore();
   }
 
   return (
-    <AuthStoreContext.Provider value={authStoreRef.current}>
+    <AuthStoreContext.Provider value={authStore}>
       <UserInfoStoreContext.Provider value={userInfoStoreRef.current}>
         {children}
       </UserInfoStoreContext.Provider>
@@ -44,7 +39,7 @@ export const UserStoreProvider = ({ children }: UserStoreProviderProps) => {
   );
 };
 
-// ✅ 인증 정보(AuthStore) 가져오는 Hook
+// 인증 정보(AuthStore) 가져오는 Hook
 export const useAuthStore = <T,>(selector: (store: AuthStore) => T): T => {
   const StoreContext = useContext(AuthStoreContext);
   if (!StoreContext) {
@@ -53,7 +48,7 @@ export const useAuthStore = <T,>(selector: (store: AuthStore) => T): T => {
   return useStore(StoreContext, selector);
 };
 
-// ✅ 사용자 정보(UserInfoStore) 가져오는 Hook
+// 사용자 정보(UserInfoStore) 가져오는 Hook
 export const useUserInfoStore = <T,>(
   selector: (store: UserInfoStore) => T
 ): T => {
