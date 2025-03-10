@@ -17,9 +17,10 @@ import LoadingSpinner from "../loading/loadingSpinner";
 
 interface UserProfileProps {
   userProfile: UserProfileData | null;
+  agentId: string | null;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
+const UserProfile: React.FC<UserProfileProps> = ({ userProfile, agentId }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"reviews" | "portfolio">(
     "portfolio"
@@ -49,7 +50,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userProfile }) => {
     .map((_, index) => index < starRating);
 
   const handleAllClick = () => {
-    router.push(`/${activeTab}`);
+    router.push(`/${activeTab}?id=${agentId}`);
   };
 
   return (
