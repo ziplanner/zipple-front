@@ -79,7 +79,7 @@ const AgentUser = () => {
     try {
       await updateAgentBasicInfo({
         email: basicInfo.email,
-        agentType: userInfo?.roleName || "GENERAL",
+        agentType: userInfo?.roleName || "일반",
         phoneNumber: basicInfo.phoneNumber,
         externalLink: basicInfo.externalLink,
         title: basicInfo.title,
@@ -202,7 +202,7 @@ const AgentUser = () => {
             </p>
 
             {/* 개업(대표)회원 및 공인중개사 회원에게만 체크 배지 표시 */}
-            {userInfo?.roleName !== "GENERAL" && (
+            {userInfo?.roleName !== "일반" && (
               <span className="bg-primary text-white text-10 px-0.5 py-0.5 rounded-full flex items-center gap-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
