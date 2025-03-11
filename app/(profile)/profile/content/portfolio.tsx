@@ -2,7 +2,6 @@
 
 import PortfolioCard from "@/app/components/card/portfolioCard";
 import { PortfolioItem } from "@/app/types/user";
-import { useState } from "react";
 
 interface PortfolioProps {
   portfolios: PortfolioItem[];
@@ -19,7 +18,7 @@ const Portfolio = ({ portfolios }: PortfolioProps) => {
           <PortfolioCard data={portfolios} />
         </div>
       ) : (
-        <div className="min-h-screen">
+        <div className="min-h-[300px] md:min-h-[500px]">
           <p className="text-center text-gray-500 mt-10 text-mobile_body2_m md:text-body1_m">
             포토폴리오가 없습니다.
           </p>
