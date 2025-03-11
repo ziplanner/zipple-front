@@ -74,3 +74,11 @@ export interface AgentInfo {
   content: string;
   externalLink: string;
 }
+
+export interface GeneralSignupData {
+  generalName: string;
+  generalNumber: string;
+  generalAddress: string;
+  housingType: string;
+  marketingNotificationTerms: boolean;
+}
