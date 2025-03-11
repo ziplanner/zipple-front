@@ -21,6 +21,8 @@ export type AuthStore = AuthState & AuthActions;
 export type UserInfo = {
   roleName: string;
   nickname: string;
+  profileUrl: string;
+  userId: string;
 };
 
 export type UserInfoState = {
