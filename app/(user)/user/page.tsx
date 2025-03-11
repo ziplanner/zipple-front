@@ -31,7 +31,14 @@ const User = () => {
 
   return (
     <div className="flex w-full pt-10">
-      <UserProfile userProfile={null} agentId={null} />
+      {/* <UserProfile
+        userProfile={null}
+        agentId={null}
+        activeTab={"reviews"}
+        setActiveTab={function (tab: "reviews" | "portfolio"): void {
+          throw new Error("Function not implemented.");
+        }}
+      /> */}
 
       {/* 글쓰기 버튼 */}
       <FloatingWriteButton onClick={handleWriteClick} />
