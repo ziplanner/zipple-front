@@ -10,37 +10,30 @@ import InputWithButton from "@/app/components/input/inputWithButton";
 import PrimaryBtn from "@/app/components/button/primaryBtn";
 import RoundPlusBtn from "@/app/components/button/roundPlusBtn";
 import CustomTextarea from "@/app/components/textarea/customTextarea";
+import { createMyPortfolio } from "@/app/api/mypage/api";
 
 interface PortfolioBottomSheetProps {
   onClose: () => void;
-  onSubmit: (data: {
-    title: string;
-    details: string;
-    images: string[];
-    file?: File | null;
-    url?: string;
-  }) => void;
+  onPortfolioCreated: () => void;
 }
 
 const MAX_IMAGES = 10;
 
 const PortfolioBottomSheet = ({
   onClose,
-  onSubmit,
+  onPortfolioCreated,
 }: PortfolioBottomSheetProps) => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [title, setTitle] = useState<string>("");
   const [details, setDetails] = useState<string>("");
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
   const [portfolioUrl, setPortfolioUrl] = useState<string>("");
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [isClosing, setIsClosing] = useState<boolean>(false);
 
-  const startY = useRef(0);
-  const currentY = useRef(0);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   const validateForm = () => {
@@ -59,44 +52,36 @@ const PortfolioBottomSheet = ({
     return true;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onSubmit({
-        title,
-        details,
-        images: uploadedImages,
-        file: portfolioFile,
-        url: portfolioUrl.trim() || undefined,
-      });
-      onClose();
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    const formData = new FormData();
+    formData.append("portfolioTitle", title);
+    formData.append("portfolioContent", details);
+
+    uploadedImages.forEach((image) => {
+      formData.append("portfolioImages", image);
+    });
+
+    if (portfolioFile) {
+      formData.append("portfolioFile", portfolioFile);
     }
-  };
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    startY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    currentY.current = e.touches[0].clientY;
-    const translateY = Math.max(0, currentY.current - startY.current);
-
-    if (sheetRef.current) {
-      sheetRef.current.style.transform = `translateY(${translateY}px)`;
+    if (portfolioUrl.trim()) {
+      formData.append("portfolioUrl", portfolioUrl.trim());
     }
-  };
 
-  const handleTouchEnd = () => {
-    const translateY = currentY.current - startY.current;
-
-    if (translateY > 100) {
-      setIsClosing(true);
+    try {
+      await createMyPortfolio(formData);
+      setAlertMessage("포트폴리오가 성공적으로 등록되었습니다.");
+      onPortfolioCreated();
       setTimeout(() => {
+        setAlertMessage(null);
         onClose();
-      }, 300);
-    } else {
-      if (sheetRef.current) {
-        sheetRef.current.style.transform = "translateY(0)";
-      }
+      }, 2000);
+    } catch (error) {
+      console.error("포트폴리오 등록 실패:", error);
+      setAlertMessage("포트폴리오 등록 중 오류가 발생했습니다.");
     }
   };
 
@@ -120,9 +105,6 @@ const PortfolioBottomSheet = ({
         className={`bg-white w-full p-5 max-h-[75vh] overflow-y-auto shadow-modal rounded-t-2xl transition-transform duration-300
     ${isClosing ? "translate-y-full" : "translate-y-0"}`}
         onClick={(e) => e.stopPropagation()}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         {/* 헤더 */}
         <div className="flex justify-between items-center pb-4 border-b">
@@ -163,13 +145,7 @@ const PortfolioBottomSheet = ({
           <div className="flex flex-wrap gap-2 items-center">
             {uploadedImages.map((image, index) => (
               <div key={index} className="relative">
-                <Image
-                  src={image}
-                  alt={`Uploaded ${index}`}
-                  width={100}
-                  height={100}
-                  className="rounded-lg object-cover w-[100px] h-[100px]"
-                />
+                <p className="text-sm">{image.name}</p>
                 <button
                   onClick={() =>
                     setUploadedImages((prev) =>
@@ -183,21 +159,10 @@ const PortfolioBottomSheet = ({
               </div>
             ))}
             {uploadedImages.length < MAX_IMAGES && (
-              <label className="flex w-[100px] h-[100px] justify-center items-center">
-                <input
-                  ref={imageInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={() => {}}
-                />
-                <RoundPlusBtn
-                  onClick={() => imageInputRef.current?.click()}
-                  className="p-1.5"
-                  btnSize="small"
-                />
-              </label>
+              <RoundPlusBtn
+                onClick={() => imageInputRef.current?.click()}
+                className="p-1.5"
+              />
             )}
           </div>
 
@@ -215,17 +180,7 @@ const PortfolioBottomSheet = ({
             type="file"
             className="hidden"
             ref={fileInputRef}
-            onChange={() => {}}
-          />
-
-          {/* URL 입력 */}
-          <CustomInput
-            label="URL 등록"
-            name="url"
-            placeholder="포트폴리오 URL 입력"
-            value={portfolioUrl}
-            onChange={(e) => setPortfolioUrl(e.target.value)}
-            className="mt-4"
+            onChange={(e) => setPortfolioFile(e.target.files?.[0] || null)}
           />
         </div>
 
