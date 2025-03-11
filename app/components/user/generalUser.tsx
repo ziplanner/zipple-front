@@ -31,7 +31,7 @@ const GeneralUser = () => {
   const [userInfoData, setUserInfoData] = useState({
     name: "",
     generalName: "",
-    type: userInfo?.roleName === "GENERAL" ? "일반" : "공인중개사",
+    type: userInfo?.roleName === "일반" ? "일반" : "공인중개사",
     phone: "010-1234-5678",
     email: "",
     address: "",

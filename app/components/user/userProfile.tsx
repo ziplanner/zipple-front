@@ -73,7 +73,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
               width={0}
               height={0}
               sizes="100vw"
-              className="w-auto h-auto object-cover rounded-full"
+              className="w-full h-full object-cover rounded-full"
             />
           </div>
           <div className="flex flex-col lg:h-80 md:h-64 py-1 justify-between">

@@ -1,10 +1,26 @@
-import { REVIEWS } from "../apiUrl";
+import { MAIN_REVIEW, REVIEWS } from "../apiUrl";
 import axiosInstance from "../axiosInstance";
 
 // 리뷰 조회
-export const getReviews = async (agentId: string) => {
+// export const getReviews = async (agentId: string) => {
+//   try {
+//     const response = await axiosInstance.get(`${REVIEWS}/${agentId}`);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching agent profile detail:", error);
+//     throw error;
+//   }
+// };
+
+export const getReviews = async (
+  agentId: string,
+  page: number = 1,
+  size: number = 10
+) => {
   try {
-    const response = await axiosInstance.get(`${REVIEWS}/${agentId}`);
+    const response = await axiosInstance.get(`${MAIN_REVIEW}/${agentId}`, {
+      params: { page: page - 1, size },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching agent profile detail:", error);

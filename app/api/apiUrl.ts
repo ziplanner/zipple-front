@@ -22,6 +22,7 @@ export const MAIN_MATCHING = "/api/v1/main/matching";
 export const MAIN_MATCHING_CATEGORY = "/api/v1/main/matching/category";
 export const MAIN_PORTFOLIO = "/api/v1/main/portfolio";
 export const MAIN_PROFILE_DETAIL = "/api/v1/main/profile/detail";
+export const MAIN_REVIEW = "/api/v1/main/review";
 
 // 일반회원 마이페이지
 export const MYPAGE_GENERAL = "/api/v1/mypage/general";

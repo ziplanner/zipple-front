@@ -4,6 +4,7 @@ import { MdFavorite } from "react-icons/md";
 import Image, { StaticImageData } from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { FaRegStar, FaStar, FaUserCircle } from "react-icons/fa";
+import { likeAgent, unlikeAgent } from "@/app/api/like/api";
 
 interface ProfileCardProps {
   professional: {
@@ -12,6 +13,7 @@ interface ProfileCardProps {
     company: string;
     reviewCount: number;
     likeCount: number;
+    liked: boolean;
     starRating: number;
     description: string;
     agentName: string;
@@ -25,7 +27,7 @@ interface ProfileCardProps {
 const MatchCard = ({ professional }: ProfileCardProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [liked, setLiked] = useState<boolean>(false);
+  const [liked, setLiked] = useState<boolean>(professional.liked);
   const [likeCountValue, setLikeCountValue] = useState<number>(
     professional.likeCount
   );
@@ -42,13 +44,21 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
     .fill(false)
     .map((_, index) => index < professional.starRating);
 
-  const handleLike = () => {
-    if (liked) {
-      setLikeCountValue(likeCountValue - 1);
-    } else {
-      setLikeCountValue(likeCountValue + 1);
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // 부모 클릭 이벤트 방지
+
+    try {
+      if (liked) {
+        await unlikeAgent(professional.agentId);
+        setLikeCountValue((prev) => prev - 1);
+      } else {
+        await likeAgent(professional.agentId);
+        setLikeCountValue((prev) => prev + 1);
+      }
+      setLiked(!liked);
+    } catch (error) {
+      console.error("좋아요 요청 실패:", error);
     }
-    setLiked(!liked);
   };
 
   return (
@@ -106,10 +116,7 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
                     className={`md:text-h1_contents_title text-mobile_h1_contents_title cursor-pointer ${
                       liked ? "text-point" : "text-sub3"
                     }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLike();
-                    }}
+                    onClick={handleLike}
                   />
                   <p className="text-body4_r text-text_sub4">
                     {likeCountValue}

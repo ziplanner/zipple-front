@@ -31,6 +31,7 @@ const Header = () => {
   const [isMobileLoginModalOpen, setIsMobileLoginModalOpen] =
     useState<boolean>(false);
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const isLoggedIn = !!accessToken;
 
@@ -59,11 +60,12 @@ const Header = () => {
   const fetchUserInfo = async () => {
     try {
       const data = await getUserInfo();
-      console.log("🚀 유저 정보 가져오기:", data);
+      console.log("유저 정보 가져오기:", data);
       setUserInfo(data);
 
-      if (data.roleName === "NOT_REGISTERED" && pathname !== "/signup") {
-        router.push("/signup");
+      // roleName이 "미등록"이고 현재 페이지가 "/signup"이 아닐 때 Alert 표시
+      if (data.roleName === "미등록" && pathname !== "/signup") {
+        setShowAlert(true);
       }
     } catch (err) {
       console.error("유저 정보 가져오기 실패:", err);
@@ -216,11 +218,24 @@ const Header = () => {
                   </span>
                 </div>
                 {/* 프로필 + 닉네임 + 로그아웃 */}
-                <div className="flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-full">
-                  <User
-                    className="w-6 h-6 text-gray-600 cursor-pointer"
-                    onClick={handleMypageClick}
-                  />
+                <div
+                  className="flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-full cursor-pointer"
+                  onClick={handleMypageClick}
+                >
+                  {userInfo?.profileUrl ? (
+                    <Image
+                      src={userInfo?.profileUrl}
+                      alt={userInfo?.nickname}
+                      width={28}
+                      height={28}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <User
+                      className="w-6 h-6 text-gray-600"
+                      onClick={handleMypageClick}
+                    />
+                  )}
                   <p className="text-gray-800 font-medium">
                     {userInfo?.nickname}님
                   </p>
@@ -258,6 +273,16 @@ const Header = () => {
           onCancel={() => setIsAlertOpen(false)}
           confirmText="로그아웃"
           cancelText="취소"
+        />
+      )}
+      {showAlert && (
+        <AlertWithBtn
+          title="회원가입 필요"
+          message="회원가입을 완료하고 더 많은 서비스를 이용해보세요!"
+          onConfirm={() => router.push("/signup")}
+          onCancel={() => setShowAlert(false)}
+          confirmText="가입하기"
+          cancelText="나중에"
         />
       )}
     </div>

@@ -10,6 +10,8 @@ import ReviewBottomSheet from "@/app/components/bottomSheet/reviewBottomSheet";
 import FloatingWriteButton from "@/app/components/button/floating/writeBtn";
 import ReviewModal from "@/app/components/modal/reviewModal";
 import useResponsive from "@/app/hook/useResponsive";
+import { useUserInfoStore } from "@/app/providers/userStoreProvider";
+import Pagination from "@/app/components/pagination/pagination";
 
 interface ReviewDetail {
   reviewId: number;
@@ -26,12 +28,21 @@ const ReviewMainSection = () => {
   const isMd = useResponsive("md");
   const searchParams = useSearchParams();
   const agentId = searchParams.get("id");
+  const { userInfo } = useUserInfoStore((state) => state);
 
   const [reviews, setReviews] = useState<ReviewDetail[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  const pageSize = 10;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const fetchReviews = async () => {
     if (!agentId) return;
@@ -40,8 +51,10 @@ const ReviewMainSection = () => {
     setError(null);
 
     try {
-      const data = await getReviews(agentId);
+      const data = await getReviews(agentId, currentPage, pageSize);
       setReviews(data);
+      setTotalPages(data.totalPages || 1);
+
       console.log("📌 최신 리뷰 데이터:", data);
     } catch (err) {
       console.error("Error fetching reviews:", err);
@@ -103,7 +116,7 @@ const ReviewMainSection = () => {
       {loading && <Skeleton />}
 
       <div className="w-full">
-        <div className="md:space-y-6 space-y-4">
+        <div className="min-h-screen md:space-y-6 space-y-4">
           {reviews.length > 0
             ? reviews.map((review) => (
                 <ReviewCard
@@ -117,32 +130,45 @@ const ReviewMainSection = () => {
                 />
               ))
             : !loading && (
-                <div className="min-h-screen flex justify-center items-center">
+                <div className="flex justify-center items-center">
                   <p className="text-center text-gray-500 text-mobile_body2_m md:text-body1_m">
                     리뷰가 없습니다.
                   </p>
                 </div>
               )}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
 
       {/* 글쓰기 버튼 */}
-      <FloatingWriteButton onClick={handleWriteClick} />
+      {userInfo?.userId !== agentId && (
+        <div className="fixed bottom-5 right-5 z-40">
+          <FloatingWriteButton onClick={handleWriteClick} />
+        </div>
+      )}
 
       {/* 리뷰 모달 */}
       {isReviewOpen &&
         (isMd ? (
-          <ReviewModal
-            onClose={handleClose}
-            onSubmit={handleReviewSubmit}
-            agentId={agentId || ""}
-          />
+          <div className="fixed inset-0 z-50">
+            <ReviewModal
+              onClose={handleClose}
+              onSubmit={handleReviewSubmit}
+              agentId={agentId || ""}
+            />
+          </div>
         ) : (
-          <ReviewBottomSheet
-            onClose={handleClose}
-            onSubmit={handleReviewSubmit}
-            agentId={agentId || ""}
-          />
+          <div className="fixed inset-0 z-50">
+            <ReviewBottomSheet
+              onClose={handleClose}
+              onSubmit={handleReviewSubmit}
+              agentId={agentId || ""}
+            />
+          </div>
         ))}
 
       {/* 알림 메시지 */}

@@ -8,11 +8,14 @@ import useResponsive from "@/app/hook/useResponsive";
 import ReviewBottomSheet from "@/app/components/bottomSheet/reviewBottomSheet";
 import { UserProfileData } from "@/app/types/user";
 import Alert from "@/app/components/alert/alert";
+import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 
 const MainSection = () => {
   const isMd = useResponsive("md");
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const { userInfo } = useUserInfoStore((state) => state);
+
   const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -59,30 +62,42 @@ const MainSection = () => {
   }, [id]);
 
   return (
-    <div className="flex w-full pt-10">
+    <div className="flex w-full pt-10 relative">
       <UserProfile
         userProfile={userProfile}
         agentId={id}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      {/* 글쓰기 버튼 */}
-      <FloatingWriteButton onClick={handleWriteClick} />
+
       {/* 리뷰 모달 */}
       {isReviewOpen &&
         (isMd ? (
-          <ReviewModal
-            onClose={handleClose}
-            onSubmit={handleReviewSubmit}
-            agentId={id || ""}
-          />
+          <div className="fixed inset-0 z-50">
+            <ReviewModal
+              onClose={handleClose}
+              onSubmit={handleReviewSubmit}
+              agentId={id || ""}
+            />
+          </div>
         ) : (
-          <ReviewBottomSheet
-            onClose={handleClose}
-            onSubmit={handleReviewSubmit}
-            agentId={id || ""}
-          />
+          <div className="fixed inset-0 z-50">
+            <ReviewBottomSheet
+              onClose={handleClose}
+              onSubmit={handleReviewSubmit}
+              agentId={id || ""}
+            />
+          </div>
         ))}
+
+      {/* 글쓰기 버튼 */}
+      {userInfo?.userId !== id && (
+        <div className="fixed bottom-5 right-5 z-40">
+          <FloatingWriteButton onClick={handleWriteClick} />
+        </div>
+      )}
+
+      {/* 알림 메시지 */}
       {alertMessage && <Alert message={alertMessage} duration={1500} />}
     </div>
   );
