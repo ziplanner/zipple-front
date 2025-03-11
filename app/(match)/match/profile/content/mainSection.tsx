@@ -16,6 +16,9 @@ const MainSection = () => {
   const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"reviews" | "portfolio">(
+    "portfolio"
+  );
 
   const handleWriteClick = () => {
     setIsReviewOpen(true);
@@ -25,17 +28,20 @@ const MainSection = () => {
     setIsReviewOpen(false);
   };
 
-  const handleReviewSubmit = (reviewData: {
+  const handleReviewSubmit = async (reviewData: {
     content: string;
     starCount: number;
   }) => {
     console.log("리뷰 데이터 제출:", reviewData);
     setIsReviewOpen(false);
-
     setAlertMessage("리뷰가 성공적으로 등록되었습니다!");
 
+    // 리뷰 등록 후 activeTab을 "reviews"로 변경
+    setActiveTab("reviews");
+
+    // 일정 시간 후 알림 메시지 숨기기
     setTimeout(() => {
-      window.location.reload();
+      setAlertMessage(null);
     }, 1500);
   };
 
@@ -54,11 +60,14 @@ const MainSection = () => {
 
   return (
     <div className="flex w-full pt-10">
-      <UserProfile userProfile={userProfile} agentId={id} />
-
+      <UserProfile
+        userProfile={userProfile}
+        agentId={id}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       {/* 글쓰기 버튼 */}
       <FloatingWriteButton onClick={handleWriteClick} />
-
       {/* 리뷰 모달 */}
       {isReviewOpen &&
         (isMd ? (
