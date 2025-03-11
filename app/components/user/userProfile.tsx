@@ -18,13 +18,17 @@ import LoadingSpinner from "../loading/loadingSpinner";
 interface UserProfileProps {
   userProfile: UserProfileData | null;
   agentId: string | null;
+  activeTab: "reviews" | "portfolio";
+  setActiveTab: (tab: "reviews" | "portfolio") => void;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ userProfile, agentId }) => {
+const UserProfile: React.FC<UserProfileProps> = ({
+  userProfile,
+  agentId,
+  activeTab,
+  setActiveTab,
+}) => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"reviews" | "portfolio">(
-    "portfolio"
-  );
 
   if (!userProfile) {
     return <LoadingSpinner />;
