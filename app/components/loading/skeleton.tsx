@@ -1,6 +1,6 @@
 const SkeletonCard = () => {
   return (
-    <div className="animate-pulse bg-gray-200 rounded-lg w-full h-40"></div>
+    <div className="animate-pulse bg-gray-200 rounded-lg w-full h-28 md:h-40" />
   );
 };
 
