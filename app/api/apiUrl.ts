@@ -13,6 +13,8 @@ export const SING_UP_GENERAL = "/api/v1/email/general";
 
 // 유저 정보
 export const USER = "/api/auth/role";
+export const GENERAL_REGISTER = "/api/v1/register/general";
+export const AGENT_REGISTER = "/api/v1/register/agent";
 
 // 메인 페이지
 export const MAIN = "/api/v1/main";
