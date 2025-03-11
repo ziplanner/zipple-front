@@ -17,11 +17,11 @@ const PortfolioCard = ({ data }: portfolioData) => {
   const handleRouter = (id: number) => {
     // router.push(`/portfolio/detail?id=${id}`);
 
-    if (pathname.includes("/user")) {
-      router.push(`/portfolio/detail`);
-    } else {
-      router.push(`/portfolio/detail?id=${id}`);
-    }
+    // if (pathname.includes("/mypage")) {
+    //   router.push(`/portfolio/detail`);
+    // } else {
+    router.push(`/portfolio/detail?id=${id}`);
+    // }
   };
 
   return (
@@ -35,11 +35,12 @@ const PortfolioCard = ({ data }: portfolioData) => {
           <div className="relative lg:min-w-[200px] w-full aspect-square">
             <Image
               src={item.portfolioImage || defaultImage}
-              alt={item.title}
+              alt={item.title || "이미지"}
               width={0}
               height={0}
               sizes="100vw"
               className="w-auto h-auto rounded-xl"
+              unoptimized
             />
           </div>
           <div className="flex flex-col w-full">
