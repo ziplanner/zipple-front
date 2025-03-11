@@ -46,7 +46,7 @@ const Header = () => {
   const confirmLogout = async () => {
     sessionStorage.removeItem("accessToken");
     signOut();
-    clearUserInfo(); // ✅ 로그아웃 시 userInfo도 초기화
+    clearUserInfo();
     setIsAlertOpen(false);
     router.push("/");
   };
@@ -61,8 +61,12 @@ const Header = () => {
       const data = await getUserInfo();
       console.log("🚀 유저 정보 가져오기:", data);
       setUserInfo(data);
+
+      if (data.roleName === "NOT_REGISTERED" && pathname !== "/signup") {
+        router.push("/signup");
+      }
     } catch (err) {
-      console.error("❌ 유저 정보 가져오기 실패:", err);
+      console.error("유저 정보 가져오기 실패:", err);
     }
   };
 
