@@ -8,27 +8,25 @@ import InputWithButton from "../input/inputWithButton";
 import PrimaryBtn from "../button/primaryBtn";
 import RoundPlusBtn from "../button/roundPlusBtn";
 import CustomTextarea from "../textarea/customTextarea";
+import { createMyPortfolio } from "@/app/api/mypage/api";
 
 export interface PortfolioModalProps {
   onClose: () => void;
-  onSubmit: (data: {
-    title: string;
-    details: string;
-    images: string[];
-    file?: File | null;
-    url?: string;
-  }) => void;
+  onPortfolioCreated: () => void;
 }
 
 const MAX_IMAGES = 10;
 
-const PortfolioModal = ({ onClose, onSubmit }: PortfolioModalProps) => {
+const PortfolioModal = ({
+  onClose,
+  onPortfolioCreated,
+}: PortfolioModalProps) => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [title, setTitle] = useState<string>("");
   const [details, setDetails] = useState<string>("");
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
   const [portfolioUrl, setPortfolioUrl] = useState<string>("");
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -62,9 +60,9 @@ const PortfolioModal = ({ onClose, onSubmit }: PortfolioModalProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      const newImages: string[] = [];
       const maxFileSize = 100 * 1024 * 1024;
       const allowedExtensions = ["image/png", "image/jpeg"];
+      const newFiles: File[] = [];
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -78,19 +76,10 @@ const PortfolioModal = ({ onClose, onSubmit }: PortfolioModalProps) => {
           return;
         }
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (e.target?.result) {
-            setUploadedImages((prev) => {
-              if (prev.length < MAX_IMAGES) {
-                return [...prev, e.target!.result as string];
-              }
-              return prev;
-            });
-          }
-        };
-        reader.readAsDataURL(file);
+        newFiles.push(file);
       }
+
+      setUploadedImages((prev) => [...prev, ...newFiles].slice(0, MAX_IMAGES));
     }
   };
 
@@ -101,16 +90,37 @@ const PortfolioModal = ({ onClose, onSubmit }: PortfolioModalProps) => {
     }
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onSubmit({
-        title,
-        details,
-        images: uploadedImages,
-        file: portfolioFile,
-        url: portfolioUrl.trim() || undefined,
-      });
-      onClose();
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    const formData = new FormData();
+    formData.append("portfolioTitle", title);
+    formData.append("portfolioContent", details);
+
+    uploadedImages.forEach((image) => {
+      formData.append("portfolioImages", image);
+    });
+
+    if (portfolioFile) {
+      formData.append("portfolioFile", portfolioFile);
+    }
+
+    if (portfolioUrl.trim()) {
+      formData.append("portfolioUrl", portfolioUrl.trim());
+    }
+
+    try {
+      await createMyPortfolio(formData);
+      setAlertMessage("포트폴리오가 성공적으로 등록되었습니다.");
+
+      setTimeout(() => {
+        setAlertMessage(null);
+        onPortfolioCreated();
+        onClose();
+      }, 2000);
+    } catch (error) {
+      console.error("포트폴리오 등록 실패:", error);
+      setAlertMessage("포트폴리오 등록 중 오류가 발생했습니다.");
     }
   };
 
@@ -167,18 +177,13 @@ const PortfolioModal = ({ onClose, onSubmit }: PortfolioModalProps) => {
             name={""}
             className="mb-4"
           />
+
           {/* 이미지 업로드 */}
           <label className="text-body2_r text-text_sub4 mb-1">이미지</label>
           <div className="flex flex-wrap gap-2 items-center">
             {uploadedImages.map((image, index) => (
               <div key={index} className="relative">
-                <Image
-                  src={image}
-                  alt={`Uploaded ${index}`}
-                  width={100}
-                  height={100}
-                  className="rounded-lg object-cover w-[100px] h-[100px]"
-                />
+                <p className="text-sm">{image.name}</p>
                 <button
                   onClick={() => handleImageDelete(index)}
                   className="absolute top-0 right-0 translate-x-1/5 translate-y-1/5 mr-2 mt-2"
@@ -187,23 +192,21 @@ const PortfolioModal = ({ onClose, onSubmit }: PortfolioModalProps) => {
                 </button>
               </div>
             ))}
-
             {uploadedImages.length < MAX_IMAGES && (
-              <label className="flex w-[100px] h-[100px] justify-center items-center">
-                <input
-                  ref={imageInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                <RoundPlusBtn onClick={triggerFileInput} className="p-3" />
-              </label>
+              <RoundPlusBtn onClick={triggerFileInput} className="p-3" />
             )}
           </div>
 
           {/* 파일 업로드 */}
+          <input
+            type="file"
+            className="hidden"
+            ref={imageInputRef}
+            multiple
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+
           <InputWithButton
             label="파일 업로드"
             name="file"
@@ -211,22 +214,6 @@ const PortfolioModal = ({ onClose, onSubmit }: PortfolioModalProps) => {
             onChange={() => {}}
             buttonText="첨부"
             onButtonClick={() => fileInputRef.current?.click()}
-            className="mt-4"
-          />
-          <input
-            type="file"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-          />
-
-          {/* URL 입력 */}
-          <CustomInput
-            label="URL 등록"
-            name="url"
-            placeholder="포트폴리오 URL 입력"
-            value={portfolioUrl}
-            onChange={(e) => setPortfolioUrl(e.target.value)}
             className="mt-4"
           />
         </div>

@@ -7,23 +7,18 @@ import { FaRegStar, FaStar, FaUserCircle } from "react-icons/fa";
 
 interface ProfileCardProps {
   professional: {
-    // id: string;
-    // profileImage: string | StaticImageData;
-    // name: string;
+    agentId: string;
+    profileUrl: string | StaticImageData;
     company: string;
-    // title: string;
-    // portfolioCount: number;
     reviewCount: number;
-    // area: string;
-    rating: number;
+    likeCount: number;
+    starRating: number;
     description: string;
-    // === api response ===
     agentName: string;
     agentSpecialty: string;
     portfolioCount: number;
-    profileUrl: string;
     title: string;
-    userId: number;
+    singleHouseholdExpert: boolean;
   };
 }
 
@@ -31,25 +26,27 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const [liked, setLiked] = useState<boolean>(false);
-  const [likeCount, setLikeCount] = useState<number>(0);
+  const [likeCountValue, setLikeCountValue] = useState<number>(
+    professional.likeCount
+  );
 
   const handleGoToProfile = () => {
     if (pathname.includes("/service")) {
       router.push(`/user`);
     } else {
-      router.push(`/match/profile?id=${professional.userId}`);
+      router.push(`/match/profile?id=${professional.agentId}`);
     }
   };
 
   const stars = Array(5)
     .fill(false)
-    .map((_, index) => index < professional.rating);
+    .map((_, index) => index < professional.starRating);
 
   const handleLike = () => {
     if (liked) {
-      setLikeCount(likeCount - 1);
+      setLikeCountValue(likeCountValue - 1);
     } else {
-      setLikeCount(likeCount + 1);
+      setLikeCountValue(likeCountValue + 1);
     }
     setLiked(!liked);
   };
@@ -114,7 +111,9 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
                       handleLike();
                     }}
                   />
-                  <p className="text-body4_r text-text_sub4">{likeCount}</p>
+                  <p className="text-body4_r text-text_sub4">
+                    {likeCountValue}
+                  </p>
                 </div>
               </div>
             </div>

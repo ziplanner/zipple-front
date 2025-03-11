@@ -13,20 +13,30 @@ import {
 } from "react-icons/fa";
 import { Home, Mail, MapPin, Phone, User } from "lucide-react";
 import { MdPerson } from "react-icons/md";
+import { getGeneralUserInfo, updateGeneralUserInfo } from "@/app/api/user/api";
+import { useUserInfoStore } from "@/app/providers/userStoreProvider";
+import { withdrawAccount } from "@/app/api/login/api";
+import AlertWithBtn from "../alert/alertwithBtn";
+import { CATEGORY_LIST } from "@/app/types/category";
+import CustomDropdown from "../dropdown/customDropdown";
 
 const GeneralUser = () => {
   const router = useRouter();
+  const { userInfo } = useUserInfoStore((state) => state);
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDaumLoaded, setIsDaumLoaded] = useState<boolean>(false);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
-  const [userInfo, setUserInfo] = useState({
-    name: "김이름",
-    type: "일반", // 회원 유형 ("일반" | "개업(대표)" | "공인중개사")
+  const [userInfoData, setUserInfoData] = useState({
+    name: "",
+    generalName: "",
+    type: userInfo?.roleName === "GENERAL" ? "일반" : "공인중개사",
     phone: "010-1234-5678",
-    email: "abc@gmail.com",
-    address: "서울 동대문구 천호대로 405",
+    email: "",
+    address: "",
     portfolio: "",
-    residence: "아파트",
+    residence: "",
     activities: [
       { name: "찜 목록 관리", url: "/wishlist" },
       { name: "집플래너", url: "/house-planner" },
@@ -38,11 +48,65 @@ const GeneralUser = () => {
     ],
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+  const handleResidenceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setUserInfoData((prev) => ({ ...prev, residence: e.target.value }));
   };
 
-  // ✅ 카카오 API 로드 감지
+  const fetchGeneralUserInfo = async () => {
+    try {
+      const data = await getGeneralUserInfo();
+
+      setUserInfoData((prev) => ({
+        ...prev,
+        name: data.name,
+        generalName: data.generalName,
+        email: data.email,
+        address: data.generalAddress,
+        residence: data.housingType,
+      }));
+    } catch (err) {
+      console.error("유저 정보 가져오기 실패:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchGeneralUserInfo();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const updatedUserData = {
+        generalName: userInfoData.generalName,
+        email: userInfoData.email,
+        phoneNumber: userInfoData.phone,
+        generalAddress: userInfoData.address,
+        housingType: userInfoData.residence,
+      };
+
+      await updateGeneralUserInfo(updatedUserData);
+      alert("정보가 성공적으로 수정되었습니다!");
+
+      setIsEditing(false);
+    } catch (error) {
+      alert("정보 수정에 실패했습니다.");
+      console.error("유저 정보 수정 실패:", error);
+    }
+  };
+
+  const handleWithdraw = () => {
+    setIsAlertOpen(true);
+  };
+
+  const confirmWithdraw = async () => {
+    setIsAlertOpen(false);
+    await withdrawAccount();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInfoData({ ...userInfoData, [e.target.name]: e.target.value });
+  };
+
+  // 카카오 API 로드 감지
   useEffect(() => {
     const checkDaumAPI = setInterval(() => {
       if (typeof window !== "undefined" && window.daum) {
@@ -54,7 +118,7 @@ const GeneralUser = () => {
     return () => clearInterval(checkDaumAPI);
   }, []);
 
-  // ✅ 주소 검색 (카카오 API 사용)
+  // 주소 검색 (카카오 API 사용)
   const handleAddressSearch = () => {
     if (!isDaumLoaded) {
       alert(
@@ -65,7 +129,7 @@ const GeneralUser = () => {
 
     new window.daum.Postcode({
       oncomplete: (data: any) => {
-        setUserInfo((prev) => ({ ...prev, address: data.address }));
+        setUserInfoData((prev) => ({ ...prev, address: data.address }));
       },
     }).open();
   };
@@ -85,13 +149,15 @@ const GeneralUser = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <h2 className="mt-4 text-h4_sb md:text-h3">{userInfo.name}</h2>
+          <h2 className="mt-4 text-h4_sb md:text-h3">
+            {userInfoData.generalName}
+          </h2>
           {/* 회원 유형 + 인증 배지 */}
           <div className="flex items-center gap-2">
-            <p className="text-gray-600">{userInfo.type}</p>
+            <p className="text-gray-600">{userInfoData.type}</p>
 
             {/* 개업(대표)회원 및 공인중개사 회원에게만 체크 배지 표시 */}
-            {userInfo.type !== "일반회원" && (
+            {userInfoData.type !== "일반회원" && (
               <span className="bg-primary text-white text-10 px-0.5 py-0.5 rounded-full flex items-center gap-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +189,7 @@ const GeneralUser = () => {
               </div>
             </div>
             <button
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
               className="px-3 py-1 text-body3_sb bg-white border border-text_sub3 rounded shadow-sm"
             >
               {isEditing ? "저장" : "수정"}
@@ -136,25 +202,25 @@ const GeneralUser = () => {
               <CustomInput
                 label="이름"
                 name="name"
-                value={userInfo.name}
+                value={userInfoData.generalName || "이름 없음"}
                 onChange={handleChange}
               />
               <CustomInput
                 label="전화번호"
                 name="phone"
-                value={userInfo.phone}
+                value={userInfoData.phone}
                 onChange={handleChange}
               />
               <CustomInput
                 label="이메일"
                 name="email"
-                value={userInfo.email}
+                value={userInfoData.email}
                 onChange={handleChange}
               />
               <InputWithButton
                 label="주소"
                 name="address"
-                value={userInfo.address}
+                value={userInfoData.address}
                 onChange={handleChange}
                 buttonText={"검색"}
                 onButtonClick={handleAddressSearch}
@@ -163,14 +229,18 @@ const GeneralUser = () => {
                 label="포트폴리오"
                 name="portfolio"
                 placeholder="포트폴리오 링크 입력"
-                value={userInfo.portfolio}
+                value={userInfoData.portfolio}
                 onChange={handleChange}
               />
-              <CustomInput
+              <CustomDropdown
                 label="거주 형태"
                 name="residence"
-                value={userInfo.residence}
-                onChange={handleChange}
+                value={userInfoData.residence}
+                onChange={handleResidenceChange}
+                options={CATEGORY_LIST.map((category) => ({
+                  label: category,
+                  value: category,
+                }))}
               />
             </>
           ) : (
@@ -185,7 +255,7 @@ const GeneralUser = () => {
                   <MdPerson />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.name}
+                  {userInfoData.generalName}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -194,7 +264,7 @@ const GeneralUser = () => {
                   <FaPhone />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.phone}
+                  {userInfoData.phone}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -203,7 +273,7 @@ const GeneralUser = () => {
                   {/* 📧 이메일 */}
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.email}
+                  {userInfoData.email}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -212,7 +282,7 @@ const GeneralUser = () => {
                   <FaMapMarkerAlt />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.address}
+                  {userInfoData.address}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-1 ml-4">
@@ -221,18 +291,17 @@ const GeneralUser = () => {
                   <FaHome />
                 </p>
                 <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                  {userInfo.residence}
+                  {userInfoData.residence}
                 </p>
               </div>
             </>
           )}
         </div>
-
         <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
           활동 정보
         </h3>
         <ul className="border-t pt-3 ml-3">
-          {userInfo.activities.map((activity, index) => (
+          {userInfoData.activities.map((activity, index) => (
             <li
               key={index}
               className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
@@ -258,7 +327,7 @@ const GeneralUser = () => {
           커뮤니티
         </h3>
         <ul className="border-t pt-3 ml-3">
-          {userInfo.community.map((item, index) => (
+          {userInfoData.community.map((item, index) => (
             <li
               key={index}
               className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
@@ -268,7 +337,32 @@ const GeneralUser = () => {
             </li>
           ))}
         </ul>
+        <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
+          서비스
+        </h3>
+        <ul className="border-t pt-3 ml-3">
+          <li className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline">
+            문의하기
+          </li>
+          <li
+            className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
+            onClick={handleWithdraw}
+          >
+            회원 탈퇴
+          </li>
+        </ul>
       </div>
+      {/* 알림 창 조건부 렌더링 */}
+      {isAlertOpen && (
+        <AlertWithBtn
+          title="회원 탈퇴"
+          message="정말 회원 탈퇴를 진행하시겠습니까?"
+          onConfirm={confirmWithdraw}
+          onCancel={() => setIsAlertOpen(false)}
+          confirmText="탈퇴"
+          cancelText="취소"
+        />
+      )}
     </div>
   );
 };

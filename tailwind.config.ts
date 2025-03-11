@@ -89,6 +89,7 @@ export default {
         h1_m: ["32px", { fontWeight: 500, lineHeight: "48px" }],
         h1_r: ["32px", { fontWeight: 400, lineHeight: "48px" }],
         h1_s: ["32px", { fontWeight: 100, lineHeight: "48px" }],
+        h2_large_bold: ["28px", { fontWeight: 700, lineHeight: "42px" }],
         h2_large: ["28px", { fontWeight: 600, lineHeight: "42px" }],
         h3_large: ["24px", { fontWeight: 600, lineHeight: "33px" }],
         h3_s: ["24px", { fontWeight: 100, lineHeight: "33px" }],

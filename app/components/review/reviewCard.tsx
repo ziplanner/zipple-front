@@ -1,10 +1,11 @@
 import React from "react";
-import Image, { StaticImageData } from "next/image";
-import { FaStar, FaRegStar } from "react-icons/fa";
+import Image from "next/image";
+import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
+import { formatToKoreanDate } from "@/app/utils/formatToDate";
 
 interface ReviewProps {
   name: string;
-  imageUrl: string | StaticImageData;
+  imageUrl: string;
   title: string;
   description: string;
   rating: number;
@@ -19,9 +20,11 @@ const ReviewCard = ({
   rating,
   date,
 }: ReviewProps) => {
-  const stars = Array(5)
-    .fill(false)
-    .map((_, index) => index < rating);
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  const formatted = formatToKoreanDate(date);
 
   return (
     <div
@@ -41,7 +44,6 @@ const ReviewCard = ({
             />
           </div>
           <div className="flex flex-row w-full justify-between">
-            {/* 텍스트 및 별 */}
             <div className="flex flex-col gap-1">
               <div className="flex flex-row items-center gap-1.5">
                 <p className="text-body1_m font-semibold text-text">{name}</p>
@@ -50,24 +52,26 @@ const ReviewCard = ({
                 </p>
               </div>
               <div className="flex gap-1 md:text-body3_r text-mobile_body4_r">
-                {stars.map((isFilled, index) =>
-                  isFilled ? (
-                    <FaStar key={index} className="text-star" />
-                  ) : (
-                    <FaRegStar key={index} className="text-star" />
-                  )
+                {[...Array(fullStars)].map((_, index) => (
+                  <FaStar key={`full-${index}`} className="text-star" />
+                ))}
+                {hasHalfStar && (
+                  <FaStarHalfAlt key="half-star" className="text-star" />
                 )}
+                {[...Array(emptyStars)].map((_, index) => (
+                  <FaRegStar key={`empty-${index}`} className="text-star" />
+                ))}
               </div>
             </div>
-            <p className="text-body4_r text-sub3">{date}</p>
+            <p className="text-body4_r text-sub3">{formatted.yyyyDotMmDotDd}</p>
           </div>
         </div>
 
         {/* Title and Description */}
         <div className="flex flex-col mt-6">
-          <h3 className="text-mobile_h3 md:text-h3 text-text line-clamp-2">
+          {/* <h3 className="text-mobile_h3 md:text-h3 text-text line-clamp-2">
             {title}
-          </h3>
+          </h3> */}
           <p className="text-mobile_body3_r md:text-body2_r text-text_sub4 mt-1 line-clamp-2">
             {description}
           </p>

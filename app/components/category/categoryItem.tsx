@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface CategoryItemProps {
   icon: string;
@@ -7,8 +8,17 @@ interface CategoryItemProps {
 }
 
 const CategoryItem: React.FC<CategoryItemProps> = ({ icon, label }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/match?category=${encodeURIComponent(label)}`);
+  };
+
   return (
-    <div className="flex flex-col items-center gap-2 md:gap-3 py-2 px-2 md:py-6 md:px-6">
+    <div
+      className="flex flex-col items-center gap-2 md:gap-3 py-2 px-2 md:py-6 md:px-6 cursor-pointer"
+      onClick={handleClick}
+    >
       <div className="flex items-center justify-center bg-sub2 rounded-[40px] w-[60px] h-[60px] md:w-[118px] md:h-[118px]">
         <Image
           src={icon}

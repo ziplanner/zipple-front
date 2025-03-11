@@ -1,17 +1,14 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LoginLoading from "./loginLoading";
 import { getTokenWithCode } from "@/app/api/login/api";
-import axiosInstance from "@/app/api/axiosInstance";
-import HeaderToken from "@/app/api/headerToken";
-import { useUserStore } from "@/app/providers/user-store-provider";
+import { authStore } from "@/app/stores/userStore";
 
 export default function SignInPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn } = useUserStore((state) => state);
 
   useEffect(() => {
     const kakaoCode = searchParams.get("code");
@@ -19,23 +16,27 @@ export default function SignInPageContent() {
 
     getTokenWithCode(kakaoCode)
       .then((res) => {
-        signIn(res.accessToken, res.isRegistered);
+        // Zustand store에 저장 (refreshToken이 있다면 포함)
+        authStore
+          .getState()
+          .signIn(res.accessToken, res.refreshToken || "", res.isRegistered);
 
+        // sessionStorage에도 저장
         if (typeof window !== "undefined") {
           sessionStorage.setItem("accessToken", res.accessToken);
         }
 
-        HeaderToken.set(res.accessToken);
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `${res.accessToken}`;
-
+        // axiosInstance의 Authorization 헤더는 인터셉터에서 자동 추가되므로 직접 설정 불필요
         router.replace(res.isRegistered ? "/" : "/");
       })
       .catch(() => {
         router.replace("/");
       });
-  }, [searchParams, router, signIn]);
+  }, [searchParams, router]);
 
-  return <LoginLoading />;
+  return (
+    <div className="min-h-screen">
+      <LoginLoading />
+    </div>
+  );
 }

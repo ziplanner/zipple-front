@@ -39,7 +39,7 @@ const LoginModal = ({ onClose }: LoginDialogProps) => {
       style={{ zIndex: 1000 }}
     >
       <div className="absolute inset-0" onClick={onClose} />
-      <div className="relative justify-items-center w-[430px] px-5 pb-9 pt-[72px] bg-background rounded-2xl">
+      <div className="relative justify-items-center bg-white w-[430px] px-5 pb-9 pt-[72px] bg-background rounded-2xl">
         <div className="absolute top-4 right-4">
           <Image
             src={close}

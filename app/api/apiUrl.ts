@@ -11,9 +11,15 @@ export const LOGIN = "api/v1/email/login";
 export const SING_UP_AGENT = "/api/v1/email/agent";
 export const SING_UP_GENERAL = "/api/v1/email/general";
 
+// 유저 정보
+export const USER = "/api/auth/role";
+export const GENERAL_REGISTER = "/api/v1/register/general";
+export const AGENT_REGISTER = "/api/v1/register/agent";
+
 // 메인 페이지
 export const MAIN = "/api/v1/main";
 export const MAIN_MATCHING = "/api/v1/main/matching";
+export const MAIN_MATCHING_CATEGORY = "/api/v1/main/matching/category";
 export const MAIN_PORTFOLIO = "/api/v1/main/portfolio";
 export const MAIN_PROFILE_DETAIL = "/api/v1/main/profile/detail";
 
@@ -22,5 +28,12 @@ export const MYPAGE_GENERAL = "/api/v1/mypage/general";
 
 // 공인중개사 마이페이지
 export const MYPAGE_AGENT = "/api/v1/mypage/agent";
-export const MYPAGE_DETAIL_AGENT = "/api/v1/mypage/agent/detail";
-export const MYPAGE_PORTFOLIO_AGENT = "/api/v1/mypage/agent/portfolio";
+export const MYPAGE_AGENT_ALL = "/api/v1/mypage/agent/all";
+export const MYPAGE_AGENT_DETAIL = "/api/v1/mypage/agent/detail";
+export const MYPAGE_AGENT_PORTFOLIO = "/api/v1/mypage/agent/portfolio";
+
+// 리뷰
+export const REVIEWS = "/api/v1/reviews";
+
+// 좋아요
+export const LIKE = "/api/v1/like";
