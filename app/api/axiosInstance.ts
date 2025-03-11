@@ -3,7 +3,8 @@ import { refreshAccessToken } from "./login/api";
 import { authStore } from "@/app/stores/userStore";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: "/api/proxy",
+  // baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
