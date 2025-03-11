@@ -37,12 +37,20 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-      {
+       {
         source: "/api/v1/:path*",
         destination: `${API_URL}/api/v1/:path*`,
       },
       {
         source: "/api/auth/:path*",
+        destination: `${API_URL}/api/auth/:path*`,
+      },
+      {
+        source: "/api/proxy/api/v1/:path*",
+        destination: `${API_URL}/api/v1/:path*`,
+      },
+      {
+        source: "/api/proxy/api/auth/:path*",
         destination: `${API_URL}/api/auth/:path*`,
       },
     ];
