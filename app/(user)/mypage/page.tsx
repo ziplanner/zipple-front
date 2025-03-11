@@ -7,7 +7,7 @@ import Alert from "@/app/components/alert/alert";
 import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 import LoadingSpinner from "@/app/components/loading/loadingSpinner";
 import AlertWithBtn from "@/app/components/alert/alertwithBtn";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const MyPage = () => {
   const router = useRouter();

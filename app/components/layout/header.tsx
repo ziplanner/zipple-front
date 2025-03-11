@@ -218,11 +218,24 @@ const Header = () => {
                   </span>
                 </div>
                 {/* 프로필 + 닉네임 + 로그아웃 */}
-                <div className="flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-full">
-                  <User
-                    className="w-6 h-6 text-gray-600 cursor-pointer"
-                    onClick={handleMypageClick}
-                  />
+                <div
+                  className="flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-full cursor-pointer"
+                  onClick={handleMypageClick}
+                >
+                  {userInfo?.profileUrl ? (
+                    <Image
+                      src={userInfo?.profileUrl}
+                      alt={userInfo?.nickname}
+                      width={28}
+                      height={28}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <User
+                      className="w-6 h-6 text-gray-600"
+                      onClick={handleMypageClick}
+                    />
+                  )}
                   <p className="text-gray-800 font-medium">
                     {userInfo?.nickname}님
                   </p>
