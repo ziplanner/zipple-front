@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { FaUser, FaPhone, FaMapMarkerAlt, FaHome } from "react-icons/fa";
 import PrimaryBtn from "@/app/components/button/primaryBtn";
@@ -14,7 +16,7 @@ const GeneralSignupPage = () => {
     marketingNotificationTerms: false,
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   // 🔹 입력값 변경 핸들러
