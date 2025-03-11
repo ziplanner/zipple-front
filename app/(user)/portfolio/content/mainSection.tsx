@@ -90,7 +90,9 @@ const PortfolioMainSection = () => {
       ) : portfolios.length > 0 ? (
         /* 포트폴리오가 있을 때만 렌더링 */
         <>
-          <Portfolio portfolios={portfolios} />
+          <div className="min-h-screen">
+            <Portfolio portfolios={portfolios} />
+          </div>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
