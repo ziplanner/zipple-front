@@ -12,10 +12,12 @@ const nextConfig = {
     domains: [
       "44.203.190.167",
       "zipple.co.kr",
+      "api.zipple.co.kr",
       "k.kakaocdn.net",
       "img1.kakaocdn.net",
       "t1.kakaocdn.net",
-    ], // 허용할 이미지 도메인 (추후 삭제 필요)
+    ],
+    // 허용할 이미지 도메인 (추후 삭제 필요)
     remotePatterns: [
       {
         protocol: "http",
@@ -29,6 +31,12 @@ const nextConfig = {
         port: "8081",
         pathname: "/zipple/home/ubuntu/zipple/upload/**",
       },
+      {
+        protocol: "https",
+        hostname: "zipple.co.kr",
+        port: "8081",
+        pathname: "/zipple/home/ubuntu/zipple/**",
+      },
     ],
   },
   webpack: (config) => {
@@ -37,20 +45,12 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-       {
+      {
         source: "/api/v1/:path*",
         destination: `${API_URL}/api/v1/:path*`,
       },
       {
         source: "/api/auth/:path*",
-        destination: `${API_URL}/api/auth/:path*`,
-      },
-      {
-        source: "/api/proxy/api/v1/:path*",
-        destination: `${API_URL}/api/v1/:path*`,
-      },
-      {
-        source: "/api/proxy/api/auth/:path*",
         destination: `${API_URL}/api/auth/:path*`,
       },
     ];
