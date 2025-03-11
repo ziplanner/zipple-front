@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Pagination from "@/app/components/pagination/pagination";
 import ReviewCard from "@/app/components/review/reviewCard";
 import { getReviews } from "@/app/api/review/api";
 import Skeleton from "@/app/components/loading/skeleton";
@@ -29,12 +28,33 @@ const ReviewMainSection = () => {
   const agentId = searchParams.get("id");
 
   const [reviews, setReviews] = useState<ReviewDetail[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  //   const totalPages = 3;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+
+  const fetchReviews = async () => {
+    if (!agentId) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getReviews(agentId);
+      setReviews(data);
+      console.log("📌 최신 리뷰 데이터:", data);
+    } catch (err) {
+      console.error("Error fetching reviews:", err);
+      setError("후기 데이터를 불러오는 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 초기 및 리뷰 업데이트 시 최신 데이터 가져오기
+  useEffect(() => {
+    fetchReviews();
+  }, [agentId]);
 
   const handleWriteClick = () => {
     setIsReviewOpen(true);
@@ -44,42 +64,22 @@ const ReviewMainSection = () => {
     setIsReviewOpen(false);
   };
 
-  const handleReviewSubmit = (reviewData: {
+  // 리뷰 등록 후 최신 데이터 다시 불러오기
+  const handleReviewSubmit = async (reviewData: {
     content: string;
     starCount: number;
   }) => {
     console.log("리뷰 데이터 제출:", reviewData);
     setIsReviewOpen(false);
-
     setAlertMessage("리뷰가 성공적으로 등록되었습니다!");
 
+    // 최신 리뷰 다시 불러오기 (서버에서 가져옴)
+    await fetchReviews();
+
+    // 일정 시간 후 알림 메시지 숨기기
     setTimeout(() => {
-      window.location.reload();
+      setAlertMessage(null);
     }, 1500);
-  };
-
-  useEffect(() => {
-    if (!agentId) return;
-
-    setLoading(true);
-    setError(null);
-
-    getReviews(agentId)
-      .then((data) => {
-        setReviews(data);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error("🚨 Error fetching reviews:", err);
-        setError("후기 데이터를 불러오는 중 오류가 발생했습니다.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [agentId]);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
   const handleGoBack = () => {
@@ -87,7 +87,7 @@ const ReviewMainSection = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 mt-8 mb-12 md:gap-8 md:mt-12 md:mb-20">
+    <div className="flex flex-col min-h-[300px] md:min-h-[500px] gap-4 mt-8 mb-12 md:gap-8 md:mt-12 md:mb-20">
       <div className="flex justify-between items-center px-1 border-b pb-2">
         <h2 className="text-mobile_h1_contents_title md:text-h1_contents_title mb-2 text-text_sub2">
           고객 후기
@@ -117,14 +117,15 @@ const ReviewMainSection = () => {
                 />
               ))
             : !loading && (
-                <div className="min-h-screen">
-                  <p className="text-center text-gray-500 mt-10 text-mobile_body2_m md:text-body1_m">
+                <div className="min-h-screen flex justify-center items-center">
+                  <p className="text-center text-gray-500 text-mobile_body2_m md:text-body1_m">
                     리뷰가 없습니다.
                   </p>
                 </div>
               )}
         </div>
       </div>
+
       {/* 글쓰기 버튼 */}
       <FloatingWriteButton onClick={handleWriteClick} />
 
@@ -143,12 +144,9 @@ const ReviewMainSection = () => {
             agentId={agentId || ""}
           />
         ))}
+
+      {/* 알림 메시지 */}
       {alertMessage && <Alert message={alertMessage} duration={1500} />}
-      {/* <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      /> */}
     </div>
   );
 };
