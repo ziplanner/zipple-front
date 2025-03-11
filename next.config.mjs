@@ -23,6 +23,12 @@ const nextConfig = {
         port: "8081",
         pathname: "/zipple/home/ubuntu/zipple/logo/**",
       },
+      {
+        protocol: "https",
+        hostname: "zipple.co.kr",
+        port: "8081",
+        pathname: "/zipple/home/ubuntu/zipple/upload/**",
+      },
     ],
   },
   webpack: (config) => {
