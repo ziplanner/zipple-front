@@ -1,6 +1,7 @@
 import { StaticImageData } from "next/image";
 
 export interface UserProfileData {
+  profileUrl: string;
   title: string; // 포트폴리오 제목
   email: string; // 이메일
   externalLink: string; // 외부 링크 (예: GitHub, 개인 웹사이트)
@@ -33,4 +34,43 @@ export interface ReviewItem {
   starRating: number; // 별점
   createdAt: string; // 생성 날짜
   updatedAt: string; // 업데이트 날짜
+}
+
+export interface GeneralBasicInfo {
+  generalName: string;
+  email: string;
+  phoneNumber: string;
+  generalAddress: string;
+  housingType: string;
+}
+
+export interface AgentBasicInfo {
+  email: string;
+  agentType: string;
+  phoneNumber: string;
+  externalLink: string;
+  title: string;
+  content: string;
+}
+
+export interface AgentInfo {
+  email: string;
+  agentType: string;
+  agentSpecialty: string;
+  businessName: string;
+  agentRegistrationNumber: string;
+  primaryContactNumber: string;
+  officeAddress: string;
+  ownerName: string;
+  ownerContactNumber: string;
+  agentName: string;
+  agentContactNumber: string;
+  singleHouseholdExpertRequest: boolean;
+  agentOfficeRegistrationCertificate: string;
+  businessRegistrationCertification: string;
+  agentLicense: string;
+  agentImage: string;
+  title: string;
+  content: string;
+  externalLink: string;
 }
