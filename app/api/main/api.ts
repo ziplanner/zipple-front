@@ -6,22 +6,9 @@ import {
 } from "../apiUrl";
 import axiosInstance from "../axiosInstance";
 
-// 매칭 전체 조회
-export const getMainMatching = async (page: number = 1, size: number = 10) => {
-  try {
-    const response = await axiosInstance.get(MAIN_MATCHING, {
-      params: { page: page - 1, size },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching main matching info:", error);
-    throw error;
-  }
-};
-
 // 매칭 카테고리 별 조회
 export const getCategoryMatching = async (
-  category: string,
+  category?: string,
   page: number = 1,
   size: number = 10
 ) => {

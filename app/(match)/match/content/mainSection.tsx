@@ -4,7 +4,7 @@ import MatchLeftMenu from "@/app/components/menu/matchLeftMenu";
 import Pagination from "@/app/components/pagination/pagination";
 import useResponsive from "@/app/hook/useResponsive";
 import MobileMatchTopMenu from "@/app/components/menu/mobileMatchTopMenu";
-import { getCategoryMatching, getMainMatching } from "@/app/api/main/api";
+import { getCategoryMatching } from "@/app/api/main/api";
 import Skeleton from "@/app/components/loading/skeleton";
 import { CATEGORY_LIST } from "@/app/types/category";
 import MatchList from "@/app/components/list/mtachList";
@@ -42,7 +42,7 @@ const MatchMainSection = () => {
       try {
         let data;
         if (activeCategory === "전체") {
-          data = await getMainMatching(currentPage, pageSize);
+          data = await getCategoryMatching("", currentPage, pageSize);
         } else {
           data = await getCategoryMatching(
             activeCategory,

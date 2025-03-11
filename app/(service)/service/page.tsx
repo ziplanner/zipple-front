@@ -7,8 +7,8 @@ import useResponsive from "@/app/hook/useResponsive";
 import { SERVICE_CATEGORY } from "@/app/data/service";
 import ServiceLeftMenu from "@/app/components/menu/serviceLeftMenu";
 import MobileServiceTopMenu from "@/app/components/menu/mobileServiceTopMenu";
-import { getMainMatching } from "@/app/api/main/api";
 import { PROFESSIONALS } from "@/app/data/match";
+import { getCategoryMatching } from "@/app/api/main/api";
 
 const ServicePage = () => {
   const isMdUp = useResponsive("md");
@@ -32,7 +32,7 @@ const ServicePage = () => {
   useEffect(() => {
     const fetchMain = async () => {
       try {
-        const data = await getMainMatching();
+        const data = await getCategoryMatching();
         console.log(data);
         setMatchListData(data.matching);
         console.log(matchListData);
