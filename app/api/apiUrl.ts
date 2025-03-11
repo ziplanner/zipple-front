@@ -34,4 +34,4 @@ export const MYPAGE_AGENT_PORTFOLIO = "/api/v1/mypage/agent/portfolio";
 export const REVIEWS = "/api/v1/reviews";
 
 // 좋아요
-export const LIKES = "/api/v1/likes";
+export const LIKE = "/api/v1/like";
