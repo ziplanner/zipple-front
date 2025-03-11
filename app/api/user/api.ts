@@ -1,5 +1,11 @@
-import { AgentBasicInfo, AgentInfo, GeneralBasicInfo } from "@/app/types/user";
 import {
+  AgentBasicInfo,
+  AgentInfo,
+  GeneralBasicInfo,
+  GeneralSignupData,
+} from "@/app/types/user";
+import {
+  GENERAL_REGISTER,
   MYPAGE_AGENT,
   MYPAGE_AGENT_ALL,
   MYPAGE_AGENT_DETAIL,
@@ -84,6 +90,17 @@ export const updateAgentDetailInfo = async (userData: AgentInfo) => {
     return response.data;
   } catch (error: any) {
     console.error(error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// 일반 유저 정보 추가
+export const signupGeneral = async (data: GeneralSignupData) => {
+  try {
+    const response = await axiosInstance.post(GENERAL_REGISTER, data);
+    return response.data;
+  } catch (error) {
+    console.error("회원가입 요청 실패:", error);
     throw error;
   }
 };
