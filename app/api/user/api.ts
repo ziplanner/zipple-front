@@ -1,4 +1,11 @@
-import { MYPAGE_GENERAL, USER } from "../apiUrl";
+import { AgentBasicInfo, AgentInfo, GeneralBasicInfo } from "@/app/types/user";
+import {
+  MYPAGE_AGENT,
+  MYPAGE_AGENT_ALL,
+  MYPAGE_AGENT_DETAIL,
+  MYPAGE_GENERAL,
+  USER,
+} from "../apiUrl";
 import axiosInstance from "../axiosInstance";
 
 // 유저 정보 조회
@@ -24,15 +31,55 @@ export const getGeneralUserInfo = async () => {
 };
 
 // 일반 유저 정보 수정
-export const updateGeneralUserInfo = async (userData: {
-  generalName: string;
-  email: string;
-  phoneNumber: string;
-  generalAddress: string;
-  housingType: string;
-}) => {
+export const updateGeneralUserInfo = async (userData: GeneralBasicInfo) => {
   try {
     const response = await axiosInstance.put(MYPAGE_GENERAL, userData);
+
+    return response.data;
+  } catch (error: any) {
+    console.error(error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// 중개사 정보 조회
+export const getAgentInfo = async () => {
+  try {
+    const response = await axiosInstance.get(MYPAGE_AGENT);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching main matching info:", error);
+    throw error;
+  }
+};
+
+// 중개사 기본 정보 수정
+export const updateAgentBasicInfo = async (userData: AgentBasicInfo) => {
+  try {
+    const response = await axiosInstance.put(MYPAGE_AGENT, userData);
+
+    return response.data;
+  } catch (error: any) {
+    console.error(error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// 중개사 상세 정보 조회
+export const getAgentDetailInfo = async () => {
+  try {
+    const response = await axiosInstance.get(MYPAGE_AGENT_ALL);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching main matching info:", error);
+    throw error;
+  }
+};
+
+// 중개사 기본 정보 수정
+export const updateAgentDetailInfo = async (userData: AgentInfo) => {
+  try {
+    const response = await axiosInstance.put(MYPAGE_AGENT_DETAIL, userData);
 
     return response.data;
   } catch (error: any) {
