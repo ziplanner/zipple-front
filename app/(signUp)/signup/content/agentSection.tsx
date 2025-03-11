@@ -51,7 +51,7 @@ const AgentSection = () => {
 
       {/* 🔹 선택된 공인중개사 정보 표시 */}
       {selectedOffice && (
-        <div className="flex flex-col w-full md:w-3/4 p-4 md:p-6 bg-white rounded-lg shadow-md">
+        <div className="flex flex-col max-w-screen-md md:w-3/4 p-4 md:p-6 bg-white rounded-lg shadow-md">
           <div className="flex justify-between w-full border-b pb-2">
             <div className="flex pb-2 pl-3">
               <div className="flex gap-3 items-center">

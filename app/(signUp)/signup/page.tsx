@@ -9,6 +9,7 @@ import bg1 from "@/app/image/background/bg1.svg";
 import bg2 from "@/app/image/background/bg2.svg";
 import SignupCard from "@/app/components/card/signupCard";
 import AgentSection from "./content/agentSection";
+import GeneralSection from "./content/generalSection";
 
 const CARD_DATA = [
   {
@@ -39,7 +40,7 @@ const CARD_DATA = [
 
 const Signup = () => {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const sectionRef = useRef<HTMLDivElement>(null); // ✅ 스크롤 이동을 위한 ref
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   // 🔹 role 선택 시 해당 섹션으로 스크롤 이동
   const handleSelectRole = (role: string) => {
@@ -100,7 +101,7 @@ const Signup = () => {
       {/* 🔹 선택된 섹션을 표시하는 영역 */}
       <div ref={sectionRef} className="w-full pt-20 md:pt-32 md:px-5 px-4">
         {selectedRole === "agent" && <AgentSection />}
-        {/* {selectedRole === "general" && <GeneralSection />} */}
+        {selectedRole === "general" && <GeneralSection />}
         {/* {selectedRole === "life" && <LifeSection />} */}
       </div>
     </div>
