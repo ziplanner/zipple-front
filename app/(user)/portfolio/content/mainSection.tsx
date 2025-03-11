@@ -5,7 +5,7 @@ import Portfolio from "@/app/(profile)/profile/content/portfolio";
 import Pagination from "@/app/components/pagination/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getAgentPortfolioList } from "@/app/api/main/api";
-import Skeleton from "@/app/components/loading/skeleton";
+import SkeletonSquare from "@/app/components/loading/skeletonSquare";
 import { PortfolioItem } from "@/app/types/user";
 import ErrorMessage from "@/app/components/loading/errorMessage";
 import { formatToKoreanDate } from "@/app/utils/formatToDate";
@@ -68,7 +68,7 @@ const PortfolioMainSection = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 mt-8 mb-12 md:gap-8 md:mt-12 md:mb-20">
+    <div className="min-h-[300px] md:min-h-[500px] flex flex-col gap-4 mt-8 mb-12 md:gap-8 md:mt-12 md:mb-20">
       <div className="flex justify-between items-center px-1 border-b pb-2">
         <h2 className="text-mobile_h1_contents_title md:text-h1_contents_title mb-2 text-text_sub2">
           포트폴리오
@@ -81,19 +81,30 @@ const PortfolioMainSection = () => {
         </p>
       </div>
 
-      {loading && <Skeleton />}
-
-      {error && <ErrorMessage message={"에러가 발생했습니다."} />}
-
-      <Portfolio portfolios={portfolios} />
-
-      {portfolios.length > 0 ? (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      ) : null}
+      {/* 로딩 중이면 Skeleton만 표시 */}
+      {loading ? (
+        <SkeletonSquare />
+      ) : error ? (
+        /* 에러 발생 시 에러 메시지만 표시 */
+        <ErrorMessage message={"에러가 발생했습니다."} />
+      ) : portfolios.length > 0 ? (
+        /* 포트폴리오가 있을 때만 렌더링 */
+        <>
+          <Portfolio portfolios={portfolios} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      ) : (
+        /* 포트폴리오가 없을 때 메시지 표시 */
+        <div className="flex justify-center items-center">
+          <p className="text-center text-gray-500 text-mobile_body2_m md:text-body1_m">
+            포트폴리오가 없습니다.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
