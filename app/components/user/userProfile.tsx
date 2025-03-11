@@ -35,6 +35,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   }
 
   const {
+    profileUrl,
     externalLink,
     agentName,
     email,
@@ -67,7 +68,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
           max-h-56 max-w-56 rounded-lg overflow-hidden mr-10"
           >
             <Image
-              src={portfolios[0]?.portfolioImage || defaultProfileImage}
+              src={profileUrl || defaultProfileImage}
               alt="Profile"
               width={0}
               height={0}
