@@ -52,7 +52,7 @@ const ReviewMainSection = () => {
 
     try {
       const data = await getReviews(agentId, currentPage, pageSize);
-      setReviews(data);
+      setReviews(data.content);
       setTotalPages(data.totalPages || 1);
 
       console.log("📌 최신 리뷰 데이터:", data);

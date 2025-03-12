@@ -31,7 +31,7 @@ export interface ReviewItem {
   profileUrl: string; // 프로필 이미지 URL
   nickname: string; // 닉네임
   content: string; // 리뷰 내용
-  starRating: number; // 별점
+  starCount: number; // 별점
   createdAt: string; // 생성 날짜
   updatedAt: string; // 업데이트 날짜
 }

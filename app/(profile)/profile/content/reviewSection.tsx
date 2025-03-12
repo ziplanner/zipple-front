@@ -24,7 +24,7 @@ const ReviewSection = ({ data }: ReviewDataProps) => {
             nickname={review.nickname}
             profileUrl={review.profileUrl}
             content={review.content}
-            starRating={review.starRating || 4}
+            starCount={review.starCount}
             reviewId={review.reviewId}
             createdAt={review.createdAt}
             updatedAt={review.updatedAt}

@@ -7,14 +7,14 @@ const CustomerReview = ({
   nickname,
   profileUrl,
   content,
-  starRating,
+  starCount,
   createdAt,
   updatedAt,
   reviewId,
 }: ReviewItem) => {
   const stars = Array(5)
     .fill(false)
-    .map((_, index) => index < starRating);
+    .map((_, index) => index < starCount);
 
   return (
     <div
