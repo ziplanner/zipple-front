@@ -25,12 +25,18 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (!error.response || error.response.status === 401) {
       originalRequest._retry = true;
 
       try {
         const newAccessToken = await refreshAccessToken();
         if (!newAccessToken) throw new Error("토큰 재발급 실패");
+
+        // Zustand 상태 업데이트
+        authStore.getState().setAccessToken(newAccessToken);
+
+        // axios 기본 헤더 업데이트
+        axiosInstance.defaults.headers.common["Authorization"] = newAccessToken;
 
         // 기존 요청 헤더 업데이트
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
