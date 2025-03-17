@@ -1,18 +1,18 @@
 import { SMS_SEND, SMS_VERIFY } from "../apiUrl";
 import axiosInstance from "../axiosInstance";
 
-// 학교 이메일 인증 요청 (이메일 발송)
-export const sendSchoolAuthEmail = async (email: string) => {
+// 🔹 휴대폰 인증번호 요청
+export const sendSms = async (phoneNumber: string) => {
   try {
-    const { data } = await axiosInstance.post(SMS_SEND, { email });
+    const { data } = await axiosInstance.post(SMS_SEND, { to: phoneNumber });
     return data;
   } catch (err) {
-    console.error("학교 인증 이메일 발송 실패:", err);
+    console.error("SMS 인증번호 발송 실패:", err);
     throw err;
   }
 };
 
-// 학교 인증 코드 검증
+// 🔹 인증번호 검증
 export const validateSchoolAuthCode = async (
   phoneNumber: string,
   code: string
@@ -22,10 +22,9 @@ export const validateSchoolAuthCode = async (
       phoneNumber,
       code,
     });
-    console.log("학교 인증 코드 검증 성공:", data);
     return data;
   } catch (err) {
-    console.error("학교 인증 코드 검증 실패:", err);
+    console.error("인증번호 검증 실패:", err);
     throw err;
   }
 };
