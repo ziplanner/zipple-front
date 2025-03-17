@@ -10,6 +10,7 @@ import bg2 from "@/app/image/background/bg2.svg";
 import SignupCard from "@/app/components/card/signupCard";
 import AgentSection from "./content/agentSection";
 import GeneralSection from "./content/generalSection";
+import { useRouter } from "next/navigation";
 
 const CARD_DATA = [
   {
@@ -39,6 +40,7 @@ const CARD_DATA = [
 ];
 
 const Signup = () => {
+  const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -46,6 +48,13 @@ const Signup = () => {
   const handleSelectRole = (role: string) => {
     setSelectedRole(role);
     console.log("🔹 선택한 role:", role);
+    if (role === "general") {
+      router.push("/signup/general");
+    } else if (role === "agent") {
+      router.push("/signup/agent");
+    } else {
+      router.push("/signup");
+    }
 
     // ✅ role이 변경될 때, 다음 렌더링에서 스크롤 이동 실행
     setTimeout(() => {
@@ -98,12 +107,12 @@ const Signup = () => {
         ))}
       </div>
 
-      {/* 🔹 선택된 섹션을 표시하는 영역 */}
-      <div ref={sectionRef} className="w-full pt-20 md:pt-32 md:px-5 px-4">
+      {/* 선택된 섹션을 표시하는 영역 */}
+      {/* <div ref={sectionRef} className="w-full pt-20 md:pt-32 md:px-5 px-4">
         {selectedRole === "agent" && <AgentSection />}
         {selectedRole === "general" && <GeneralSection />}
-        {/* {selectedRole === "life" && <LifeSection />} */}
-      </div>
+        {selectedRole === "life" && <LifeSection />}
+      </div> */}
     </div>
   );
 };
