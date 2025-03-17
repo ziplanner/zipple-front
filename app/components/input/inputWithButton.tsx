@@ -11,6 +11,7 @@ type CustomInputWithButtonProps = {
   onButtonClick: () => void;
   disabled?: boolean;
   className?: string;
+  readOnly?: boolean;
 };
 
 const InputWithButton = ({
@@ -24,6 +25,7 @@ const InputWithButton = ({
   onButtonClick,
   className,
   disabled = false,
+  readOnly = false,
 }: CustomInputWithButtonProps) => {
   return (
     <div className={`flex flex-col ${className}`}>
@@ -36,6 +38,7 @@ const InputWithButton = ({
           name={name}
           value={value}
           placeholder={placeholder}
+          readOnly={readOnly}
           onChange={onChange}
           className="border border-searchbarborder w-full p-2 focus:outline-none
             focus:ring-1 focus:ring-selectedoption_pressed transition-all rounded-lg  text-mobile_body3_r md:text-body2_r"
