@@ -1,3 +1,4 @@
+import { BrokerOffice } from "@/app/types/agent";
 import {
   FaUser,
   FaHome,
@@ -6,7 +7,6 @@ import {
   FaGlobe,
 } from "react-icons/fa";
 import { MdBusiness } from "react-icons/md";
-import { BrokerOffice } from "./mainSection";
 
 interface AgentInfoProps {
   selectedOffice: BrokerOffice;

@@ -7,6 +7,8 @@ interface StepContextType {
   setSelectedType: (type: string) => void;
   selectedOffice: any;
   setSelectedOffice: (office: any) => void;
+  selectedOfficeOwner: any;
+  setSelectedOfficeOwner: (owner: any) => void;
   phoneNumber: string;
   setPhoneNumber: (number: string) => void;
   verificationCode: string;
@@ -21,6 +23,7 @@ export const StepProvider: React.FC<{ children: React.ReactNode }> = ({
   const [step, setStep] = useState<number>(1);
   const [selectedType, setSelectedType] = useState<string>("대표 공인중개사");
   const [selectedOffice, setSelectedOffice] = useState<any>(null);
+  const [selectedOfficeOwner, setSelectedOfficeOwner] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [verificationCode, setVerificationCode] = useState<string>("");
 
@@ -33,6 +36,8 @@ export const StepProvider: React.FC<{ children: React.ReactNode }> = ({
         setSelectedType,
         selectedOffice,
         setSelectedOffice,
+        selectedOfficeOwner,
+        setSelectedOfficeOwner,
         phoneNumber,
         setPhoneNumber,
         verificationCode,
