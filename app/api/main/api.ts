@@ -64,7 +64,7 @@ export const getAgentPortfolioList = async (
     });
     return response.data;
   } catch (error) {
-    console.error("🚨 Error fetching agent portfolio list:", error);
+    console.error("Error fetching agent portfolio list:", error);
     throw error;
   }
 };
