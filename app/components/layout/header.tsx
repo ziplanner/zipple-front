@@ -55,7 +55,6 @@ const Header = () => {
   };
 
   const handleMypageClick = () => {
-    console.log("이거 누른거니...?");
     router.push("/mypage");
     setTimeout(() => {
       setIsOpen(false);
@@ -69,8 +68,9 @@ const Header = () => {
       setUserInfo(data);
 
       // roleName이 "미등록"이고 현재 페이지가 "/signup"이 아닐 때 Alert 표시
-      if (data.roleName === "미등록" && pathname !== "/signup") {
+      if (data.roleName === "미등록" && !pathname.includes("/signup")) {
         setShowAlert(true);
+        console.log(pathname);
       }
     } catch (err) {
       console.error("유저 정보 가져오기 실패:", err);
@@ -336,15 +336,15 @@ const Header = () => {
           onConfirm={() => {
             setShowAlert(false);
             setTimeout(() => {
-              router.push("/signup");
+              if (!pathname.includes("/signup")) {
+                router.push("/signup");
+              }
             }, 100);
           }}
           onCancel={() => {
             setShowAlert(false);
             // 추후 미등록 시 접근 불가능한 페이지 도출 필요
-            if (pathname.includes("/mypage")) {
-              router.back();
-            }
+            router.back();
           }}
           confirmText="가입하기"
           cancelText="나중에"
