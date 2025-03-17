@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { Bell, User, Menu } from "lucide-react";
@@ -18,6 +18,7 @@ import {
 } from "@/app/providers/userStoreProvider";
 
 const Header = () => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -32,6 +33,7 @@ const Header = () => {
     useState<boolean>(false);
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const isLoggedIn = !!accessToken;
 
@@ -53,8 +55,11 @@ const Header = () => {
   };
 
   const handleMypageClick = () => {
+    console.log("이거 누른거니...?");
     router.push("/mypage");
-    setIsMenuOpen(false);
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 300);
   };
 
   const fetchUserInfo = async () => {
@@ -77,6 +82,29 @@ const Header = () => {
       fetchUserInfo();
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    if (pathname === "/mypage") {
+      setShowAlert(true);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!modalRef.current) return;
+      if (modalRef.current.contains(event.target as Node)) {
+        return;
+      }
+      setIsOpen(false);
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
     <div className="w-full bg-white md:h-16 shadow-md flex justify-center px-4 md:px-6 lg:px-8">
@@ -219,33 +247,58 @@ const Header = () => {
                 </div>
                 {/* 프로필 + 닉네임 + 로그아웃 */}
                 <div
-                  className="flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-full cursor-pointer"
-                  onClick={handleMypageClick}
+                  className="relative"
+                  onClick={() => setIsOpen(!isOpen)}
+                  ref={modalRef}
                 >
-                  {userInfo?.profileUrl ? (
-                    <Image
-                      src={userInfo?.profileUrl}
-                      alt={userInfo?.nickname}
-                      width={28}
-                      height={28}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <User
-                      className="w-6 h-6 text-gray-600"
-                      onClick={handleMypageClick}
-                    />
+                  {/* 클릭하면 열리고 닫히는 트리거 버튼 */}
+                  <div className="flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-full cursor-pointer hover:bg-gray-200 transition">
+                    {userInfo?.profileUrl ? (
+                      <Image
+                        src={userInfo.profileUrl}
+                        alt={userInfo.nickname}
+                        width={28}
+                        height={28}
+                        className="rounded-full w-7 h-7"
+                      />
+                    ) : (
+                      <User className="w-6 h-6 text-gray-600" />
+                    )}
+                    <p className="text-gray-800 font-medium">
+                      {userInfo?.nickname}님
+                    </p>
+                  </div>
+
+                  {/* 드롭다운 메뉴 */}
+                  {isOpen && (
+                    <div
+                      className="absolute right-[-4px] mt-2 w-32 bg-white shadow-lg 
+                    rounded-lg overflow-hidden border border-gray-200 z-50"
+                    >
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={() => {
+                          setIsOpen(false);
+                          // router.push("/favorites");
+                        }}
+                      >
+                        관심 중개사
+                      </button>
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={handleMypageClick}
+                      >
+                        마이페이지
+                      </button>
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
+                        onClick={handleLogout}
+                      >
+                        로그아웃
+                      </button>
+                    </div>
                   )}
-                  <p className="text-gray-800 font-medium">
-                    {userInfo?.nickname}님
-                  </p>
                 </div>
-                <button
-                  className="text-sm text-gray-600 hover:text-red-500 transition-colors"
-                  onClick={handleLogout}
-                >
-                  로그아웃
-                </button>
               </div>
             ) : (
               <button
@@ -275,12 +328,24 @@ const Header = () => {
           cancelText="취소"
         />
       )}
+
       {showAlert && (
         <AlertWithBtn
           title="회원가입 필요"
-          message="회원가입을 완료하고 더 많은 서비스를 이용해보세요!"
-          onConfirm={() => router.push("/signup")}
-          onCancel={() => setShowAlert(false)}
+          message={"회원가입을 완료하고\n더 많은 서비스를 이용해보세요!"}
+          onConfirm={() => {
+            setShowAlert(false);
+            setTimeout(() => {
+              router.push("/signup");
+            }, 100);
+          }}
+          onCancel={() => {
+            setShowAlert(false);
+            // 추후 미등록 시 접근 불가능한 페이지 도출 필요
+            if (pathname.includes("/mypage")) {
+              router.back();
+            }
+          }}
           confirmText="가입하기"
           cancelText="나중에"
         />
