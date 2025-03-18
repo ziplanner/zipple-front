@@ -29,6 +29,9 @@ const CustomDropdown = ({
         className="border border-searchbarborder p-1.5 md:p-2.5 rounded-lg focus:outline-none focus:ring-1
         focus:ring-selectedoption_pressed transition-all text-mobile_body3_r md:text-body2_r bg-white"
       >
+        <option value="" disabled hidden>
+          선택하세요
+        </option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
