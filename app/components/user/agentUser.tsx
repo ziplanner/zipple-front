@@ -8,7 +8,6 @@ import {
   FaPhone,
   FaEnvelope,
   FaLink,
-  FaMapMarkerAlt,
   FaHome,
   FaIdBadge,
   FaPen,
@@ -20,6 +19,8 @@ import {
   getAgentDetailInfo,
 } from "@/app/api/user/api";
 import { useUserInfoStore } from "@/app/providers/userStoreProvider";
+import { BrokerOffice } from "@/app/types/agent";
+import AlertWithBtn from "../alert/alertwithBtn";
 
 const AgentUser = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const AgentUser = () => {
   const [isDaumLoaded, setIsDaumLoaded] = useState<boolean>(false);
   const [isEditingBasic, setIsEditingBasic] = useState<boolean>(false);
   const [isEditingDetail, setIsEditingDetail] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [basicInfo, setBasicInfo] = useState({
     agentName: "",
     ownerName: "",
@@ -78,6 +80,10 @@ const AgentUser = () => {
     setDetailInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleEditDetail = () => {
+    setIsModalOpen(true);
+  };
+
   const handleSaveBasicInfo = async () => {
     try {
       const updatedData = {
@@ -117,6 +123,18 @@ const AgentUser = () => {
       console.error("상세 정보 저장 실패:", err);
       alert("상세 정보 저장 중 오류가 발생했습니다.");
     }
+  };
+
+  const handleSelectOffice = (selectedOffice: BrokerOffice) => {
+    setDetailInfo((prev) => ({
+      ...prev,
+      businessName: selectedOffice.중개사무소명,
+      agentRegistrationNumber: selectedOffice.개설등록번호,
+      primaryContactNumber: selectedOffice.전화번호,
+      officeAddress: selectedOffice.소재지도로명주소,
+      ownerName: selectedOffice.대표자명,
+    }));
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -236,7 +254,7 @@ const AgentUser = () => {
       </div>
 
       {/* === 메인 콘텐츠 (배경 없음) === */}
-      <div className="flex w-3/4 flex-col gap-12">
+      <div className="flex w-full md:w-3/4 flex-col gap-12">
         <div className="flex flex-col w-full md:p-6 p-4 bg-white rounded-lg">
           <h3 className="flex mt-4 text-h3 text-text">
             <div className="flex justify-between w-full">
@@ -346,55 +364,25 @@ const AgentUser = () => {
             )}
           </div>
 
-          <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
-            활동 정보
-          </h3>
-          <ul className="border-t pt-3 ml-3">
-            {ect.activities.map((activity, index) => (
-              <li
-                key={index}
-                className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
-                onClick={() => router.push(activity.url)}
-              >
-                {activity.name}
-              </li>
-            ))}
-          </ul>
-
-          <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
-            커뮤니티
-          </h3>
-          <ul className="border-t pt-3 ml-3">
-            {ect.community.map((item, index) => (
-              <li
-                key={index}
-                className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
-                onClick={() => router.push(item.url)}
-              >
-                {item.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex flex-col w-full md:p-6 p-4 bg-white rounded-lg">
-          <h3 className="flex mt-4 text-h3 text-text">
-            <div className="flex justify-between w-full">
+          <h3 className="flex mt-12 text-h3 text-text">
+            <div className="flex justify-between w-full mt-16">
               <div className="flex pb-2 pl-3">
                 <div className="flex gap-3 items-center">
-                  <FaUser />
+                  <FaHome />
                   <h3 className="text-h4_sb md:text-h2 text-text rounded-t-lg inline-block">
                     부동산 정보
                   </h3>
                 </div>
               </div>
               <button
-                onClick={() => {
-                  if (isEditingDetail) {
-                    handleSaveDetailInfo();
-                  } else {
-                    setIsEditingDetail(true);
-                  }
-                }}
+                onClick={handleEditDetail}
+                // onClick={() => {
+                //   if (isEditingDetail) {
+                //     handleSaveDetailInfo();
+                //   } else {
+                //     setIsEditingDetail(true);
+                //   }
+                // }}
                 className="px-3 py-1 text-body3_sb bg-white border border-text_sub3 rounded shadow-sm"
               >
                 {isEditingDetail ? "저장" : "수정"}
@@ -460,24 +448,128 @@ const AgentUser = () => {
                 />
               </>
             ) : (
-              <div
-                className="mt-2 pt-4 flex flex-col gap-6
-              text-mobile_body2_r md:text-body1_r pl-5"
-              >
-                <p>부동산명: {detailInfo.businessName}</p>
-                <p>중개사 전문 분야: {detailInfo.agentSpecialty}</p>
-                <p>등록번호: {detailInfo.agentRegistrationNumber}</p>
-                <p>대표 전화번호: {detailInfo.primaryContactNumber}</p>
-                <p>소유자 이름: {detailInfo.ownerName}</p>
-                <p>소유자 연락처: {detailInfo.ownerContactNumber}</p>
-                <p>사무소 주소: {detailInfo.officeAddress}</p>
-                <p>중개사 이름: {detailInfo.agentName}</p>
-                <p>중개사 연락처: {detailInfo.agentContactNumber}</p>
+              <div className="mt-2 pt-4 flex flex-col gap-6 pl-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      부동산명
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.businessName}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      중개사 전문 분야
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentSpecialty}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      등록번호
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentRegistrationNumber}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      대표 전화번호
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.primaryContactNumber}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      소유자 이름
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.ownerName}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      소유자 연락처
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.ownerContactNumber}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      사무소 주소
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.officeAddress}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      중개사 이름
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentName}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      중개사 연락처
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentContactNumber}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
+
+          <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
+            활동 정보
+          </h3>
+          <ul className="border-t pt-3 ml-3">
+            {ect.activities.map((activity, index) => (
+              <li
+                key={index}
+                className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
+                onClick={() => router.push(activity.url)}
+              >
+                {activity.name}
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
+            커뮤니티
+          </h3>
+          <ul className="border-t pt-3 ml-3">
+            {ect.community.map((item, index) => (
+              <li
+                key={index}
+                className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline"
+                onClick={() => router.push(item.url)}
+              >
+                {item.name}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
+      {/* 중개사무소 검색 모달 */}
+      {isModalOpen && (
+        <AlertWithBtn
+          message={"부동산 정보 수정은 관리자에게 문의 바랍니다."}
+          onConfirm={() => {
+            setIsModalOpen(false);
+          }}
+          onCancel={() => {
+            setIsModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

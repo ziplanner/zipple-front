@@ -9,21 +9,9 @@ import {
 import { MdBusiness } from "react-icons/md";
 import AgentSearchModal from "@/app/components/modal/agentSearchModal";
 import PrimaryBtn from "@/app/components/button/primaryBtn";
-import PrimaryLargeBtn from "@/app/components/button/primaryLargeBtn";
 import TransparentLargeBtn from "@/app/components/button/transparentLargeBtn";
-import TransparentBtn from "@/app/components/button/transparentBtn";
 import { useRouter } from "next/navigation";
-import Alert from "@/app/components/alert/alert";
-
-// 🔹 선택된 공인중개사의 데이터 타입
-interface BrokerOffice {
-  중개사무소명: string;
-  개설등록번호: string;
-  소재지도로명주소: string;
-  전화번호: string;
-  대표자명: string;
-  홈페이지주소: string;
-}
+import { BrokerOffice } from "@/app/types/agent";
 
 const AgentSection = () => {
   const router = useRouter();
