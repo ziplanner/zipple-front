@@ -59,7 +59,7 @@ const TermsAgreement = ({ className }: TermsAgreementProps) => {
   };
 
   return (
-    <div className={`${className} bg-gray-50 p-6 rounded-lg`}>
+    <div className={`${className} bg-white p-6 rounded-lg shadow-lg`}>
       <h3 className="text-center text-mobile_h3 md:text-h3 mb-5">약관 동의</h3>
 
       {/* ✅ 전체 동의 버튼 */}

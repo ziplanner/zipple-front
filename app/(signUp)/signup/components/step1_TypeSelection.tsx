@@ -10,7 +10,7 @@ const Step1_TypeSelection = () => {
       <h3 className="text-center text-mobile_h1_contents_title md:text-h1_contents_title mb-5 md:mb-10">
         유형 선택
       </h3>
-      <div className="flex gap-4 justify-center mb-12">
+      <div className="flex gap-4 justify-center mb-12 md:mb-28">
         {["대표 공인중개사", "소속 공인중개사"].map((type) => (
           <button
             key={type}

@@ -13,6 +13,8 @@ const Step2_AgentSelection = () => {
     setBusinessName,
     setOfficeAddress,
     setOwnerName,
+    setAgentSpecialty,
+    setPrimaryContactNumber,
   } = useStepContext();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredData, setFilteredData] = useState<any[]>([]); // 필터링된 데이터 상태
@@ -110,7 +112,9 @@ const Step2_AgentSelection = () => {
                   setAgentRegistrationNumber(office.개설등록번호);
                   setBusinessName(office.중개사무소명);
                   setOfficeAddress(office.소재지도로명주소);
+                  setAgentSpecialty(office.소재지도로명주소);
                   setSelectedOffice(office);
+                  setPrimaryContactNumber(office.전화번호);
                   setIsOpen(false);
                 }}
               >
@@ -130,7 +134,11 @@ const Step2_AgentSelection = () => {
       )}
 
       {/* 선택된 중개사무소 정보 표시 */}
-      {selectedOffice && <AgentInfo selectedOffice={selectedOffice} />}
+      {selectedOffice ? (
+        <AgentInfo selectedOffice={selectedOffice} />
+      ) : (
+        <div className="min-h-[200px]" />
+      )}
 
       {/* 이전 및 다음 버튼 */}
       <div className="flex justify-between mt-8">

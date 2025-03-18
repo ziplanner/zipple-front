@@ -16,6 +16,7 @@ const Step3_Auth = () => {
     selectedType,
     setStep,
     ownerName,
+    setOwnerName,
     setAgentName,
     email,
     setEmail,
@@ -259,7 +260,7 @@ const Step3_Auth = () => {
         ) : (
           <div
             className="flex flex-col items-center justify-center text-gray-600 w-[141px] h-[168px]
-          md:w-[168px] md:h-56 border border-gray-500"
+          md:w-[168px] md:h-56 border border-gray-500 bg-white"
             onClick={handleButtonClick}
           >
             <User className="mb-2 text-2xl" />
@@ -426,7 +427,7 @@ const Step3_Auth = () => {
       )}
 
       {/* 이전 및 다음 버튼 */}
-      <div className="flex justify-between mt-8">
+      <div className="flex justify-between mt-8 md:mt-20">
         <button
           className="text-gray-500 hover:underline text-mobile_body2_r md:text-h4_r"
           onClick={() => setStep(2)}

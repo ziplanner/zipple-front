@@ -6,8 +6,13 @@ import { specializationOptions } from "@/app/types/category";
 import TermsAgreement from "./termsAreement";
 import Image from "next/image";
 import PrimaryBtn from "@/app/components/button/primaryBtn";
+import { signupAgent } from "@/app/api/user/api";
+import { AgentSignupData } from "@/app/types/agent";
+import { useRouter } from "next/navigation";
 
 const Step4_FileUpload = () => {
+  const router = useRouter();
+
   const {
     selectedType,
     setStep,
@@ -17,6 +22,27 @@ const Step4_FileUpload = () => {
     businessLicense,
     brokerLicense,
     agentCertificate,
+    email,
+    foreigner,
+    birthday,
+    agentType,
+    agentSpecialty,
+    businessName,
+    agentRegistrationNumber,
+    primaryContactNumber,
+    officeAddress,
+    ownerName,
+    ownerContactNumber,
+    agentName,
+    agentContactNumber,
+    singleHousehold,
+    introductionTitle,
+    introductionContent,
+    externalLink,
+    messageVerify,
+    marketingAgree,
+    profileImage,
+    setAgentSpecialty,
   } = useStepContext();
 
   // 파일 선택 버튼을 위한 useRef
@@ -66,6 +92,80 @@ const Step4_FileUpload = () => {
     }
   };
 
+  const formatPhoneNumber = (phone: string) => {
+    // 숫자만 남기기
+    const cleaned = phone.replace(/\D/g, "");
+
+    // 휴대폰 번호 형식 적용
+    if (cleaned.length === 11) {
+      return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+    } else if (cleaned.length === 10) {
+      return cleaned.replace(/(\d{2,3})(\d{3,4})(\d{4})/, "$1-$2-$3");
+    }
+    return phone; // 변환 불가능하면 원본 반환
+  };
+
+  const handleSubmit = async () => {
+    const agentType: "소속" | "개업" =
+      selectedType === "대표 공인중개사" ? "개업" : "소속";
+
+    try {
+      // ✅ 전화번호 변환
+      const formattedPrimaryContact = formatPhoneNumber(primaryContactNumber);
+      const formattedOwnerContact = formatPhoneNumber(ownerContactNumber);
+      const formattedAgentContact = formatPhoneNumber(agentContactNumber);
+
+      // ✅ API 요청을 위한 데이터 구성 (foreigner 타입 변환)
+      const agentData: AgentSignupData = {
+        email,
+        foreigner: foreigner as "L" | "F",
+        birthday,
+        agentType,
+        agentSpecialty,
+        businessName,
+        agentRegistrationNumber,
+        // primaryContactNumber: formattedPrimaryContact,
+        primaryContactNumber: formattedOwnerContact,
+        officeAddress,
+        ownerName,
+        ownerContactNumber: formattedOwnerContact,
+        agentName,
+        agentContactNumber: formattedAgentContact,
+        singleHousehold,
+        introductionTitle,
+        introductionContent,
+        externalLink,
+        messageVerify,
+        marketingAgree,
+      };
+
+      // ✅ 업로드된 파일 리스트 구성
+      const certificationFiles = [
+        businessLicense,
+        brokerLicense,
+        agentCertificate,
+      ].filter(Boolean) as File[];
+      const agentImage = profileImage as File | null;
+
+      console.log("agentData >>>", agentData);
+      console.log("certificationFiles >>>", certificationFiles);
+      console.log("agentImage >>>", agentImage);
+
+      // ✅ API 호출
+      const response = await signupAgent(
+        agentData,
+        certificationFiles,
+        agentImage
+      );
+      console.log("✅ 공인중개사 회원가입 성공:", response);
+      router.push("/");
+      alert("회원가입이 완료되었습니다!");
+    } catch (error) {
+      console.error("❌ 회원가입 실패:", error);
+      alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   return (
     <div className="animate-fadeIn">
       {/* 전문분야 선택 */}
@@ -76,9 +176,9 @@ const Step4_FileUpload = () => {
         <CustomDropdown
           label="전문분야 선택"
           name="specialization"
-          value=""
+          value={agentSpecialty}
           options={specializationOptions}
-          onChange={(e) => console.log("선택된 전문분야:", e.target.value)}
+          onChange={(e) => setAgentSpecialty(e.target.value)}
         />
       </div>
 
@@ -96,7 +196,7 @@ const Step4_FileUpload = () => {
                   사업자등록증
                 </h3>
                 <div
-                  className="border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer relative"
+                  className="border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer relative bg-white"
                   onClick={() => fileInputRefs.businessLicense.current?.click()}
                   style={{ aspectRatio: "210 / 297", width: "100%" }}
                 >
@@ -141,7 +241,7 @@ const Step4_FileUpload = () => {
                   중개등록증
                 </h3>
                 <div
-                  className="border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer relative"
+                  className="border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer relative bg-white"
                   onClick={() => fileInputRefs.brokerLicense.current?.click()}
                   style={{ aspectRatio: "210 / 297", width: "100%" }}
                 >
@@ -185,9 +285,9 @@ const Step4_FileUpload = () => {
               공인중개사 자격증
             </h3>
             <div
-              className="border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer relative"
+              className="border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer relative bg-white"
               onClick={() => fileInputRefs.agentCertificate.current?.click()}
-              style={{ aspectRatio: "210 / 297", width: "100%" }}
+              style={{ aspectRatio: "210 / 297", width: "50%" }}
             >
               {filePreviews.agentCertificatePreview ? (
                 <Image
@@ -234,10 +334,7 @@ const Step4_FileUpload = () => {
         >
           이전
         </button>
-        <PrimaryBtn
-          text={"제출하기"}
-          onClick={() => console.log("제출 완료")}
-        />
+        <PrimaryBtn text={"제출하기"} onClick={handleSubmit} />
       </div>
     </div>
   );
