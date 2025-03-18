@@ -329,7 +329,7 @@ const Header = () => {
         />
       )}
 
-      {showAlert && (
+      {userInfo?.roleName === "미등록" && showAlert && (
         <AlertWithBtn
           title="회원가입 필요"
           message={"회원가입을 완료하고\n더 많은 서비스를 이용해보세요!"}
