@@ -16,10 +16,15 @@ export default function SignInPageContent() {
 
     getTokenWithCode(kakaoCode)
       .then((res) => {
-        // Zustand store에 저장 (refreshToken이 있다면 포함)
+        // Zustand store에 저장 (userInfo를 포함하여 4개 인수를 전달)
         authStore
           .getState()
-          .signIn(res.accessToken, res.refreshToken || "", res.isRegistered);
+          .signIn(
+            res.accessToken,
+            res.refreshToken || "",
+            res.isRegistered,
+            res.userInfo
+          );
 
         // sessionStorage에도 저장
         if (typeof window !== "undefined") {
