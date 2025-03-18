@@ -6,3 +6,25 @@ export interface BrokerOffice {
   대표자명: string;
   홈페이지주소: string;
 }
+
+export interface AgentSignupData {
+  email: string;
+  foreigner: "L" | "F";
+  birthday: string;
+  agentType: "소속" | "개업";
+  agentSpecialty: string;
+  businessName: string;
+  agentRegistrationNumber: string;
+  primaryContactNumber: string;
+  officeAddress: string;
+  ownerName: string;
+  ownerContactNumber: string;
+  agentName: string;
+  agentContactNumber: string;
+  singleHousehold: boolean;
+  introductionTitle: string;
+  introductionContent: string;
+  externalLink: string;
+  messageVerify: boolean;
+  marketingAgree: boolean;
+}
