@@ -87,18 +87,7 @@ const ReviewModal = ({ onClose, onSubmit, agentId }: ReviewModalProps) => {
         <div className="h-[1px] bg-menuborder" />
 
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          {/* 제목 입력 */}
-          {/* <h3 className="flex text-text1 text-h3 mt-[22px]">
-            제목 <span className="text-point text-body1_m pl-1">*</span>
-          </h3>
-          <CustomInput
-            value={title}
-            placeholder={"리뷰 제목을 입력해주세요"}
-            onChange={(e) => setTitle(e.target.value)}
-            className="mb-4"
-            label={""}
-            name={""}
-          /> */}
+       ㅋ
 
           {/* 별점 입력 */}
           <h3 className="flex text-text1 text-h3 mt-[22px]">

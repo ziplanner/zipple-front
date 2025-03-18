@@ -9,12 +9,9 @@ import {
 import { MdBusiness } from "react-icons/md";
 import AgentSearchModal from "@/app/components/modal/agentSearchModal";
 import PrimaryBtn from "@/app/components/button/primaryBtn";
-import TransparentLargeBtn from "@/app/components/button/transparentLargeBtn";
-import { useRouter } from "next/navigation";
 import { BrokerOffice } from "@/app/types/agent";
 
-const AgentSection = () => {
-  const router = useRouter();
+const MainSection = () => {
   const [selectedOffice, setSelectedOffice] = useState<BrokerOffice | null>(
     null
   );
@@ -26,20 +23,15 @@ const AgentSection = () => {
     setIsModalOpen(false);
   };
 
-  const handleCompleteSignup = () => {
-    localStorage.setItem("signupSuccessMessage", "회원가입이 완료되었습니다.");
-    router.push("/mypage");
-  };
-
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1 className="text-mobile_h1_contents_title md:text-h1_contents_title mb-6 md:mb-12">
-        공인중개사 선택
+    <div className="max-w-screen-sm sm:max-w-screen-md md:max-w-screen-lg lg:max-w-screen-lx px-4 md:px-5 mx-auto">
+      <h1 className="text-mobile_h1_contents_title md:text-h1_contents_title mb-6">
+        Step1. 공인중개사 선택
       </h1>
 
       {/* 🔹 선택된 공인중개사 정보 표시 */}
       {selectedOffice && (
-        <div className="flex flex-col max-w-screen-md md:w-3/4 p-4 md:p-6 bg-white rounded-lg shadow-md">
+        <div className="flex flex-col w-full md:w-3/4 p-4 md:p-6 bg-white rounded-lg shadow-md">
           <div className="flex justify-between w-full border-b pb-2">
             <div className="flex pb-2 pl-3">
               <div className="flex gap-3 items-center">
@@ -113,17 +105,9 @@ const AgentSection = () => {
         <PrimaryBtn
           text={"공인중개사 검색"}
           onClick={() => {
-            console.log("🔹 버튼 클릭됨");
+            console.log("🔹 버튼 클릭됨"); // ✅ 버튼 클릭 로그
             setIsModalOpen(true);
           }}
-        />
-      )}
-      {!selectedOffice && <div className="h-[50vh]" />}
-      {selectedOffice && (
-        <TransparentLargeBtn
-          text={"회원가입 완료하기 ->"}
-          onClick={handleCompleteSignup}
-          className="md:mt-16 mt-10"
         />
       )}
 
@@ -131,7 +115,7 @@ const AgentSection = () => {
       {isModalOpen && (
         <AgentSearchModal
           onClose={() => {
-            console.log("🔹 모달 닫힘");
+            console.log("🔹 모달 닫힘"); // ✅ 모달 닫기 로그
             setIsModalOpen(false);
           }}
           onSelect={(office) => {
@@ -144,4 +128,4 @@ const AgentSection = () => {
   );
 };
 
-export default AgentSection;
+export default MainSection;

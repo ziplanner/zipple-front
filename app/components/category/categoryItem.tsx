@@ -11,6 +11,10 @@ const CategoryItem: React.FC<CategoryItemProps> = ({ icon, label }) => {
   const router = useRouter();
 
   const handleClick = () => {
+    if (label === "전체보기") {
+      router.push("/match");
+      return;
+    }
     router.push(`/match?category=${encodeURIComponent(label)}`);
   };
 

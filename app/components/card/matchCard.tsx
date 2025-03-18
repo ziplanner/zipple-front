@@ -20,6 +20,7 @@ interface ProfileCardProps {
     agentSpecialty: string;
     portfolioCount: number;
     title: string;
+    businessName: string;
     singleHouseholdExpert: boolean;
   };
 }
@@ -95,10 +96,10 @@ const MatchCard = ({ professional }: ProfileCardProps) => {
                 <div className="flex flex-col mt-3">
                   <div className="flex items-center flex-row md:gap-2 gap-1">
                     <h3 className="md:text-h2 text-mobile_h4 text-text">
-                      {professional.agentName}
+                      {professional.agentName || professional.businessName}
                     </h3>
                     <p className="text-text_sub md:text-body3_r text-[9px]">
-                      [{professional.company}]
+                      [{professional.businessName}]
                     </p>
                   </div>
                   <p className="text-mobile_body3_r md:text-h4 text-text_sub4">

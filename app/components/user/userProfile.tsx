@@ -82,7 +82,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                 {agentName}
               </h1>
               <p className="text-mobile_body3_r md:text-body3_r lg:text-body2_r text-gray-500">
-                {businessName} [{agentSpecialty}]
+                [{businessName}] {agentSpecialty}
               </p>
             </div>
             <div

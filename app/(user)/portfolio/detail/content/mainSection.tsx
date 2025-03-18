@@ -84,14 +84,16 @@ const MainSection = () => {
 
       <div className="flex flex-col md:flex-row md:gap-6 mt-6">
         {/* 📌 메인 이미지 */}
-        <div className="relative w-full max-h-[600px] md:w-1/2 aspect-square cursor-pointer">
+        <div
+          className="relative w-full aspect-square cursor-pointer"
+          onClick={() => setIsImageViewerOpen(true)}
+        >
           <Image
             src={portfolio.portfolioList[currentImageIndex] || defaultImage}
             alt="포트폴리오 이미지"
             width={500}
             height={500}
-            objectFit="cover"
-            className="rounded-lg shadow-lg w-full h-auto"
+            className="object-cover w-full h-full rounded-lg shadow-lg"
           />
         </div>
 

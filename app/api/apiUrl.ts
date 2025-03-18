@@ -11,6 +11,10 @@ export const LOGIN = "api/v1/email/login";
 export const SING_UP_AGENT = "/api/v1/email/agent";
 export const SING_UP_GENERAL = "/api/v1/email/general";
 
+// 문자 인증
+export const SMS_SEND = "api/v1/sms/send";
+export const SMS_VERIFY = "api/v1/sms/verify";
+
 // 유저 정보
 export const USER = "/api/auth/role";
 export const GENERAL_REGISTER = "/api/v1/register/general";

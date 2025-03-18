@@ -3,16 +3,15 @@ import Image from "next/image";
 import test10 from "@/app/image/test/test10.png";
 import { useRouter } from "next/navigation";
 import CustomInput from "../input/customInput";
-import InputWithButton from "../input/inputWithButton";
 import {
   FaUser,
   FaPhone,
   FaEnvelope,
-  FaMapMarkerAlt,
-  FaHome,
   FaLink,
+  FaHome,
+  FaIdBadge,
+  FaPen,
 } from "react-icons/fa";
-import { MdPerson } from "react-icons/md";
 import {
   updateAgentBasicInfo,
   updateAgentDetailInfo,
@@ -20,7 +19,8 @@ import {
   getAgentDetailInfo,
 } from "@/app/api/user/api";
 import { useUserInfoStore } from "@/app/providers/userStoreProvider";
-import CustomTextarea from "../textarea/customTextarea";
+import { BrokerOffice } from "@/app/types/agent";
+import AlertWithBtn from "../alert/alertwithBtn";
 
 const AgentUser = () => {
   const router = useRouter();
@@ -28,13 +28,14 @@ const AgentUser = () => {
   const [isDaumLoaded, setIsDaumLoaded] = useState<boolean>(false);
   const [isEditingBasic, setIsEditingBasic] = useState<boolean>(false);
   const [isEditingDetail, setIsEditingDetail] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [basicInfo, setBasicInfo] = useState({
-    email: "",
+    agentName: "",
+    ownerName: "",
     agentType: "",
     phoneNumber: "",
-    externalLink: "",
-    title: "",
-    content: "",
+    email: "",
+    createAt: "",
   });
 
   const [ect, setEct] = useState({
@@ -71,21 +72,30 @@ const AgentUser = () => {
     externalLink: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBasicInfo({ ...basicInfo, [e.target.name]: e.target.value });
+  const handleBasicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBasicInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDetailInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleEditDetail = () => {
+    setIsModalOpen(true);
   };
 
   const handleSaveBasicInfo = async () => {
     try {
-      await updateAgentBasicInfo({
-        email: basicInfo.email,
-        agentType: userInfo?.roleName || "일반",
-        phoneNumber: basicInfo.phoneNumber,
-        externalLink: basicInfo.externalLink,
-        title: basicInfo.title,
-        content: basicInfo.content,
-      });
+      const updatedData = {
+        email: basicInfo.email || "",
+        agentType: basicInfo.agentType || "소속",
+        phoneNumber: basicInfo.phoneNumber || "",
+        externalLink: detailInfo.externalLink || "",
+        title: detailInfo.title || "",
+        content: detailInfo.content || "",
+      };
 
+      await updateAgentBasicInfo(updatedData);
       setIsEditingBasic(false);
       alert("기본 정보가 저장되었습니다.");
     } catch (err) {
@@ -96,7 +106,17 @@ const AgentUser = () => {
 
   const handleSaveDetailInfo = async () => {
     try {
-      await updateAgentDetailInfo(detailInfo);
+      const updatedData = {
+        businessName: detailInfo.businessName,
+        agentRegistrationNumber: detailInfo.agentRegistrationNumber,
+        primaryContactNumber: detailInfo.primaryContactNumber,
+        officeAddress: detailInfo.officeAddress,
+        singleHouseholdExpertRequest: detailInfo.singleHouseholdExpertRequest,
+        ownerName: detailInfo.ownerName,
+      };
+
+      await updateAgentDetailInfo(updatedData);
+
       setIsEditingDetail(false);
       alert("상세 정보가 저장되었습니다.");
     } catch (err) {
@@ -105,19 +125,30 @@ const AgentUser = () => {
     }
   };
 
+  const handleSelectOffice = (selectedOffice: BrokerOffice) => {
+    setDetailInfo((prev) => ({
+      ...prev,
+      businessName: selectedOffice.중개사무소명,
+      agentRegistrationNumber: selectedOffice.개설등록번호,
+      primaryContactNumber: selectedOffice.전화번호,
+      officeAddress: selectedOffice.소재지도로명주소,
+      ownerName: selectedOffice.대표자명,
+    }));
+    setIsModalOpen(false);
+  };
+
   useEffect(() => {
     // 기본 정보 로드
     getAgentInfo()
       .then((data) => {
         setBasicInfo((prev) => ({
           ...prev,
-          name: data.agentName,
-          type: data.agentType,
-          phone: data.phoneNumber,
+          agentName: data.agentName,
+          ownerName: data.ownerName,
+          agentType: data.agentType,
+          phoneNumber: data.phoneNumber,
           email: data.email,
-          address: data.officeAddress,
-          residence: data.title,
-          joinDate: data.joinDate || "",
+          createAt: data.createAt,
         }));
       })
       .catch((err) => console.error("Error fetching basic info:", err));
@@ -125,6 +156,7 @@ const AgentUser = () => {
     // 상세 정보 로드
     getAgentDetailInfo()
       .then((data) => {
+        console.log("중개사 정보 >>>", data);
         setDetailInfo({
           email: data.email,
           agentType: data.agentType,
@@ -143,7 +175,7 @@ const AgentUser = () => {
           businessRegistrationCertification:
             data.businessRegistrationCertification,
           agentLicense: data.agentLicense,
-          agentImage: data.agentImage || test10,
+          agentImage: data.agentImage,
           title: data.title,
           content: data.content,
           externalLink: data.externalLink,
@@ -189,17 +221,17 @@ const AgentUser = () => {
         max-h-44 max-w-44 rounded-lg overflow-hidden"
           >
             <Image
-              src={test10}
+              src={detailInfo.businessRegistrationCertification || test10}
               alt="Profile"
               className="w-full h-full object-cover rounded-full"
+              width={176}
+              height={176}
             />
           </div>
           <h2 className="mt-4 text-h4_sb md:text-h3">{userInfo?.nickname}</h2>
           {/* 회원 유형 + 승인 배지 */}
           <div className="flex items-center gap-2">
-            <p className="text-gray-600">
-              {userInfo?.roleName.includes("AFFILIATED") ? "개업" : " 소속"}
-            </p>
+            <p className="text-gray-600">{userInfo?.roleName}</p>
 
             {/* 개업(대표)회원 및 공인중개사 회원에게만 체크 배지 표시 */}
             {userInfo?.roleName !== "일반" && (
@@ -222,7 +254,7 @@ const AgentUser = () => {
       </div>
 
       {/* === 메인 콘텐츠 (배경 없음) === */}
-      <div className="flex w-3/4 flex-col gap-12">
+      <div className="flex w-full md:w-3/4 flex-col gap-12">
         <div className="flex flex-col w-full md:p-6 p-4 bg-white rounded-lg">
           <h3 className="flex mt-4 text-h3 text-text">
             <div className="flex justify-between w-full">
@@ -235,7 +267,13 @@ const AgentUser = () => {
                 </div>
               </div>
               <button
-                onClick={() => setIsEditingBasic(!isEditingBasic)}
+                onClick={() => {
+                  if (isEditingBasic) {
+                    handleSaveBasicInfo();
+                  } else {
+                    setIsEditingBasic(true);
+                  }
+                }}
                 className="px-3 py-1 text-body3_sb bg-white border border-text_sub3 rounded shadow-sm"
               >
                 {isEditingBasic ? "저장" : "수정"}
@@ -248,54 +286,37 @@ const AgentUser = () => {
               <>
                 <CustomInput
                   label="전화번호"
-                  name="phone"
+                  name="phoneNumber"
                   value={basicInfo.phoneNumber}
-                  onChange={handleChange}
+                  onChange={handleBasicChange}
                 />
                 <CustomInput
                   label="이메일"
                   name="email"
                   value={basicInfo.email}
-                  onChange={handleChange}
+                  onChange={handleBasicChange}
                 />
                 <CustomInput
                   label="첨부링크"
                   name="externalLink"
-                  value={basicInfo.externalLink}
-                  onChange={handleChange}
+                  value={detailInfo.externalLink}
+                  onChange={handleDetailChange}
                 />
                 <CustomInput
                   label="한 줄 소개"
                   name="title"
-                  value={basicInfo.title}
-                  onChange={handleChange}
+                  value={detailInfo.title}
+                  onChange={handleDetailChange}
                 />
                 <CustomInput
                   label="자기소개"
                   name="content"
-                  value={basicInfo.content}
-                  onChange={handleChange}
+                  value={detailInfo.content}
+                  onChange={handleDetailChange}
                 />
-
-                {/* <InputWithButton
-                  label="주소"
-                  name="address"
-                  value={basicInfo.address}
-                  onChange={handleChange}
-                  buttonText="검색"
-                  onButtonClick={handleAddressSearch}
-                /> */}
               </>
             ) : (
               <>
-                {/* <div className="flex flex-row items-center gap-1 ml-4">
-                  <p className="text-gray-600 text-body1_sb">
-                    <MdPerson />
-                  </p>
-                  <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                    {basicInfo.name}
-                  </p>
-                </div> */}
                 <div className="flex flex-row items-center gap-1 ml-4">
                   <p className="text-gray-600 text-body1_sb">
                     {/* 📞 전화번호 */}
@@ -320,26 +341,189 @@ const AgentUser = () => {
                     {/* 📧 이메일 */}
                   </p>
                   <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                    {basicInfo.externalLink}
+                    {detailInfo.externalLink}
                   </p>
                 </div>
                 <div className="flex flex-row items-center gap-1 ml-4">
-                  {/* <p className="text-gray-600 text-body1_sb">
-                    <FaMapMarkerAlt />
-                  </p> */}
+                  <p className="text-gray-600 text-body1_sb">
+                    <FaIdBadge /> {/* 자기소개 제목 */}
+                  </p>
                   <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                    {basicInfo.title}
+                    {detailInfo.title}
                   </p>
                 </div>
                 <div className="flex flex-row items-center gap-1 ml-4">
-                  {/* <p className="text-gray-600 text-body1_sb">
-                    <FaHome />
-                  </p> */}
+                  <p className="text-gray-600 text-body1_sb">
+                    <FaPen /> {/* 자기소개 내용 */}
+                  </p>
                   <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                    {basicInfo.content}
+                    {detailInfo.content}
                   </p>
                 </div>
               </>
+            )}
+          </div>
+
+          <h3 className="flex mt-12 text-h3 text-text">
+            <div className="flex justify-between w-full mt-16">
+              <div className="flex pb-2 pl-3">
+                <div className="flex gap-3 items-center">
+                  <FaHome />
+                  <h3 className="text-h4_sb md:text-h2 text-text rounded-t-lg inline-block">
+                    부동산 정보
+                  </h3>
+                </div>
+              </div>
+              <button
+                onClick={handleEditDetail}
+                // onClick={() => {
+                //   if (isEditingDetail) {
+                //     handleSaveDetailInfo();
+                //   } else {
+                //     setIsEditingDetail(true);
+                //   }
+                // }}
+                className="px-3 py-1 text-body3_sb bg-white border border-text_sub3 rounded shadow-sm"
+              >
+                {isEditingDetail ? "저장" : "수정"}
+              </button>
+            </div>
+          </h3>
+          <div className="mt-2 border-t pt-4 flex flex-col gap-4">
+            {isEditingDetail ? (
+              <>
+                <CustomInput
+                  label="부동산명"
+                  name="businessName"
+                  value={detailInfo.businessName}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="중개사 전문 분야"
+                  name="agentSpecialty"
+                  value={detailInfo.agentSpecialty}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="등록번호"
+                  name="agentRegistrationNumber"
+                  value={detailInfo.agentRegistrationNumber}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="대표 전화번호"
+                  name="primaryContactNumber"
+                  value={detailInfo.primaryContactNumber}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="소유자 이름"
+                  name="ownerName"
+                  value={detailInfo.ownerName}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="소유자 연락처"
+                  name="ownerContactNumber"
+                  value={detailInfo.ownerContactNumber}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="사무소 주소"
+                  name="officeAddress"
+                  value={detailInfo.officeAddress}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="중개사 이름"
+                  name="agentName"
+                  value={detailInfo.agentName}
+                  onChange={handleDetailChange}
+                />
+                <CustomInput
+                  label="중개사 연락처"
+                  name="agentContactNumber"
+                  value={detailInfo.agentContactNumber}
+                  onChange={handleDetailChange}
+                />
+              </>
+            ) : (
+              <div className="mt-2 pt-4 flex flex-col gap-6 pl-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      부동산명
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.businessName}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      중개사 전문 분야
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentSpecialty}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      등록번호
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentRegistrationNumber}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      대표 전화번호
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.primaryContactNumber}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      소유자 이름
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.ownerName}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      소유자 연락처
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.ownerContactNumber}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      사무소 주소
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.officeAddress}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      중개사 이름
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentName}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
+                      중개사 연락처
+                    </label>
+                    <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
+                      {detailInfo.agentContactNumber}
+                    </p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
@@ -373,137 +557,19 @@ const AgentUser = () => {
             ))}
           </ul>
         </div>
-        <div className="flex flex-col w-full md:p-6 p-4 bg-white rounded-lg">
-          <h3 className="flex mt-4 text-h3 text-text">
-            <div className="flex justify-between w-full">
-              <div className="flex pb-2 pl-3">
-                <div className="flex gap-3 items-center">
-                  <FaUser />
-                  <h3 className="text-h4_sb md:text-h2 text-text rounded-t-lg inline-block">
-                    부동산 정보
-                  </h3>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsEditingDetail(!isEditingDetail)}
-                className="px-3 py-1 text-body3_sb bg-white border border-text_sub3 rounded shadow-sm"
-              >
-                {isEditingBasic ? "저장" : "수정"}
-              </button>
-            </div>
-          </h3>
-          <div className="mt-2 border-t pt-4 flex flex-col gap-4">
-            {isEditingDetail ? (
-              <>
-                <CustomInput
-                  label="부동산명"
-                  name="businessName"
-                  value={detailInfo.businessName}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="중개사 전문 분야"
-                  name="agentSpecialty"
-                  value={detailInfo.agentSpecialty}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="등록번호"
-                  name="agentRegistrationNumber"
-                  value={detailInfo.agentRegistrationNumber}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="대표 전화번호"
-                  name="primaryContactNumber"
-                  value={detailInfo.primaryContactNumber}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="소유자 이름"
-                  name="ownerName"
-                  value={detailInfo.ownerName}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="소유자 연락처"
-                  name="ownerContactNumber"
-                  value={detailInfo.ownerContactNumber}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="사무소 주소"
-                  name="officeAddress"
-                  value={detailInfo.officeAddress}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="중개사 이름"
-                  name="agentName"
-                  value={detailInfo.agentName}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="중개사 연락처"
-                  name="agentContactNumber"
-                  value={detailInfo.agentContactNumber}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="중개사 유형"
-                  name="agentType"
-                  value={detailInfo.agentType}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="이메일"
-                  name="email"
-                  value={detailInfo.email}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="외부 링크"
-                  name="externalLink"
-                  value={detailInfo.externalLink}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="제목"
-                  name="title"
-                  value={detailInfo.title}
-                  onChange={handleChange}
-                />
-                <CustomInput
-                  label="설명"
-                  name="content"
-                  value={detailInfo.content}
-                  onChange={handleChange}
-                />
-              </>
-            ) : (
-              <div
-                className="mt-2 pt-4 flex flex-col gap-6
-              text-mobile_body2_r md:text-body1_r pl-5"
-              >
-                <p>부동산명: {detailInfo.businessName}</p>
-                <p>중개사 전문 분야: {detailInfo.agentSpecialty}</p>
-                <p>등록번호: {detailInfo.agentRegistrationNumber}</p>
-                <p>대표 전화번호: {detailInfo.primaryContactNumber}</p>
-                <p>소유자 이름: {detailInfo.ownerName}</p>
-                <p>소유자 연락처: {detailInfo.ownerContactNumber}</p>
-                <p>사무소 주소: {detailInfo.officeAddress}</p>
-                <p>중개사 이름: {detailInfo.agentName}</p>
-                <p>중개사 연락처: {detailInfo.agentContactNumber}</p>
-                <p>중개사 유형: {detailInfo.agentType}</p>
-                <p>이메일: {detailInfo.email}</p>
-                <p>외부 링크: {detailInfo.externalLink}</p>
-                <p>제목: {detailInfo.title}</p>
-                <p>설명: {detailInfo.content}</p>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
+      {/* 중개사무소 검색 모달 */}
+      {isModalOpen && (
+        <AlertWithBtn
+          message={"부동산 정보 수정은 관리자에게 문의 바랍니다."}
+          onConfirm={() => {
+            setIsModalOpen(false);
+          }}
+          onCancel={() => {
+            setIsModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

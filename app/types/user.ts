@@ -45,12 +45,12 @@ export interface GeneralBasicInfo {
 }
 
 export interface AgentBasicInfo {
-  email: string;
+  agentName: string;
+  ownerName: string;
   agentType: string;
   phoneNumber: string;
-  externalLink: string;
-  title: string;
-  content: string;
+  email: string;
+  createAt: string;
 }
 
 export interface AgentInfo {
@@ -81,4 +81,22 @@ export interface GeneralSignupData {
   generalAddress: string;
   housingType: string;
   marketingNotificationTerms: boolean;
+}
+
+export interface ModifyAgentBasicInfo {
+  email: string;
+  agentType: string;
+  phoneNumber: string;
+  externalLink: string;
+  title: string;
+  content: string;
+}
+
+export interface ModifyAgentInfo {
+  businessName: string;
+  agentRegistrationNumber: string;
+  primaryContactNumber: string;
+  officeAddress: string;
+  singleHouseholdExpertRequest: boolean;
+  ownerName: string;
 }

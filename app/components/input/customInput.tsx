@@ -8,6 +8,7 @@ type CustomInputProps = {
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  disabled?: boolean;
 };
 
 const CustomInput = ({
@@ -18,6 +19,7 @@ const CustomInput = ({
   placeholder,
   onChange,
   className,
+  disabled = false,
 }: CustomInputProps) => {
   return (
     <div className={`flex flex-col ${className}`}>
@@ -30,8 +32,10 @@ const CustomInput = ({
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        className="border border-searchbarborder p-1.5 md:p-2 rounded-lg focus:outline-none focus:ring-1
-        focus:ring-selectedoption_pressed transition-all text-mobile_body3_r md:text-body2_r"
+        disabled={disabled}
+        className={`border border-searchbarborder p-1.5 md:p-2 rounded-lg focus:outline-none focus:ring-1
+        focus:ring-selectedoption_pressed transition-all text-mobile_body3_r md:text-body2_r
+        ${disabled ? "bg-gray-100 text-gray-500" : ""}`}
       />
     </div>
   );
