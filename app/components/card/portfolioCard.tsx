@@ -32,17 +32,18 @@ const PortfolioCard = ({ data }: portfolioData) => {
           className="flex gap-1.5 md:flex-col cursor-pointer pb-3"
           onClick={() => handleRouter(item.portfolioId)}
         >
-          <div className="relative lg:min-w-[200px] w-full aspect-square">
+          <div className="relative w-full aspect-square overflow-hidden">
             <Image
               src={item.portfolioImage || defaultImage}
               alt={item.title || "이미지"}
-              width={0}
-              height={0}
+              width={500} // 원하는 이미지 크기
+              height={500} // 정사각형 유지
               sizes="100vw"
-              className="w-auto h-auto rounded-xl"
+              className="object-cover w-full h-full rounded-xl"
               unoptimized
             />
           </div>
+
           <div className="flex flex-col w-full">
             <h3
               className="flex flex-wrap max-w-[166px] text-text1
