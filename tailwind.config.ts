@@ -16,6 +16,7 @@ export default {
         bg_sub: "#ECF3FF",
         bg_sub2: "#F6F8FA",
         bg_sub3: "#F9FAFB",
+        bg_sub4: "#FAFCFF",
         // primary: "#3772F7",
         // primary_hover: "#2F65D6",
         // primary_pressed: "#2A5ABE",
