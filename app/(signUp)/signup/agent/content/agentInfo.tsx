@@ -15,7 +15,7 @@ interface AgentInfoProps {
 const AgentInfo = ({ selectedOffice }: AgentInfoProps) => {
   return (
     <>
-      <div className="mt-6 p-4 bg-white rounded-lg shadow-md">
+      <div className="mt-6 p-4 bg-white border border-gray-300 shadow-lg rounded-lg">
         <div className="flex gap-3 items-center border-b pb-2">
           <MdBusiness />
           <h3 className="text-mobile_h2 md:text-h2">공인중개사 정보</h3>
