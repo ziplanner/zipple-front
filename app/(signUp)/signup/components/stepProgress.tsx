@@ -5,7 +5,7 @@ const StepProgress = () => {
   const { step } = useStepContext();
 
   return (
-    <div className="flex justify-between items-center mb-8">
+    <div className="flex justify-between items-center md:mb-24 mb-20">
       {["Step 1", "Step 2", "Step 3", "Step 4"].map((label, index) => (
         <div key={index} className="flex items-center">
           <div
