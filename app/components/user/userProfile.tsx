@@ -282,3 +282,5 @@ const UserProfile: React.FC<UserProfileProps> = ({
     </div>
   );
 };
+
+export default UserProfile;
