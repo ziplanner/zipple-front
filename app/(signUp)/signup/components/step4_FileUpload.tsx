@@ -6,12 +6,14 @@ import { specializationOptions } from "@/app/types/category";
 import TermsAgreement from "./termsAreement";
 import Image from "next/image";
 import PrimaryBtn from "@/app/components/button/primaryBtn";
-import { signupAgent } from "@/app/api/user/api";
+import { getUserInfo, signupAgent } from "@/app/api/user/api";
 import { AgentSignupData } from "@/app/types/agent";
 import { useRouter } from "next/navigation";
+import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 
 const Step4_FileUpload = () => {
   const router = useRouter();
+  const { setUserInfo } = useUserInfoStore((state) => state);
 
   const {
     selectedType,
@@ -158,6 +160,12 @@ const Step4_FileUpload = () => {
         agentImage
       );
       console.log("✅ 공인중개사 회원가입 성공:", response);
+
+      // 회원가입 후, 유저 정보를 다시 가져오기
+      const data = await getUserInfo();
+      console.log("유저 정보 가져오기:", data);
+      setUserInfo(data);
+
       router.push("/");
       alert("회원가입이 완료되었습니다!");
     } catch (error) {
