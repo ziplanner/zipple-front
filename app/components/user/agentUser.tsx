@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import test10 from "@/app/image/test/test10.png";
 import { useRouter } from "next/navigation";
+import defaultImage from "@/app/image/test/test_image.jpg";
 import CustomInput from "../input/customInput";
 import {
   FaUser,
@@ -21,12 +22,14 @@ import {
 import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 import { BrokerOffice } from "@/app/types/agent";
 import AlertWithBtn from "../alert/alertwithBtn";
+import { withdrawAccount } from "@/app/api/login/api";
 
 const AgentUser = () => {
   const router = useRouter();
   const { userInfo } = useUserInfoStore((state) => state);
   const [isDaumLoaded, setIsDaumLoaded] = useState<boolean>(false);
   const [isEditingBasic, setIsEditingBasic] = useState<boolean>(false);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const [isEditingDetail, setIsEditingDetail] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [basicInfo, setBasicInfo] = useState({
@@ -195,19 +198,14 @@ const AgentUser = () => {
     return () => clearInterval(checkDaumAPI);
   }, []);
 
-  const handleAddressSearch = () => {
-    if (!isDaumLoaded) {
-      alert(
-        "주소 검색 API가 아직 로드되지 않았습니다. 잠시 후 다시 시도해주세요."
-      );
-      return;
-    }
+  // 회원탈퇴
+  const handleWithdraw = () => {
+    setIsAlertOpen(true);
+  };
 
-    new window.daum.Postcode({
-      oncomplete: (data: any) => {
-        setBasicInfo((prev) => ({ ...prev, address: data.address }));
-      },
-    }).open();
+  const confirmWithdraw = async () => {
+    setIsAlertOpen(false);
+    await withdrawAccount();
   };
 
   return (
@@ -221,7 +219,7 @@ const AgentUser = () => {
         max-h-44 max-w-44 rounded-lg overflow-hidden"
           >
             <Image
-              src={detailInfo.businessRegistrationCertification || test10}
+              src={userInfo?.profileUrl || defaultImage}
               alt="Profile"
               className="w-full h-full object-cover rounded-full"
               width={176}
@@ -340,10 +338,17 @@ const AgentUser = () => {
                     <FaLink />
                     {/* 📧 이메일 */}
                   </p>
-                  <p className="text-mobile_body2_r md:text-body1_r pl-5">
-                    {detailInfo.externalLink}
-                  </p>
+                  <a
+                    href={detailInfo.externalLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <p className="text-mobile_body2_r md:text-body1_r pl-5 hover:underline">
+                      {detailInfo.externalLink}
+                    </p>
+                  </a>
                 </div>
+
                 <div className="flex flex-row items-center gap-1 ml-4">
                   <p className="text-gray-600 text-body1_sb">
                     <FaIdBadge /> {/* 자기소개 제목 */}
@@ -556,6 +561,20 @@ const AgentUser = () => {
               </li>
             ))}
           </ul>
+          <h3 className="mt-16 text-h4_sb md:text-h2 text-text rounded-t-lg p-2 pl-3 inline-block">
+            서비스
+          </h3>
+          <ul className="border-t pt-3 ml-3">
+            <li className="py-2 cursor-pointer text-body3_m md:text-body1_m text-text_sub4 hover:underline">
+              문의하기
+            </li>
+            <li
+              className="py-2 cursor-pointer text-body3_m md:text-body1_m text-point hover:underline"
+              onClick={handleWithdraw}
+            >
+              회원 탈퇴
+            </li>
+          </ul>
         </div>
       </div>
       {/* 중개사무소 검색 모달 */}
@@ -568,6 +587,18 @@ const AgentUser = () => {
           onCancel={() => {
             setIsModalOpen(false);
           }}
+        />
+      )}
+      {isAlertOpen && (
+        <AlertWithBtn
+          title="회원 탈퇴"
+          message={
+            "정말 회원 탈퇴를 진행하시겠습니까? \n탈퇴 시 모든 정보가 삭제됩니다. 이 작업은 되돌릴 수 없습니다."
+          }
+          onConfirm={confirmWithdraw}
+          onCancel={() => setIsAlertOpen(false)}
+          confirmText="탈퇴"
+          cancelText="취소"
         />
       )}
     </div>
