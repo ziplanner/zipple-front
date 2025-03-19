@@ -1,4 +1,4 @@
-name: AriAri Main CI/CD
+name: Ziplanner Main CI/CD
 
 on:
   push:
