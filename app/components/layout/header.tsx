@@ -337,14 +337,17 @@ const Header = () => {
             setShowAlert(false);
             setTimeout(() => {
               if (!pathname.includes("/signup")) {
-                router.push("/signup");
+                router.push("/signup"); // 가입 페이지로 이동
               }
             }, 100);
           }}
           onCancel={() => {
-            setShowAlert(false);
-            // 추후 미등록 시 접근 불가능한 페이지 도출 필요
-            router.back();
+            setShowAlert(false); // 모달만 닫기
+            if (pathname.includes("/mypage")) {
+              // pathname이 /mypage를 포함하고 있을 경우에만 이전 페이지로 이동
+              router.back();
+            }
+            // pathname이 /mypage가 아닐 경우 아무 동작도 하지 않음
           }}
           confirmText="가입하기"
           cancelText="나중에"
