@@ -88,21 +88,25 @@ const TermsAgreement = ({ className }: TermsAgreementProps) => {
       {/* ✅ 개별 동의 항목 */}
       {[
         {
-          label: "이용약관에 동의합니다.",
+          label: "(필수) 이용약관에 동의합니다.",
           state: termsAgree,
           setter: setTermsAgree,
         },
         {
-          label: "개인정보 처리방침에 동의합니다.",
+          label: "(필수) 개인정보 처리방침에 동의합니다.",
           state: privacyAgree,
           setter: setPrivacyAgree,
         },
         {
-          label: "집플 서비스 운영 정책에 동의합니다.",
+          label: "(필수) 집플 서비스 운영 정책에 동의합니다.",
           state: serviceAgree,
           setter: setServiceAgree,
         },
-        { label: "만 14세 이상입니다.", state: ageAgree, setter: setAgeAgree },
+        {
+          label: "(필수) 만 14세 이상입니다.",
+          state: ageAgree,
+          setter: setAgeAgree,
+        },
       ].map(({ label, state, setter }, index) => (
         <div
           key={index}
@@ -141,7 +145,7 @@ const TermsAgreement = ({ className }: TermsAgreementProps) => {
             <FaCircle className="text-gray-300 md:text-h3 text-mobile_h4" />
           )}
           <span className="md:text-body1_r text-mobile_body2_r">
-            마케팅 알림 수신 동의
+            (선택) 마케팅 알림 수신 동의
           </span>
         </div>
         <p
