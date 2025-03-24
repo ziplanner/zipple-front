@@ -287,6 +287,7 @@ const AgentUser = () => {
                   name="phoneNumber"
                   value={basicInfo.phoneNumber}
                   onChange={handleBasicChange}
+                  disabled={true}
                 />
                 <CustomInput
                   label="이메일"
@@ -300,12 +301,12 @@ const AgentUser = () => {
                   value={detailInfo.externalLink}
                   onChange={handleDetailChange}
                 />
-                <CustomInput
+                {/* <CustomInput
                   label="한 줄 소개"
                   name="title"
                   value={detailInfo.title}
                   onChange={handleDetailChange}
-                />
+                /> */}
                 <CustomInput
                   label="자기소개"
                   name="content"
@@ -348,15 +349,15 @@ const AgentUser = () => {
                     </p>
                   </a>
                 </div>
-
-                <div className="flex flex-row items-center gap-1 ml-4">
+                {/* 자기소개 제목 */}
+                {/* <div className="flex flex-row items-center gap-1 ml-4">
                   <p className="text-gray-600 text-body1_sb">
-                    <FaIdBadge /> {/* 자기소개 제목 */}
+                    <FaIdBadge /> 
                   </p>
                   <p className="text-mobile_body2_r md:text-body1_r pl-5">
                     {detailInfo.title}
                   </p>
-                </div>
+                </div> */}
                 <div className="flex flex-row items-center gap-1 ml-4">
                   <p className="text-gray-600 text-body1_sb">
                     <FaPen /> {/* 자기소개 내용 */}
