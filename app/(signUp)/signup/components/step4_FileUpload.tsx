@@ -10,10 +10,12 @@ import { getUserInfo, signupAgent } from "@/app/api/user/api";
 import { AgentSignupData } from "@/app/types/agent";
 import { useRouter } from "next/navigation";
 import { useUserInfoStore } from "@/app/providers/userStoreProvider";
+import Alert from "@/app/components/alert/alert";
 
 const Step4_FileUpload = () => {
   const router = useRouter();
   const { setUserInfo } = useUserInfoStore((state) => state);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const {
     selectedType,
@@ -47,14 +49,14 @@ const Step4_FileUpload = () => {
     setAgentSpecialty,
   } = useStepContext();
 
-  // 파일 선택 버튼을 위한 useRef
+  console.log(agentSpecialty);
+
   const fileInputRefs = {
     businessLicense: useRef<HTMLInputElement>(null),
     brokerLicense: useRef<HTMLInputElement>(null),
     agentCertificate: useRef<HTMLInputElement>(null),
   };
 
-  // 파일 미리보기 및 이름 상태
   const [filePreviews, setFilePreviews] = useState({
     businessLicensePreview: null as string | null,
     brokerLicensePreview: null as string | null,
@@ -95,29 +97,56 @@ const Step4_FileUpload = () => {
   };
 
   const formatPhoneNumber = (phone: string) => {
-    // 숫자만 남기기
     const cleaned = phone.replace(/\D/g, "");
-
-    // 휴대폰 번호 형식 적용
     if (cleaned.length === 11) {
       return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
     } else if (cleaned.length === 10) {
       return cleaned.replace(/(\d{2,3})(\d{3,4})(\d{4})/, "$1-$2-$3");
     }
-    return phone; // 변환 불가능하면 원본 반환
+    return phone;
+  };
+
+  // 유효성 검사 함수
+  const validateForm = () => {
+    // agentSpecialty 값이 null, undefined, 빈 문자열인지 확인
+    if (!agentSpecialty) {
+      setAlertMessage("전문분야를 선택해야 합니다.");
+      setTimeout(() => setAlertMessage(null), 1000);
+      return false;
+    }
+
+    // 모든 필수 파일 업로드 확인
+    if (!businessLicense || !brokerLicense || !agentCertificate) {
+      setAlertMessage("모든 필수 서류를 업로드해야 합니다.");
+      setTimeout(() => setAlertMessage(null), 1000);
+      return false;
+    }
+
+    // 필수 약관 동의 여부 확인
+    if (!messageVerify) {
+      setAlertMessage("모든 필수 약관에 동의해야 제출이 가능합니다.");
+      setTimeout(() => setAlertMessage(null), 1000);
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async () => {
+    // 유효성 검사
+    const isValid = validateForm();
+    if (!isValid) {
+      return;
+    }
+
     const agentType: "소속" | "개업" =
       selectedType === "대표 공인중개사" ? "개업" : "소속";
 
     try {
-      // ✅ 전화번호 변환
       const formattedPrimaryContact = formatPhoneNumber(primaryContactNumber);
       const formattedOwnerContact = formatPhoneNumber(ownerContactNumber);
       const formattedAgentContact = formatPhoneNumber(agentContactNumber);
 
-      // ✅ API 요청을 위한 데이터 구성 (foreigner 타입 변환)
       const agentData: AgentSignupData = {
         email,
         foreigner: foreigner as "L" | "F",
@@ -126,7 +155,6 @@ const Step4_FileUpload = () => {
         agentSpecialty,
         businessName,
         agentRegistrationNumber,
-        // primaryContactNumber: formattedPrimaryContact,
         primaryContactNumber: formattedOwnerContact,
         officeAddress,
         ownerName,
@@ -141,7 +169,6 @@ const Step4_FileUpload = () => {
         marketingAgree,
       };
 
-      // ✅ 업로드된 파일 리스트 구성
       const certificationFiles = [
         businessLicense,
         brokerLicense,
@@ -153,7 +180,6 @@ const Step4_FileUpload = () => {
       console.log("certificationFiles >>>", certificationFiles);
       console.log("agentImage >>>", agentImage);
 
-      // ✅ API 호출
       const response = await signupAgent(
         agentData,
         certificationFiles,
@@ -161,7 +187,6 @@ const Step4_FileUpload = () => {
       );
       console.log("✅ 공인중개사 회원가입 성공:", response);
 
-      // 회원가입 후, 유저 정보를 다시 가져오기
       const data = await getUserInfo();
       console.log("유저 정보 가져오기:", data);
       setUserInfo(data);
@@ -196,7 +221,6 @@ const Step4_FileUpload = () => {
       <div className="grid gap-6">
         {selectedType === "대표 공인중개사" ? (
           <>
-            {/* 사업자등록증 & 중개등록증 */}
             <div className="flex gap-6 mb-6 items-center">
               {/* 사업자등록증 */}
               <div className="flex-1">
@@ -240,7 +264,6 @@ const Step4_FileUpload = () => {
                 </div>
               </div>
 
-              {/* 세로 구분선 */}
               <div className="w-[1px] h-full bg-gray-400 opacity-50"></div>
 
               {/* 중개등록증 */}
@@ -331,10 +354,8 @@ const Step4_FileUpload = () => {
         )}
       </div>
 
-      {/* 이용약관 동의 */}
       <TermsAgreement className="mt-12 md:mt-16 mb-4" />
 
-      {/* 이전 & 제출 버튼 */}
       <div className="flex justify-between mt-8 text-mobile_body2_r md:text-h4_r">
         <button
           className="text-gray-500 hover:underline"
@@ -344,6 +365,7 @@ const Step4_FileUpload = () => {
         </button>
         <PrimaryBtn text={"제출하기"} onClick={handleSubmit} />
       </div>
+      {alertMessage && <Alert message={alertMessage} duration={1500} />}
     </div>
   );
 };
