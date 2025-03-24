@@ -28,6 +28,7 @@ export const refreshAccessToken = async () => {
     console.error("토큰 갱신 실패");
     signOut();
     window.location.href = "/";
+    alert("세션이 만료되었습니다.\n다시 로그인해주세요.");
     return null;
   }
 };

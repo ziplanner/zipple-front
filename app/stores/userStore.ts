@@ -48,10 +48,17 @@ export const authStore = createStore<AuthStore>()(
             isRegistered,
             userInfo,
           })),
-        signOut: () =>
+        signOut: () => {
+          // 상태 초기화
           set(() => ({
             ...defaultAuthState,
-          })),
+          }));
+
+          // 로컬/세션 스토리지에서 auth 관련 정보 제거
+          sessionStorage.removeItem("accessToken");
+          // sessionStorage.removeItem("refreshToken");
+          localStorage.removeItem("authStorage");
+        },
         setUserData: (userData) =>
           set(() => ({
             userInfo: userData,

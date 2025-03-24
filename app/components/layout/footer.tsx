@@ -35,7 +35,7 @@ const Footer = () => {
 
           <div className="flex flex-row gap-10">
             {/* 집플 정보 */}
-            <div className="md:flex hidden flex-col gap-4">
+            {/* <div className="md:flex hidden flex-col gap-4">
               <h3 className="text-base font-semibold text-white">집플 정보</h3>
               <ul className="flex flex-col gap-2.5 text-xs text-white">
                 <p>서비스 소개</p>
@@ -44,16 +44,16 @@ const Footer = () => {
                 <p>집플래너</p>
                 <p>커뮤니티</p>
               </ul>
-            </div>
+            </div> */}
             {/* 고객 안내 */}
-            <div className="md:flex hidden flex-col gap-4">
+            {/* <div className="md:flex hidden flex-col gap-4">
               <h3 className="text-base font-semibold text-white">고객 안내</h3>
               <ul className="flex flex-col gap-2.5 text-xs text-white">
                 <p>공지사항</p>
                 <p>이용안내</p>
                 <p>자주 묻는 질문</p>
               </ul>
-            </div>
+            </div> */}
             {/* 고객 센터 */}
             <div className="md:flex hidden flex-col gap-4 mt-5 md:mt-0">
               <h3 className="text-base font-semibold text-white">고객 센터</h3>
