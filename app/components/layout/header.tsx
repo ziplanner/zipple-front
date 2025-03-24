@@ -16,6 +16,8 @@ import {
   useAuthStore,
   useUserInfoStore,
 } from "@/app/providers/userStoreProvider";
+import { AxiosError } from "axios";
+import { refreshAccessToken } from "@/app/api/login/api";
 
 const Header = () => {
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -74,6 +76,23 @@ const Header = () => {
       }
     } catch (err) {
       console.error("유저 정보 가져오기 실패:", err);
+
+      const error = err as AxiosError;
+
+      // 만약 401 또는 500 에러가 발생한 경우, 리프레시 토큰을 사용하여 accessToken을 갱신하고 다시 시도
+      if (error.response?.status === 401 || error.response?.status === 500) {
+        try {
+          const newAccessToken = await refreshAccessToken();
+
+          if (newAccessToken) {
+            // 새로운 accessToken이 발급되면, 다시 유저 정보를 가져옵니다.
+            const data = await getUserInfo();
+            setUserInfo(data);
+          }
+        } catch (refreshError) {
+          console.error("리프레시 토큰 갱신 실패:", refreshError);
+        }
+      }
     }
   };
 
