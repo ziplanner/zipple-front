@@ -13,7 +13,6 @@ const Step2_AgentSelection = () => {
     setBusinessName,
     setOfficeAddress,
     setOwnerName,
-    setAgentSpecialty,
     setPrimaryContactNumber,
   } = useStepContext();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -112,7 +111,6 @@ const Step2_AgentSelection = () => {
                   setAgentRegistrationNumber(office.개설등록번호);
                   setBusinessName(office.중개사무소명);
                   setOfficeAddress(office.소재지도로명주소);
-                  setAgentSpecialty(office.소재지도로명주소);
                   setSelectedOffice(office);
                   setPrimaryContactNumber(office.전화번호);
                   setIsOpen(false);
