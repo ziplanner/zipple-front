@@ -12,6 +12,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // bg_footer: "#303441",
         bg_footer: "#303441",
         bg_sub: "#ECF3FF",
         bg_sub2: "#F6F8FA",
@@ -42,6 +43,7 @@ export default {
         sub: "#D9D9D9",
         sub2: "#F6F6F6",
         sub3: "#B3B3B3",
+        sub4: "#9E9E9E",
         point: "#ff6e6e",
         star: "#FDB528",
         // selectedoption_default: "rgba(88, 155, 255, 0.1)",
