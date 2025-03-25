@@ -43,7 +43,7 @@ const Footer = () => {
                 onClick={handleTermsClick}
               >
                 이용약관
-              </p> 
+              </p>
               <span>|</span>
               <p className="hover:text-white transition-all duration-300">
                 개인정보처리방침
@@ -54,7 +54,7 @@ const Footer = () => {
           {/* 정보 섹션 */}
           <div className="hidden md:flex flex-col md:flex-row gap-6 md:gap-16 mt-8 md:mt-0">
             {/* 집플 정보 */}
-            <div className="flex flex-col gap-4 md:w-1/3">
+            <div className="flex flex-col gap-4">
               <h3 className="text-lg font-semibold text-white">집플 정보</h3>
               <ul className="flex flex-col gap-2.5 font-light text-xs text-gray-300">
                 <li>서비스 소개</li>
@@ -62,7 +62,7 @@ const Footer = () => {
             </div>
 
             {/* 고객 안내 */}
-            <div className="flex flex-col gap-4 md:w-1/3">
+            <div className="flex flex-col gap-4">
               <h3 className="text-lg font-semibold text-white">고객 안내</h3>
               <ul className="flex flex-col gap-2.5 font-light text-xs text-gray-300">
                 <li>공지사항</li>
@@ -72,7 +72,7 @@ const Footer = () => {
             </div>
 
             {/* 고객 센터 */}
-            <div className="flex flex-col gap-4 md:w-1/3 mt-5 md:mt-0">
+            <div className="flex flex-col gap-4 mt-5 md:mt-0">
               <h3 className="flex items-center text-lg font-semibold text-white">
                 <FaHeadset className="mr-2" /> 고객 센터
               </h3>
