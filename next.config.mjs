@@ -53,6 +53,10 @@ const nextConfig = {
         source: "/api/auth/:path*",
         destination: `${API_URL}/api/auth/:path*`,
       },
+      {
+        source: "/api/realtors",
+        destination: "https://api.vworld.kr/ned/data/getEBBrokerInfo",
+      },
     ];
   },
 };
