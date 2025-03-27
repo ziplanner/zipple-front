@@ -1,22 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 
-interface GeocoderResult {
-  x: string; // 경도 (longitude)
-  y: string; // 위도 (latitude)
-  address_name: string; // 전체 주소
-  road_address_name: string; // 도로명 주소
-  region_1depth_name: string; // 1단계 행정구역
-  region_2depth_name: string; // 2단계 행정구역
-  region_3depth_name: string; // 3단계 행정구역
+interface KakaoMapModalProps {
+  address: string;
+  name?: string; // Optional name parameter
+  onClose: () => void;
 }
 
-const KakaoMapModal = ({
-  address,
-  onClose,
-}: {
-  address: string;
-  onClose: () => void;
-}) => {
+const KakaoMapModal = ({ address, name, onClose }: KakaoMapModalProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
@@ -89,9 +79,15 @@ const KakaoMapModal = ({
               map: map,
             });
 
+            // 인포윈도우 내용 (이름이 있으면 이름과 주소, 없으면 주소만)
+            const infoWindowContent = name
+              ? //   ? `<div style="padding:5px;"><strong>${name}</strong><br/>${address}</div>`
+                `<div style="padding:5px;"><strong>${name}</strong></div>`
+              : `<div style="padding:5px;">${address}</div>`;
+
             // 지도에 인포윈도우 추가
             const infowindow = new window.kakao.maps.InfoWindow({
-              content: `<div style="padding:5px;">${address}</div>`,
+              content: infoWindowContent,
             });
             infowindow.open(map, marker);
           } else {
@@ -104,7 +100,7 @@ const KakaoMapModal = ({
         alert("지도를 렌더링할 수 없습니다.");
       }
     }
-  }, [isScriptLoaded, address]);
+  }, [isScriptLoaded, address, name]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
