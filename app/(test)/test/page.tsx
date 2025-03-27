@@ -46,19 +46,16 @@ export default function RealtorSearchComponent() {
 
   const handleSearch = async (pageNumber = 1) => {
     try {
-      const response = await axios.get(
-        "https://api.vworld.kr/ned/data/getEBBrokerInfo",
-        {
-          params: {
-            key: process.env.NEXT_PUBLIC_VWORLD_API_KEY, // API 키
-            domain: "https://www.zipple.co.kr/", // 도메인
-            pageNo: pageNumber, // 페이지 번호
-            numOfRows: pagination.numOfRows, // 한 페이지에 반환할 데이터 수
-            ...(searchType === "brkrNm" && { brkrNm: searchValue }), // 중개업자명
-            ...(searchType === "bsnmCmpnm" && { bsnmCmpnm: searchValue }), // 사업자상호
-          },
-        }
-      );
+      const response = await axios.get("/api/broker", {
+        params: {
+          key: process.env.NEXT_PUBLIC_VWORLD_API_KEY, // API 키
+          domain: "https://www.zipple.co.kr/", // 도메인
+          pageNo: pageNumber, // 페이지 번호
+          numOfRows: pagination.numOfRows, // 한 페이지에 반환할 데이터 수
+          ...(searchType === "brkrNm" && { brkrNm: searchValue }), // 중개업자명
+          ...(searchType === "bsnmCmpnm" && { bsnmCmpnm: searchValue }), // 사업자상호
+        },
+      });
 
       const brokerData = response.data?.EDBrokers;
 

@@ -57,6 +57,10 @@ const nextConfig = {
         source: "/api/realtors",
         destination: "https://api.vworld.kr/ned/data/getEBBrokerInfo",
       },
+      {
+        source: "/api/broker",
+        destination: "https://api.vworld.kr/ned/data/getEBBrokerInfo",
+      },
     ];
   },
 };
