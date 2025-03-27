@@ -29,6 +29,12 @@ export async function GET(request: NextRequest) {
         ...(searchType === "brkrNm" && { brkrNm: searchValue }),
         ...(searchType === "bsnmCmpnm" && { bsnmCmpnm: searchValue }),
       },
+      headers: {
+        // CORS 관련 헤더
+        "Access-Control-Allow-Origin": "*", // 모든 도메인에서 접근 허용
+        "Content-Type": "application/json", // 응답 형식 지정
+        Accept: "application/json", // 응답 형식 지정
+      },
     });
 
     return NextResponse.json(response.data);
