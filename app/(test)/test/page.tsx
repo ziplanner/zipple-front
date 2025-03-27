@@ -7,7 +7,6 @@ import useResponsive from "@/app/hook/useResponsive";
 import KakaoMapModal from "@/app/components/modal/kakaoMapModal";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import MultiAddressKakaoMapModal from "@/app/components/modal/mulitAdressKakaoMapModal";
-import { getCategoryMatching } from "@/app/api/main/api";
 
 interface PaginationInfo {
   numOfRows: number;
@@ -20,7 +19,10 @@ export default function RealtorSearchComponent() {
   const [realtors, setRealtors] = useState<RealtorSearchResult[]>([]);
   const [brokerOffices, setBrokerOffices] = useState<BrokerOffice[]>([]);
   const [searchType, setSearchType] = useState("bsnmCmpnm");
-  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<{
+    address: string;
+    name?: string;
+  } | null>(null);
   const [isMultiMapOpen, setIsMultiMapOpen] = useState<boolean>(false);
   const [multiAdress, setMultiAdress] = useState<any[]>([
     { address: "서울특별시 강남구 테헤란로 123", name: "동찌부동산" },
@@ -205,9 +207,10 @@ export default function RealtorSearchComponent() {
                           {additionalInfo?.소재지도로명주소 && (
                             <button
                               onClick={() =>
-                                setSelectedAddress(
-                                  additionalInfo.소재지도로명주소
-                                )
+                                setSelectedAddress({
+                                  address: additionalInfo.소재지도로명주소,
+                                  name: additionalInfo.중개사무소명,
+                                })
                               }
                               className="text-blue-500 hover:underline"
                             >
@@ -271,7 +274,8 @@ export default function RealtorSearchComponent() {
       </div>
       {selectedAddress && (
         <KakaoMapModal
-          address={selectedAddress}
+          address={selectedAddress.address}
+          name={selectedAddress.name}
           onClose={() => setSelectedAddress(null)}
         />
       )}
