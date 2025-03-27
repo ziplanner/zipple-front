@@ -137,6 +137,7 @@ const Step3_Auth = () => {
       );
       if (response === "인증 번호가 일치하지 않습니다.") {
         setCodeVerification(false);
+        setPhoneSentMessage(null);
         setPhoneVerificationMessage("인증번호가 올바르지 않습니다.");
       } else {
         setCodeVerification(true);
@@ -145,6 +146,7 @@ const Step3_Auth = () => {
       }
     } catch (error) {
       setCodeVerification(false);
+      setPhoneSentMessage(null);
       setPhoneVerificationMessage("인증번호가 올바르지 않습니다.");
     }
   };
@@ -161,6 +163,7 @@ const Step3_Auth = () => {
       );
       if (response === "인증 번호가 일치하지 않습니다.") {
         setRepCodeVerification(false);
+        setPhoneSentMessage2(null);
         setRepVerificationMessage("대표자 인증번호가 올바르지 않습니다.");
       } else {
         setRepVerificationMessage(null);
@@ -169,6 +172,7 @@ const Step3_Auth = () => {
       }
     } catch (error) {
       setRepCodeVerification(false);
+      setPhoneSentMessage2(null);
       setRepVerificationMessage("대표자 인증번호가 올바르지 않습니다.");
     }
   };

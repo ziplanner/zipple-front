@@ -116,10 +116,18 @@ const Step4_FileUpload = () => {
     }
 
     // 모든 필수 파일 업로드 확인
-    if (!businessLicense || !brokerLicense || !agentCertificate) {
-      setAlertMessage("모든 필수 서류를 업로드해야 합니다.");
-      setTimeout(() => setAlertMessage(null), 1000);
-      return false;
+    if (selectedType === "대표 공인중개사") {
+      if (!businessLicense || !brokerLicense) {
+        setAlertMessage("모든 필수 서류를 업로드해야 합니다.");
+        setTimeout(() => setAlertMessage(null), 1000);
+        return false;
+      }
+    } else {
+      if (!agentCertificate) {
+        setAlertMessage("모든 필수 서류를 업로드해야 합니다.");
+        setTimeout(() => setAlertMessage(null), 1000);
+        return false;
+      }
     }
 
     // 필수 약관 동의 여부 확인
