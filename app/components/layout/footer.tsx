@@ -100,11 +100,11 @@ const Footer = () => {
         {/* 하단 회사 정보 */}
         <div className="flex flex-col itemss-center mt-6 md:mt-8 font-light text-center text-[10px] md:text-[12px] text-gray-500 gap-1">
           <div className="font-light text-[12px] md:text-[12px] text-gray-400">
-            집플 테크리티 &nbsp; | &nbsp; 대표: 오준영 &nbsp; | &nbsp; 서울시
+            집플 테크리티 &nbsp; | &nbsp; 대표: 오주영 &nbsp; | &nbsp; 서울시
             서초구 서초대로 50길 75, 401호
           </div>
           <div className="font-light text-[10px] md:text-[12px] text-gray-400">
-            개인정보책임관리자: 오준영 &nbsp; | &nbsp; 사업자등록번호:
+            개인정보책임관리자: 오주영 &nbsp; | &nbsp; 사업자등록번호:
             792-29-01583 &nbsp; | &nbsp; 비즈니스 문의: admin@zipple.co.kr
           </div>
           <div className="mt-2 text-[9px] md:text-[11px] text-gray-400">
