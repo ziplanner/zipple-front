@@ -4,10 +4,9 @@ import close from "@/app/image/icon/close.svg";
 import img_delete from "@/app/image/icon/img_delete.svg";
 import Alert from "../alert/alert";
 import CustomInput from "../input/customInput";
-import InputWithButton from "../input/inputWithButton";
+import CustomTextarea from "../textarea/customTextarea";
 import PrimaryBtn from "../button/primaryBtn";
 import RoundPlusBtn from "../button/roundPlusBtn";
-import CustomTextarea from "../textarea/customTextarea";
 import { createMyPortfolio } from "@/app/api/mypage/api";
 
 export interface PortfolioModalProps {
@@ -22,16 +21,41 @@ const PortfolioModal = ({
   onPortfolioCreated,
 }: PortfolioModalProps) => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [title, setTitle] = useState<string>("");
   const [details, setDetails] = useState<string>("");
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]); // File 배열로 변경
   const [portfolioUrl, setPortfolioUrl] = useState<string>("");
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
+  // 이미지 삭제 함수
+  const handleImageDelete = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // 이미지 파일 선택 함수
+  const triggerFileInput = () => {
+    if (imageInputRef.current) {
+      imageInputRef.current.click();
+    }
+  };
+
+  // 이미지 업로드 처리 함수
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newImages: File[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        newImages.push(file); // 직접 File 객체를 배열에 추가
+      }
+      setUploadedImages((prev) => [...prev, ...newImages].slice(0, MAX_IMAGES));
+    }
+  };
+
+  // 유효성 검사 함수
   const validateForm = () => {
+    // 제목과 내용이 필수값
     if (!title.trim()) {
       setAlertMessage("포트폴리오 제목을 입력해주세요.");
       return false;
@@ -40,71 +64,46 @@ const PortfolioModal = ({
       setAlertMessage("포트폴리오 내용을 입력해주세요.");
       return false;
     }
-    if (uploadedImages.length === 0 && !portfolioFile && !portfolioUrl.trim()) {
-      setAlertMessage("사진, 파일, URL 중 하나를 등록해주세요.");
-      return false;
+
+    // 링크가 존재하면, URL 형식 유효성 검사 추가
+    if (portfolioUrl.trim()) {
+      const urlPattern =
+        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+      if (!urlPattern.test(portfolioUrl)) {
+        setAlertMessage("올바른 URL을 입력해주세요.");
+        return false;
+      }
     }
+
     return true;
   };
 
-  const handleImageDelete = (index: number) => {
-    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
-  };
+  useEffect(() => {
+    if (alertMessage) {
+      const timer = setTimeout(() => {
+        setAlertMessage(null);
+      }, 500); // 0.5초 후 alertMessage를 null로 초기화
 
-  const triggerFileInput = () => {
-    if (imageInputRef.current) {
-      imageInputRef.current.click();
+      // 타이머 정리
+      return () => clearTimeout(timer);
     }
-  };
+  }, [alertMessage]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      const maxFileSize = 100 * 1024 * 1024;
-      const allowedExtensions = ["image/png", "image/jpeg"];
-      const newFiles: File[] = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        if (file.size > maxFileSize) {
-          setAlertMessage("파일 용량은 100MB를 초과할 수 없습니다.");
-          return;
-        }
-        if (!allowedExtensions.includes(file.type)) {
-          setAlertMessage("png, jpg 파일만 업로드 가능합니다.");
-          return;
-        }
-
-        newFiles.push(file);
-      }
-
-      setUploadedImages((prev) => [...prev, ...newFiles].slice(0, MAX_IMAGES));
-    }
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setPortfolioFile(file);
-    }
-  };
-
+  // 제출 함수
   const handleSubmit = async () => {
+    // 유효성 검사
     if (!validateForm()) return;
 
     const formData = new FormData();
     formData.append("portfolioTitle", title);
     formData.append("portfolioContent", details);
 
+    // 이미지를 폼 데이터에 추가
     uploadedImages.forEach((image) => {
-      formData.append("portfolioImages", image);
+      formData.append("portfolioImages", image); // File 객체를 그대로 전송
     });
 
-    if (portfolioFile) {
-      formData.append("portfolioFile", portfolioFile);
-    }
-
+    // 링크를 폼 데이터에 추가
     if (portfolioUrl.trim()) {
       formData.append("portfolioUrl", portfolioUrl.trim());
     }
@@ -112,7 +111,6 @@ const PortfolioModal = ({
     try {
       await createMyPortfolio(formData);
       setAlertMessage("포트폴리오가 성공적으로 등록되었습니다.");
-
       setTimeout(() => {
         setAlertMessage(null);
         onPortfolioCreated();
@@ -135,9 +133,6 @@ const PortfolioModal = ({
     <div
       id="background"
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50"
-      onClick={(e) =>
-        (e.target as HTMLDivElement).id === "background" && onClose()
-      }
     >
       <div className="bg-white p-5 shadow-modal rounded-2xl w-[826px] max-h-[90vh] flex flex-col">
         <div className="flex justify-between mb-5">
@@ -152,8 +147,7 @@ const PortfolioModal = ({
           />
         </div>
         <div className="h-[1px] bg-menuborder" />
-
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 overflow-y-auto custom-scrollbar mt-4">
           <h3 className="flex text-text1 text-h3 mt-[22px]">
             제목 <span className="text-point text-body1_m pl-1">*</span>
           </h3>
@@ -179,10 +173,17 @@ const PortfolioModal = ({
           />
 
           {/* 이미지 업로드 */}
-          <label className="text-body2_r text-text_sub4 mb-1">이미지</label>
-          <div className="flex flex-wrap gap-2 items-center">
+          <h3 className="flex text-text1 text-h3 mt-[22px]">이미지</h3>
+          <div className="flex flex-wrap gap-2 items-center mt-2">
             {uploadedImages.map((image, index) => (
               <div key={index} className="relative">
+                <Image
+                  src={URL.createObjectURL(image)} // 파일을 직접 미리보기 URL로 변환
+                  alt={image.name}
+                  width={100}
+                  height={100}
+                  className="object-cover rounded-md"
+                />
                 <p className="text-sm">{image.name}</p>
                 <button
                   onClick={() => handleImageDelete(index)}
@@ -197,33 +198,33 @@ const PortfolioModal = ({
             )}
           </div>
 
-          {/* 파일 업로드 */}
           <input
             type="file"
             className="hidden"
             ref={imageInputRef}
             multiple
             accept="image/*"
-            onChange={handleFileChange}
+            onChange={handleImageUpload}
           />
 
-          <InputWithButton
-            label="파일 업로드"
-            name="file"
-            value={portfolioFile ? portfolioFile.name : ""}
-            onChange={() => {}}
-            buttonText="첨부"
-            onButtonClick={() => fileInputRef.current?.click()}
-            className="mt-4"
+          {/* 링크 입력 */}
+          <h3 className="flex text-text1 text-h3 mt-[22px]">링크</h3>
+          <CustomInput
+            value={portfolioUrl}
+            placeholder={"URL을 등록해주세요."}
+            onChange={(e) => setPortfolioUrl(e.target.value)}
+            className="mb-4"
+            label={""}
+            name={""}
           />
         </div>
 
+        {/* 등록 버튼 */}
         <div className="flex items-center justify-end mt-6 pb-1">
           <PrimaryBtn text="등록하기" onClick={handleSubmit} />
         </div>
+        {alertMessage && <Alert message={alertMessage} />}
       </div>
-
-      {alertMessage && <Alert message={alertMessage} />}
     </div>
   );
 };
