@@ -33,6 +33,7 @@ export const createMyPortfolio = async (formData: FormData) => {
   }
 };
 
+// 포트폴리오 삭제
 export const deletePortfolio = async (portfolioId: string) => {
   try {
     const response = await axiosInstance.delete(
@@ -41,6 +42,28 @@ export const deletePortfolio = async (portfolioId: string) => {
     return response.data;
   } catch (error) {
     console.error("Error deleting review:", error);
+    throw error;
+  }
+};
+
+// 포트폴리오 수정
+export const updatePortfolio = async (
+  portfolioId: string,
+  formData: FormData
+) => {
+  try {
+    const response = await axiosInstance.put(
+      `${MYPAGE_AGENT_PORTFOLIO}/${portfolioId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("포트폴리오 수정 중 오류 발생:", error);
     throw error;
   }
 };
