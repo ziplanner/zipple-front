@@ -11,6 +11,9 @@ import { MoreVertical } from "lucide-react";
 import TabMenu from "@/app/components/menu/tabMenu";
 import { deletePortfolio } from "@/app/api/mypage/api";
 import AlertWithBtn from "@/app/components/alert/alertwithBtn";
+import useResponsive from "@/app/hook/useResponsive";
+import ModifyPortfolioBottomSheet from "@/app/components/bottomSheet/modifyPortfolioBottomSheet";
+import ModifyPortfolioModal from "@/app/components/modal/modifyPortfolioModal";
 
 interface PortfolioDetailProps {
   title: string;
@@ -21,6 +24,7 @@ interface PortfolioDetailProps {
 
 const MainSection = () => {
   const router = useRouter();
+  const isMd = useResponsive("md");
   const searchParams = useSearchParams();
   const id = searchParams.get("id") || "1";
 
@@ -35,6 +39,18 @@ const MainSection = () => {
   const [isImageViewerOpen, setIsImageViewerOpen] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
+
+  const portfolioForEdit = {
+    id: id,
+    title: portfolio.title,
+    content: portfolio.content ?? "",
+    url: portfolio.externalLink,
+    images: portfolio.portfolioList.map((url, index) => ({
+      name: `image-${index}`,
+      url,
+    })),
+  };
 
   useEffect(() => {
     if (id) {
@@ -88,8 +104,27 @@ const MainSection = () => {
   };
 
   const handleTabEdit = () => {
-    // 수정 로직 추가
-    console.log("Edit Tab");
+    setIsEditOpen(true);
+  };
+
+  const handleCloseEdit = () => {
+    setIsEditOpen(false);
+  };
+
+  const handlePortfolioUpdated = () => {
+    setIsEditOpen(false);
+    // 수정 후 데이터 새로고침
+    getAgentPortfolioDetail(Number(id))
+      .then((data) => {
+        setPortfolio({
+          title: data.title || "제목 없음",
+          content: data.content ?? "포트폴리오 내용이 없습니다.",
+          portfolioList:
+            data.portfolioList.length > 0 ? data.portfolioList : [defaultImage],
+          externalLink: data.externalLink || "",
+        });
+      })
+      .catch((error) => console.error("❌ 데이터 조회 실패:", error));
   };
 
   return (
@@ -196,6 +231,24 @@ const MainSection = () => {
           cancelText="취소"
         />
       )}
+
+      {isEditOpen &&
+        (isMd ? (
+          <ModifyPortfolioModal
+            onClose={handleCloseEdit}
+            onPortfolioUpdated={handlePortfolioUpdated}
+            portfolio={{
+              ...portfolioForEdit,
+              existingImages: portfolioForEdit.images,
+            }}
+          />
+        ) : (
+          <ModifyPortfolioBottomSheet
+            onClose={handleCloseEdit}
+            onPortfolioUpdated={handlePortfolioUpdated}
+            portfolio={portfolioForEdit}
+          />
+        ))}
     </div>
   );
 };
