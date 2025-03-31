@@ -32,3 +32,15 @@ export const createMyPortfolio = async (formData: FormData) => {
     throw error;
   }
 };
+
+export const deletePortfolio = async (portfolioId: string) => {
+  try {
+    const response = await axiosInstance.delete(
+      `${MYPAGE_AGENT_PORTFOLIO}/${portfolioId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    throw error;
+  }
+};
