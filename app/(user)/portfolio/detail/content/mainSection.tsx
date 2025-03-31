@@ -14,6 +14,7 @@ import AlertWithBtn from "@/app/components/alert/alertwithBtn";
 import useResponsive from "@/app/hook/useResponsive";
 import ModifyPortfolioBottomSheet from "@/app/components/bottomSheet/modifyPortfolioBottomSheet";
 import ModifyPortfolioModal from "@/app/components/modal/modifyPortfolioModal";
+import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 
 interface PortfolioDetailProps {
   title: string;
@@ -28,13 +29,15 @@ const MainSection = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id") || "1";
 
+  const { userInfo } = useUserInfoStore((state) => state);
+
+  const [agentId, setAgentId] = useState<string>("");
   const [portfolio, setPortfolio] = useState<PortfolioDetailProps>({
     title: "",
     content: null,
     portfolioList: [],
     externalLink: "",
   });
-
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -56,6 +59,7 @@ const MainSection = () => {
     if (id) {
       getAgentPortfolioDetail(Number(id))
         .then((data) => {
+          setAgentId(data.agentId);
           setPortfolio({
             title: data.title || "제목 없음",
             content: data.content ?? "포트폴리오 내용이 없습니다.",
@@ -134,10 +138,12 @@ const MainSection = () => {
         <h1 className="text-mobile_h1_contents_title md:text-h1_contents_title">
           {portfolio.title}
         </h1>
-        <MoreVertical
-          className="text-gray-600 cursor-pointer hover:text-gray-800"
-          onClick={toggleMenu}
-        />
+        {agentId && userInfo?.userId === agentId && (
+          <MoreVertical
+            className="text-gray-600 cursor-pointer hover:text-gray-800"
+            onClick={toggleMenu}
+          />
+        )}
         {/* TabMenu가 MoreVertical 버튼 아래에 위치하도록 설정 */}
         {isMenuOpen && (
           <TabMenu
