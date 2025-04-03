@@ -55,7 +55,7 @@ const PortfolioModal = ({
 
   // 유효성 검사 함수
   const validateForm = () => {
-    // 제목과 내용이 필수값
+    // 제목과 내용, 링크는 필수값
     if (!title.trim()) {
       setAlertMessage("포트폴리오 제목을 입력해주세요.");
       return false;
@@ -64,15 +64,17 @@ const PortfolioModal = ({
       setAlertMessage("포트폴리오 내용을 입력해주세요.");
       return false;
     }
+    if (!portfolioUrl.trim()) {
+      setAlertMessage("포트폴리오 링크를 입력해주세요.");
+      return false;
+    }
 
-    // 링크가 존재하면, URL 형식 유효성 검사 추가
-    if (portfolioUrl.trim()) {
-      const urlPattern =
-        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
-      if (!urlPattern.test(portfolioUrl)) {
-        setAlertMessage("올바른 URL을 입력해주세요.");
-        return false;
-      }
+    // URL 형식 유효성 검사
+    const urlPattern =
+      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+    if (!urlPattern.test(portfolioUrl.trim())) {
+      setAlertMessage("올바른 URL을 입력해주세요.");
+      return false;
     }
 
     return true;
@@ -105,7 +107,7 @@ const PortfolioModal = ({
 
     // 링크를 폼 데이터에 추가
     if (portfolioUrl.trim()) {
-      formData.append("portfolioUrl", portfolioUrl.trim());
+      formData.append("portfolioLink", portfolioUrl.trim());
     }
 
     try {
