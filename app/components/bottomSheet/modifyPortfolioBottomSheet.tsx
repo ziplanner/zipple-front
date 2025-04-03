@@ -16,7 +16,7 @@ interface ModifyPortfolioBottomSheetProps {
     id: string;
     title: string;
     content: string;
-    url?: string;
+    url: string;
     images: { name: string; url: string }[];
   };
 }
@@ -57,7 +57,9 @@ const ModifyPortfolioBottomSheet = ({
     }
   };
 
+  // 유효성 검사 함수
   const validateForm = () => {
+    // 제목과 내용, 링크는 필수값
     if (!title.trim()) {
       setAlertMessage("포트폴리오 제목을 입력해주세요.");
       return false;
@@ -66,14 +68,19 @@ const ModifyPortfolioBottomSheet = ({
       setAlertMessage("포트폴리오 내용을 입력해주세요.");
       return false;
     }
-    if (portfolioUrl.trim()) {
-      const urlPattern =
-        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
-      if (!urlPattern.test(portfolioUrl)) {
-        setAlertMessage("올바른 URL을 입력해주세요.");
-        return false;
-      }
+    if (!portfolioUrl.trim()) {
+      setAlertMessage("포트폴리오 링크를 입력해주세요.");
+      return false;
     }
+
+    // URL 형식 유효성 검사
+    const urlPattern =
+      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+    if (!urlPattern.test(portfolioUrl.trim())) {
+      setAlertMessage("올바른 URL을 입력해주세요.");
+      return false;
+    }
+
     return true;
   };
 
@@ -107,7 +114,7 @@ const ModifyPortfolioBottomSheet = ({
     });
 
     if (portfolioUrl.trim()) {
-      formData.append("portfolioUrl", portfolioUrl.trim());
+      formData.append("portfolioLink", portfolioUrl.trim());
     }
 
     try {
