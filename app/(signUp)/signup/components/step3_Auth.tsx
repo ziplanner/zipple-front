@@ -62,11 +62,23 @@ const Step3_Auth = () => {
     string | null
   >(null);
   const [repTimer, setRepTimer] = useState<number>(180);
-
+  const [successValidation, setSuccessValidation] = useState<boolean>(false);
+  const [successRepValidation, setSuccessRepValidation] =
+    useState<boolean>(false);
   const [phoneSentMessage, setPhoneSentMessage] = useState<string | null>(null);
   const [phoneSentMessage2, setPhoneSentMessage2] = useState<string | null>(
     null
   );
+
+  useEffect(() => {
+    if (alertMessage) {
+      const timer = setTimeout(() => {
+        setAlertMessage(null);
+      }, 1000); // 1초 후 초기화
+
+      return () => clearTimeout(timer);
+    }
+  }, [alertMessage]);
 
   useEffect(() => {
     if (isCodeSent && phoneTimer > 0) {
@@ -88,6 +100,14 @@ const Step3_Auth = () => {
 
   // 🔹 휴대폰 인증 요청
   const handleVerificationRequest = async () => {
+    if (!agentContactNumber.trim())
+      return setAlertMessage("휴대폰 번호를 입력해주세요.");
+
+    if (ownerContactNumber === agentContactNumber) {
+      return setAlertMessage(
+        "대표자 번호와 본인 번호가 동일합니다. 다른 번호를 입력해주세요."
+      );
+    }
     try {
       await sendSms(agentContactNumber);
       setIsCodeSent(true);
@@ -95,6 +115,7 @@ const Step3_Auth = () => {
       setPhoneSentMessage(
         "인증번호가 발송되었습니다. 인증번호를 입력해주세요."
       );
+      setSuccessValidation(false);
       setPhoneVerificationMessage(null);
     } catch (error) {
       console.error("SMS 발송 실패:", error);
@@ -108,7 +129,13 @@ const Step3_Auth = () => {
   // 🔹 대표자 휴대폰 인증 요청
   const handleRepVerificationRequest = async () => {
     if (!ownerContactNumber.trim())
-      return setRepVerificationMessage("대표자 번호를 입력해주세요.");
+      return setAlertMessage("대표자 번호를 입력해주세요.");
+
+    if (ownerContactNumber === agentContactNumber) {
+      return setAlertMessage(
+        "대표자 번호와 본인 번호가 동일합니다. 다른 번호를 입력해주세요."
+      );
+    }
 
     try {
       await sendSms(ownerContactNumber);
@@ -117,6 +144,7 @@ const Step3_Auth = () => {
       setPhoneSentMessage2(
         "인증번호가 발송되었습니다. 인증번호를 입력해주세요."
       );
+      setSuccessRepValidation(false);
       setRepVerificationMessage(null);
     } catch (error) {
       console.error("대표자 SMS 발송 실패:", error);
@@ -143,11 +171,13 @@ const Step3_Auth = () => {
         setCodeVerification(true);
         setPhoneVerificationMessage(null);
         setPhoneSentMessage("본인 인증 성공!");
+        setSuccessValidation(true);
       }
     } catch (error) {
       setCodeVerification(false);
       setPhoneSentMessage(null);
       setPhoneVerificationMessage("인증번호가 올바르지 않습니다.");
+      setSuccessValidation(false);
     }
   };
 
@@ -169,11 +199,13 @@ const Step3_Auth = () => {
         setRepVerificationMessage(null);
         setRepCodeVerification(true);
         setPhoneSentMessage2("대표자 인증 성공!");
+        setSuccessRepValidation(true);
       }
     } catch (error) {
       setRepCodeVerification(false);
       setPhoneSentMessage2(null);
       setRepVerificationMessage("대표자 인증번호가 올바르지 않습니다.");
+      setSuccessRepValidation(false);
     }
   };
 
@@ -350,9 +382,11 @@ const Step3_Auth = () => {
           placeholder="번호 입력"
           value={agentContactNumber}
           onChange={(e) => setAgentContactNumber(e.target.value)}
-          buttonText="인증받기"
+          buttonText={"인증받기"}
           onButtonClick={handleVerificationRequest}
           className="w-full md:mt-6"
+          readOnly={successValidation}
+          disabled={successValidation}
         />
       )}
 
@@ -367,6 +401,8 @@ const Step3_Auth = () => {
             buttonText="인증하기"
             onButtonClick={handleVerificationSubmit}
             className="w-full"
+            readOnly={successValidation}
+            disabled={successValidation}
           />
           {phoneVerificationMessage && (
             <div className="text-red-500 text-mobile_body3_r md:text-body3_r">
@@ -397,6 +433,8 @@ const Step3_Auth = () => {
         buttonText="인증받기"
         onButtonClick={handleRepVerificationRequest}
         className="w-full mt-4 md:mt-6"
+        readOnly={successRepValidation}
+        disabled={successRepValidation}
       />
 
       {isRepCodeSent && (
@@ -410,6 +448,8 @@ const Step3_Auth = () => {
             buttonText="인증하기"
             onButtonClick={handleRepVerificationSubmit}
             className="w-full"
+            readOnly={successRepValidation}
+            disabled={successRepValidation}
           />
           {repVerificationMessage && (
             <div className="text-red-500 text-mobile_body3_r md:text-body3_r">
