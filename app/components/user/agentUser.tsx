@@ -32,6 +32,7 @@ const AgentUser = () => {
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const [isEditingDetail, setIsEditingDetail] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState<boolean>(false);
   const [basicInfo, setBasicInfo] = useState({
     agentName: "",
     ownerName: "",
@@ -84,7 +85,11 @@ const AgentUser = () => {
   };
 
   const handleEditDetail = () => {
-    setIsModalOpen(true);
+    if (basicInfo.agentType === "개업") {
+      setIsAlertModalOpen(true);
+    } else {
+      setIsModalOpen(true);
+    }
   };
 
   const handleSaveBasicInfo = async () => {
@@ -579,16 +584,18 @@ const AgentUser = () => {
         </div>
       </div>
       {/* 중개사무소 검색 모달 */}
+      {isAlertModalOpen && (
+        <AlertWithBtn
+          message={"부동산 정보 수정은 대표자만 가능합니다."}
+          onConfirm={() => {
+            setIsAlertModalOpen(false);
+          }}
+          onCancel={() => {
+            setIsAlertModalOpen(false);
+          }}
+        />
+      )}
       {isModalOpen && (
-        // <AlertWithBtn
-        //   message={"부동산 정보 수정은 관리자에게 문의 바랍니다."}
-        //   onConfirm={() => {
-        //     setIsModalOpen(false);
-        //   }}
-        //   onCancel={() => {
-        //     setIsModalOpen(false);
-        //   }}
-        // />
         <AlertWithTalk
           title="문의하기"
           message1="부동산 정보 수정은"
