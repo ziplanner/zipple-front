@@ -40,9 +40,12 @@ const InputWithButton = ({
           placeholder={placeholder}
           readOnly={readOnly}
           onChange={onChange}
-          className="border border-searchbarborder w-full p-2 focus:outline-none
-            focus:ring-1 focus:ring-selectedoption_pressed transition-all rounded-lg  text-mobile_body3_r md:text-body2_r"
+          className={`border border-searchbarborder w-full p-2 rounded-lg transition-all
+    text-mobile_body3_r md:text-body2_r focus:outline-none focus:ring-1 focus:ring-selectedoption_pressed
+    ${readOnly ? "bg-gray-100 text-gray-400 pointer-events-none" : ""}
+  `}
         />
+
         <button
           onClick={onButtonClick}
           disabled={disabled}
