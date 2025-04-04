@@ -433,12 +433,12 @@ const AgentUser = () => {
                   value={detailInfo.ownerName}
                   onChange={handleDetailChange}
                 />
-                <CustomInput
+                {/* <CustomInput
                   label="소유자 연락처"
                   name="ownerContactNumber"
                   value={detailInfo.ownerContactNumber}
                   onChange={handleDetailChange}
-                />
+                /> */}
                 <CustomInput
                   label="사무소 주소"
                   name="officeAddress"
@@ -451,12 +451,12 @@ const AgentUser = () => {
                   value={detailInfo.agentName}
                   onChange={handleDetailChange}
                 />
-                <CustomInput
+                {/* <CustomInput
                   label="중개사 연락처"
                   name="agentContactNumber"
                   value={detailInfo.agentContactNumber}
                   onChange={handleDetailChange}
-                />
+                /> */}
               </>
             ) : (
               <div className="mt-2 pt-4 flex flex-col gap-6 pl-5">
@@ -501,14 +501,14 @@ const AgentUser = () => {
                       {detailInfo.ownerName}
                     </p>
                   </div>
-                  <div className="flex flex-col gap-1">
+                  {/* <div className="flex flex-col gap-1">
                     <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
                       소유자 연락처
                     </label>
                     <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
                       {detailInfo.ownerContactNumber}
                     </p>
-                  </div>
+                  </div> */}
                   <div className="flex flex-col gap-1">
                     <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
                       사무소 주소
@@ -525,14 +525,14 @@ const AgentUser = () => {
                       {detailInfo.agentName}
                     </p>
                   </div>
-                  <div className="flex flex-col gap-1">
+                  {/* <div className="flex flex-col gap-1">
                     <label className="text-gray-800 text-mobile_body1_m md:text-h4_sb">
                       중개사 연락처
                     </label>
                     <p className="text-gray-600 text-mobile_body2_r md:text-body1_r">
                       {detailInfo.agentContactNumber}
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}
