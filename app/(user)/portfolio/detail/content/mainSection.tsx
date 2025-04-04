@@ -47,8 +47,8 @@ const MainSection = () => {
   const portfolioForEdit = {
     id: id,
     title: portfolio.title,
-    content: portfolio.content ?? "",
-    url: portfolio.externalLink,
+    content: portfolio.content || "",
+    url: portfolio.externalLink || "",
     images: portfolio.portfolioList.map((url, index) => ({
       name: `image-${index}`,
       url,
