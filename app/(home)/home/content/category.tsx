@@ -18,7 +18,7 @@ const categoryList = [
   { icon: houseIcon, label: "주택/다가구" },
   { icon: villaIcon, label: "빌라/다세대" },
   { icon: roomIcon, label: "원룸/투룸" },
-  { icon: storeIcon, label: "상가 점포" },
+  { icon: storeIcon, label: "상가점포" },
   { icon: buildingIcon, label: "빌딩/상업시설" },
   { icon: officeIcon, label: "사무실" },
   { icon: factoryIcon, label: "공장/창고/지식센터" },
