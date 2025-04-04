@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import test10 from "@/app/image/test/test10.png";
 import { useRouter } from "next/navigation";
 import defaultImage from "@/app/image/test/test_image.jpg";
 import CustomInput from "../input/customInput";
@@ -23,6 +22,7 @@ import { useUserInfoStore } from "@/app/providers/userStoreProvider";
 import { BrokerOffice } from "@/app/types/agent";
 import AlertWithBtn from "../alert/alertwithBtn";
 import { withdrawAccount } from "@/app/api/login/api";
+import AlertWithTalk from "../alert/alertWithTalk";
 
 const AgentUser = () => {
   const router = useRouter();
@@ -301,12 +301,12 @@ const AgentUser = () => {
                   value={detailInfo.externalLink}
                   onChange={handleDetailChange}
                 />
-                {/* <CustomInput
+                <CustomInput
                   label="한 줄 소개"
                   name="title"
                   value={detailInfo.title}
                   onChange={handleDetailChange}
-                /> */}
+                />
                 <CustomInput
                   label="자기소개"
                   name="content"
@@ -350,14 +350,14 @@ const AgentUser = () => {
                   </a>
                 </div>
                 {/* 자기소개 제목 */}
-                {/* <div className="flex flex-row items-center gap-1 ml-4">
+                <div className="flex flex-row items-center gap-1 ml-4">
                   <p className="text-gray-600 text-body1_sb">
-                    <FaIdBadge /> 
+                    <FaIdBadge />
                   </p>
                   <p className="text-mobile_body2_r md:text-body1_r pl-5">
                     {detailInfo.title}
                   </p>
-                </div> */}
+                </div>
                 <div className="flex flex-row items-center gap-1 ml-4">
                   <p className="text-gray-600 text-body1_sb">
                     <FaPen /> {/* 자기소개 내용 */}
@@ -580,12 +580,20 @@ const AgentUser = () => {
       </div>
       {/* 중개사무소 검색 모달 */}
       {isModalOpen && (
-        <AlertWithBtn
-          message={"부동산 정보 수정은 관리자에게 문의 바랍니다."}
-          onConfirm={() => {
-            setIsModalOpen(false);
-          }}
-          onCancel={() => {
+        // <AlertWithBtn
+        //   message={"부동산 정보 수정은 관리자에게 문의 바랍니다."}
+        //   onConfirm={() => {
+        //     setIsModalOpen(false);
+        //   }}
+        //   onCancel={() => {
+        //     setIsModalOpen(false);
+        //   }}
+        // />
+        <AlertWithTalk
+          title="문의하기"
+          message1="부동산 정보 수정은"
+          message2="관리자에게 문의 바랍니다."
+          onClose={() => {
             setIsModalOpen(false);
           }}
         />
